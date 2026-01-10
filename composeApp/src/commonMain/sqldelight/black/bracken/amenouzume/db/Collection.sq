@@ -1,0 +1,17 @@
+CREATE TABLE Collection (
+    id TEXT NOT NULL PRIMARY KEY,
+    path TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM Collection;
+
+selectById:
+SELECT * FROM Collection WHERE id = ?;
+
+insert:
+INSERT INTO Collection(id, path)
+VALUES (?, ?);
+
+deleteById:
+DELETE FROM Collection WHERE id = ?;
