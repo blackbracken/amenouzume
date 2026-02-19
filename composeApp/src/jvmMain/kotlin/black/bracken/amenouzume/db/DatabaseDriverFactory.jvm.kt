@@ -7,10 +7,10 @@ import java.io.File
 actual class DatabaseDriverFactory {
   actual fun createDriver(): SqlDriver {
     val databasePath = File(System.getProperty("user.home"), ".amenouzume/amenouzume.db")
+    val databaseExists = databasePath.exists()
     databasePath.parentFile?.mkdirs()
-
-    val driver = JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}")
-    AppDatabase.Schema.create(driver)
-    return driver
+    return JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}").also {
+      if (!databaseExists) AppDatabase.Schema.create(it)
+    }
   }
 }
