@@ -6,14 +6,15 @@ import black.bracken.amenouzume.db.DatabaseDriverFactory
 import black.bracken.amenouzume.db.createDatabase
 import black.bracken.amenouzume.repository.CollectionRepository
 
-fun main() = application {
+fun main() =
+  application {
     val database = createDatabase(DatabaseDriverFactory())
     val repository = CollectionRepository(database)
 
     Window(
-        onCloseRequest = ::exitApplication,
-        title = "amenouzume",
+      onCloseRequest = ::exitApplication,
+      title = "amenouzume",
     ) {
-        App()
+      App()
     }
-}
+  }

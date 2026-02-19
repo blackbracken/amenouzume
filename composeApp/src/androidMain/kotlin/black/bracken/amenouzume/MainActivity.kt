@@ -11,21 +11,21 @@ import black.bracken.amenouzume.db.createDatabase
 import black.bracken.amenouzume.repository.CollectionRepository
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
+    super.onCreate(savedInstanceState)
 
-        val database = createDatabase(DatabaseDriverFactory(applicationContext))
-        val repository = CollectionRepository(database)
+    val database = createDatabase(DatabaseDriverFactory(applicationContext))
+    val repository = CollectionRepository(database)
 
-        setContent {
-            App()
-        }
+    setContent {
+      App()
     }
+  }
 }
 
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+  App()
 }

@@ -1,7 +1,11 @@
 package black.bracken.amenouzume
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,26 +16,27 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun App() {
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                text = "Amenouzume",
-                style = MaterialTheme.typography.headlineMedium
-            )
-        }
+  MaterialTheme {
+    Column(
+      modifier =
+        Modifier
+          .background(MaterialTheme.colorScheme.primaryContainer)
+          .safeContentPadding()
+          .fillMaxSize()
+          .padding(16.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center,
+    ) {
+      Text(
+        text = "Amenouzume",
+        style = MaterialTheme.typography.headlineMedium,
+      )
     }
+  }
 }
 
 @Preview
 @Composable
 fun AppPreview() {
-    App()
+  App()
 }

@@ -5,12 +5,12 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import java.io.File
 
 actual class DatabaseDriverFactory {
-    actual fun createDriver(): SqlDriver {
-        val databasePath = File(System.getProperty("user.home"), ".amenouzume/amenouzume.db")
-        databasePath.parentFile?.mkdirs()
+  actual fun createDriver(): SqlDriver {
+    val databasePath = File(System.getProperty("user.home"), ".amenouzume/amenouzume.db")
+    databasePath.parentFile?.mkdirs()
 
-        val driver = JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}")
-        AppDatabase.Schema.create(driver)
-        return driver
-    }
+    val driver = JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}")
+    AppDatabase.Schema.create(driver)
+    return driver
+  }
 }
