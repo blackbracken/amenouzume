@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.navigation
+package black.bracken.amenouzume.uishared.navigation
 
 import kotlinx.serialization.Serializable
 

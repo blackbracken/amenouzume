@@ -4,8 +4,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import black.bracken.amenouzume.navigation.AppNavHost
-import black.bracken.amenouzume.navigation.OpenDatabaseRoute
+import black.bracken.amenouzume.uishared.navigation.AppNavHost
+import black.bracken.amenouzume.uishared.navigation.OpenDatabaseRoute
 import org.koin.compose.KoinContext
 
 @Composable

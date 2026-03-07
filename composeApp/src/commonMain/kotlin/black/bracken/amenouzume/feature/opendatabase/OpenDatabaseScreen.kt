@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.ui.opendatabase
+package black.bracken.amenouzume.feature.opendatabase
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle

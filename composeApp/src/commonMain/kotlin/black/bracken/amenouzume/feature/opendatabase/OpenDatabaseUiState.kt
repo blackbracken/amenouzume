@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.ui.opendatabase
+package black.bracken.amenouzume.feature.opendatabase
 
 sealed interface OpenDatabaseUiState {
     data object Idle : OpenDatabaseUiState

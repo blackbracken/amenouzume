@@ -1,7 +1,7 @@
 package black.bracken.amenouzume.di
 
-import black.bracken.amenouzume.db.DatabaseDriverFactory
-import black.bracken.amenouzume.ui.opendatabase.di.openDatabaseModule
+import black.bracken.amenouzume.feature.featureModule
+import black.bracken.amenouzume.platform.db.DatabaseDriverFactory
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -10,7 +10,7 @@ fun initKoin(driverFactory: DatabaseDriverFactory, config: KoinAppDeclaration? =
         config?.invoke(this)
         modules(
             databaseModule(driverFactory),
-            openDatabaseModule,
+            featureModule,
         )
     }
 }

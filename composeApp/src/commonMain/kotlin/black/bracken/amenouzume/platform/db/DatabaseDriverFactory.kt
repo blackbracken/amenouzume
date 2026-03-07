@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.db
+package black.bracken.amenouzume.platform.db
 
 import app.cash.sqldelight.db.SqlDriver
 

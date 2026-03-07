@@ -1,8 +1,8 @@
 package black.bracken.amenouzume
 
 import android.app.Application
-import black.bracken.amenouzume.db.DatabaseDriverFactory
 import black.bracken.amenouzume.di.initKoin
+import black.bracken.amenouzume.platform.db.DatabaseDriverFactory
 
 class AmenouzumeApplication : Application() {
     override fun onCreate() {

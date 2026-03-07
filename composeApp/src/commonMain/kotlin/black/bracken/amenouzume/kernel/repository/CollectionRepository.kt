@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.repository
+package black.bracken.amenouzume.kernel.repository
 
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.db.Collection

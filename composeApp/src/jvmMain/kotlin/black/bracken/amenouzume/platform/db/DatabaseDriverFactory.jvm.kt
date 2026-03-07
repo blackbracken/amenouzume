@@ -1,7 +1,8 @@
-package black.bracken.amenouzume.db
+package black.bracken.amenouzume.platform.db
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import black.bracken.amenouzume.db.AppDatabase
 import java.io.File
 
 actual class DatabaseDriverFactory {
