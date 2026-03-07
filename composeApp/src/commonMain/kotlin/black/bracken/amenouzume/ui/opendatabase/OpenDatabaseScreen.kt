@@ -9,15 +9,11 @@ fun OpenDatabaseScreen(
     viewModel: OpenDatabaseViewModel = koinViewModel(),
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
-    OpenDatabaseContent(
-        state = state.value,
-        onEvent = viewModel::onEvent,
-    )
+    OpenDatabaseContent(state = state.value)
 }
 
 @Composable
 private fun OpenDatabaseContent(
     state: OpenDatabaseUiState,
-    onEvent: (OpenDatabaseEvent) -> Unit,
 ) {
 }
