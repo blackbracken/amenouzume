@@ -85,7 +85,7 @@ private fun OpenDatabaseScreen(
 
 @Composable
 private fun DatabaseListContent(
-    databases: List<DatabaseEntry>,
+    databases: List<OpenDatabaseEntry>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -174,7 +174,7 @@ private fun ImportLocalDatabaseCard() {
 }
 
 @Composable
-private fun DatabaseEntryItem(entry: DatabaseEntry) {
+private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
     Card(
         onClick = {},
         modifier = Modifier.fillMaxWidth(),
