@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="open_database_title">Open Database</string>
+    <string name="open_database_title" translatable="false">Open Database</string>
     <string name="open_database_import_title">Import Local Database</string>
     <string name="open_database_import_description">Select a file from your device storage to start editing.</string>
     <string name="open_database_browse_files">Browse Files</string>
