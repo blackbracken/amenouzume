@@ -14,6 +14,6 @@ class OpenDatabaseViewModel : ViewModel() {
 
     @Composable
     private fun presenter(): OpenDatabaseUiState {
-        return OpenDatabaseUiState.Idle
+        return OpenDatabaseUiState.Loaded(emptyList())
     }
 }
