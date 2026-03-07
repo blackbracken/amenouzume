@@ -1,5 +1,6 @@
 package black.bracken.amenouzume.feature.opendatabase
 
+import amenouzume.composeapp.generated.resources.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -49,7 +51,7 @@ private fun OpenDatabaseScreen(
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
-                title = { Text("Open Database") },
+                title = { Text(stringResource(Res.string.open_database_title)) },
                 actions = {
                     IconButton(onClick = {}) {
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
@@ -94,7 +96,7 @@ private fun DatabaseListContent(
         item { ImportLocalDatabaseCard() }
         item {
             Text(
-                text = "LOCAL DATABASES",
+                text = stringResource(Res.string.open_database_section_local_databases),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
@@ -145,12 +147,12 @@ private fun ImportLocalDatabaseCard() {
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Import Local Database",
+                text = stringResource(Res.string.open_database_import_title),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "Select a file from your device storage to start editing.",
+                text = stringResource(Res.string.open_database_import_description),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -162,7 +164,7 @@ private fun ImportLocalDatabaseCard() {
                 shape = CircleShape,
             ) {
                 Text(
-                    text = "Browse Files",
+                    text = stringResource(Res.string.open_database_browse_files),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                 )
