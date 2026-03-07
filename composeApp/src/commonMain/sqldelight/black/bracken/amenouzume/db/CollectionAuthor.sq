@@ -1,0 +1,14 @@
+CREATE TABLE CollectionAuthor (
+    collection_id TEXT NOT NULL REFERENCES Collection(collection_id),
+    author_id TEXT NOT NULL REFERENCES Author(author_id),
+    PRIMARY KEY (collection_id, author_id)
+);
+
+selectAuthorsByCollectionId:
+SELECT * FROM CollectionAuthor WHERE collection_id = ?;
+
+insert:
+INSERT INTO CollectionAuthor(collection_id, author_id) VALUES (?, ?);
+
+deleteByCollectionIdAndAuthorId:
+DELETE FROM CollectionAuthor WHERE collection_id = ? AND author_id = ?;

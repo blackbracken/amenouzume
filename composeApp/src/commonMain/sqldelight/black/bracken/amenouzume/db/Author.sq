@@ -1,0 +1,12 @@
+CREATE TABLE Author (
+    author_id TEXT NOT NULL PRIMARY KEY
+);
+
+selectById:
+SELECT * FROM Author WHERE author_id = ?;
+
+insert:
+INSERT INTO Author(author_id) VALUES (?);
+
+deleteById:
+DELETE FROM Author WHERE author_id = ?;

@@ -1,17 +1,25 @@
 CREATE TABLE Collection (
-    id TEXT NOT NULL PRIMARY KEY,
-    path TEXT NOT NULL
+    collection_id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    thumbnail_path TEXT,
+    category TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    content_type TEXT NOT NULL
 );
 
 selectAll:
 SELECT * FROM Collection;
 
 selectById:
-SELECT * FROM Collection WHERE id = ?;
+SELECT * FROM Collection WHERE collection_id = ?;
+
+selectByCategory:
+SELECT * FROM Collection WHERE category = ?;
 
 insert:
-INSERT INTO Collection(id, path)
-VALUES (?, ?);
+INSERT INTO Collection(collection_id, title, thumbnail_path, category, created_at, updated_at, content_type)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 deleteById:
-DELETE FROM Collection WHERE id = ?;
+DELETE FROM Collection WHERE collection_id = ?;

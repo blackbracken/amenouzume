@@ -1,0 +1,19 @@
+CREATE TABLE Tag (
+    tag_id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+selectAll:
+SELECT * FROM Tag;
+
+selectById:
+SELECT * FROM Tag WHERE tag_id = ?;
+
+selectByName:
+SELECT * FROM Tag WHERE name = ?;
+
+insert:
+INSERT INTO Tag(tag_id, name) VALUES (?, ?);
+
+deleteById:
+DELETE FROM Tag WHERE tag_id = ?;

@@ -1,0 +1,14 @@
+CREATE TABLE CollectionTag (
+    collection_id TEXT NOT NULL REFERENCES Collection(collection_id),
+    tag_id TEXT NOT NULL REFERENCES Tag(tag_id),
+    PRIMARY KEY (collection_id, tag_id)
+);
+
+selectTagsByCollectionId:
+SELECT * FROM CollectionTag WHERE collection_id = ?;
+
+insert:
+INSERT INTO CollectionTag(collection_id, tag_id) VALUES (?, ?);
+
+deleteByCollectionIdAndTagId:
+DELETE FROM CollectionTag WHERE collection_id = ? AND tag_id = ?;
