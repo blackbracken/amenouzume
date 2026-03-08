@@ -4,9 +4,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import black.bracken.amenouzume.di.initKoin
 import black.bracken.amenouzume.platform.db.DatabaseDriverFactory
+import black.bracken.amenouzume.platform.db.LibraryCreator
 
 fun main() {
-  initKoin(DatabaseDriverFactory())
+  initKoin(DatabaseDriverFactory(), LibraryCreator())
   application {
     Window(
       onCloseRequest = ::exitApplication,

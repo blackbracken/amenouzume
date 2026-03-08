@@ -6,7 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val LightColorScheme = lightColorScheme(
+private val LightColorScheme =
+  lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
@@ -42,9 +43,10 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainer = surfaceContainerLight,
     surfaceContainerHigh = surfaceContainerHighLight,
     surfaceContainerHighest = surfaceContainerHighestLight,
-)
+  )
 
-private val DarkColorScheme = darkColorScheme(
+private val DarkColorScheme =
+  darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
     primaryContainer = primaryContainerDark,
@@ -80,15 +82,15 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainer = surfaceContainerDark,
     surfaceContainerHigh = surfaceContainerHighDark,
     surfaceContainerHighest = surfaceContainerHighestDark,
-)
+  )
 
 @Composable
 fun AmenouzumeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
+  darkTheme: Boolean = isSystemInDarkTheme(),
+  content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
-        content = content,
-    )
+  MaterialTheme(
+    colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+    content = content,
+  )
 }
