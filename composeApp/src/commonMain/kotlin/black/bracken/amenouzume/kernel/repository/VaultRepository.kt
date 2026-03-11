@@ -7,39 +7,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
-
 class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
 ) {
-  suspend fun createVault(path: String): Result<Unit> =
-    withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        val targetFile = File(path, "amenouzume.db")
-        check(!targetFile.exists()) { "選択したディレクトリには既にヴォールトが存在します" }
-        vaultStorage.createDatabaseFile(targetFile.absolutePath)
-        vaultHistoryStorage.addPath(targetFile.absolutePath)
-      }
+  suspend fun createVault(path: String): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatchingSafely {
+      val targetFile = File(path, "amenouzume.db")
+      check(!targetFile.exists()) { "選択したディレクトリには既にヴォールトが存在します" }
+      vaultStorage.createDatabaseFile(targetFile.absolutePath)
+      vaultHistoryStorage.addPath(targetFile.absolutePath)
     }
+  }
 
-  suspend fun openVault(filePath: String): Result<Unit> =
-    withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        val file = File(filePath)
-        check(file.exists()) { "ファイルが見つかりません" }
-        check(file.canRead()) { "ファイルを読み取れません" }
-        val magic = ByteArray(16)
-        file.inputStream().use { it.read(magic) }
-        check(magic.contentEquals(SQLITE_MAGIC)) { "有効なデータベースファイルではありません" }
-        vaultHistoryStorage.addPath(filePath)
-      }
+  suspend fun openVault(filePath: String): Result<Unit> = withContext(Dispatchers.IO) {
+    runCatchingSafely {
+      check(File(filePath).canRead()) { "ファイルを開けません" }
+      vaultHistoryStorage.addPath(filePath)
     }
+  }
 
-  suspend fun loadVaults(): Result<List<String>> =
-    withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        vaultHistoryStorage.loadPaths().filter { File(it).exists() }
-      }
+  suspend fun loadVaultHistories(): Result<List<String>> = withContext(Dispatchers.IO) {
+    runCatchingSafely {
+      vaultHistoryStorage.loadPaths().filter { File(it).exists() }
     }
+  }
 }
