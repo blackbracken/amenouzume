@@ -1,5 +1,6 @@
 package black.bracken.amenouzume.kernel.repository
 
+import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.util.runCatchingSafely
@@ -27,9 +28,13 @@ class VaultRepository(
     }
   }
 
-  suspend fun loadVaultHistories(): Result<List<String>> = withContext(Dispatchers.IO) {
+  suspend fun loadVaultHistories(): Result<List<VaultHistory>> = withContext(Dispatchers.IO) {
     runCatchingSafely {
-      vaultHistoryStorage.loadPaths().filter { File(it).exists() }
+      vaultHistoryStorage.loadPaths()
+        .filter { File(it).exists() }
+        .map { File(it).toVaultHistory() }
     }
   }
 }
+
+private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath, sizeBytes = length())

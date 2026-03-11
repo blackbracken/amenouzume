@@ -4,12 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.launchTracked
 import black.bracken.amenouzume.util.moleculeState
 import kotlinx.coroutines.flow.StateFlow
-import java.io.File
 
 class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
@@ -20,8 +20,8 @@ class OpenDatabaseViewModel(
 
   init {
     loadingScope.launchTracked {
-      vaultRepository.loadVaults()
-        .onSuccess { paths -> databases = paths.map { it.toEntry() } }
+      vaultRepository.loadVaultHistories()
+        .onSuccess { histories -> databases = histories.map { it.toEntry() } }
         .onFailure { errorMessage = it.message }
     }
   }
@@ -53,18 +53,9 @@ class OpenDatabaseViewModel(
   }
 
   private suspend fun reloadVaults() {
-    vaultRepository.loadVaults()
+    vaultRepository.loadVaultHistories()
       .onSuccess { paths -> databases = paths.map { it.toEntry() } }
   }
 }
 
-private fun String.toEntry(): OpenDatabaseEntry {
-  val file = File(this)
-  val sizeBytes = file.length()
-  val sizeText = when {
-    sizeBytes >= 1024 * 1024 -> "${"%.1f".format(sizeBytes / (1024.0 * 1024.0))} MB"
-    sizeBytes >= 1024 -> "${"%.1f".format(sizeBytes / 1024.0)} KB"
-    else -> "$sizeBytes B"
-  }
-  return OpenDatabaseEntry(name = file.name, path = this, size = sizeText)
-}
+private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path, size = sizeBytes.toSizeText())
