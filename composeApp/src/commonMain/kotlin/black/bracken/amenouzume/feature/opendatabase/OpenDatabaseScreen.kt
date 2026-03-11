@@ -186,7 +186,7 @@ private fun ImportLocalDatabaseCard(
             style =
               Stroke(
                 width = 2.dp.toPx(),
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 8f)),
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(12.dp.toPx(), 8.dp.toPx())),
               ),
             cornerRadius = CornerRadius(24.dp.toPx()),
           )
