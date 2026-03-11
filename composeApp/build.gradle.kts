@@ -13,6 +13,10 @@ plugins {
 }
 
 kotlin {
+  compilerOptions {
+    freeCompilerArgs.add("-Xcontext-parameters")
+  }
+
   androidTarget {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_11)
