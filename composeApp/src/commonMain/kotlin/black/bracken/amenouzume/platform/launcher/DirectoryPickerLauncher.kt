@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.platform.file
+package black.bracken.amenouzume.platform.launcher
 
 import androidx.compose.runtime.Composable
 

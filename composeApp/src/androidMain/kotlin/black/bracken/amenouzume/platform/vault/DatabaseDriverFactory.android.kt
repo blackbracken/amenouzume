@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.platform.db
+package black.bracken.amenouzume.platform.vault
 
 import android.content.Context
 import app.cash.sqldelight.db.SqlDriver

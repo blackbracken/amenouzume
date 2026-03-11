@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.platform.db
+package black.bracken.amenouzume.platform.vault
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import black.bracken.amenouzume.db.AppDatabase

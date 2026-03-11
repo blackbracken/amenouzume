@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.platform.file
+package black.bracken.amenouzume.platform.launcher
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -6,9 +6,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
-actual fun rememberDirectoryPickerLauncher(onResult: (String?) -> Unit): () -> Unit {
+actual fun rememberFilePickerLauncher(onResult: (String?) -> Unit): () -> Unit {
   val scope = rememberCoroutineScope()
   return {
     scope.launch(Dispatchers.IO) {
@@ -16,7 +17,8 @@ actual fun rememberDirectoryPickerLauncher(onResult: (String?) -> Unit): () -> U
       java.awt.EventQueue.invokeAndWait {
         val chooser =
           JFileChooser().apply {
-            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+            fileSelectionMode = JFileChooser.FILES_ONLY
+            fileFilter = FileNameExtensionFilter("SQLite Database (*.db)", "db")
           }
         val result = chooser.showOpenDialog(null)
         path = if (result == JFileChooser.APPROVE_OPTION) chooser.selectedFile?.absolutePath else null

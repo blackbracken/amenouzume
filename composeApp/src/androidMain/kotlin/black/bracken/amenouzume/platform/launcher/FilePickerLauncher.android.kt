@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.platform.file
+package black.bracken.amenouzume.platform.launcher
 
 import android.net.Uri
 import android.os.Environment
@@ -8,16 +8,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 
 @Composable
-actual fun rememberDirectoryPickerLauncher(onResult: (String?) -> Unit): () -> Unit {
+actual fun rememberFilePickerLauncher(onResult: (String?) -> Unit): () -> Unit {
   val launcher =
-    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-      onResult(uri?.toFilePath())
+    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+      onResult(uri?.toDocumentFilePath())
     }
-  return { launcher.launch(null) }
+  return { launcher.launch(arrayOf("*/*")) }
 }
 
-private fun Uri.toFilePath(): String? {
-  val docId = DocumentsContract.getTreeDocumentId(this) ?: return null
+private fun Uri.toDocumentFilePath(): String? {
+  val docId = DocumentsContract.getDocumentId(this) ?: return null
 
   val parts = docId.split(":", limit = 2)
   val volumeId = parts.firstOrNull() ?: return null

@@ -59,19 +59,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import black.bracken.amenouzume.platform.file.rememberDirectoryPickerLauncher
+import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
+import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = koinViewModel()) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
-  val launcher = rememberDirectoryPickerLauncher { path ->
+  val directoryLauncher = rememberDirectoryPickerLauncher { path ->
     path?.let { viewModel.createVault(it) }
+  }
+  val fileLauncher = rememberFilePickerLauncher { path ->
+    path?.let { viewModel.openVault(it) }
   }
   OpenDatabaseScreen(
     state = state.value,
-    onCreateDatabase = launcher,
+    onCreateDatabase = directoryLauncher,
+    onBrowseFiles = fileLauncher,
   )
 }
 
@@ -80,6 +85,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = koinViewModel()) 
 private fun OpenDatabaseScreen(
   state: OpenDatabaseUiState,
   onCreateDatabase: () -> Unit,
+  onBrowseFiles: () -> Unit,
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
   val isLoading = state is OpenDatabaseUiState.Loaded && state.isLoading
@@ -136,7 +142,7 @@ private fun OpenDatabaseScreen(
         DatabaseListContent(
           databases = state.databases,
           isLoading = state.isLoading,
-          onBrowseFiles = {},
+          onBrowseFiles = onBrowseFiles,
           modifier = Modifier.padding(innerPadding),
         )
     }
