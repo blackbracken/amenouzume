@@ -16,14 +16,13 @@ class OpenDatabaseViewModel(
   private var isLoading by mutableStateOf(false)
   private var errorMessage by mutableStateOf<String?>(null)
 
-  val state: StateFlow<OpenDatabaseUiState> =
-    moleculeState {
-      OpenDatabaseUiState.Loaded(
-        databases = emptyList(),
-        isLoading = isLoading,
-        errorMessage = errorMessage,
-      )
-    }
+  val state: StateFlow<OpenDatabaseUiState> = moleculeState {
+    OpenDatabaseUiState.Loaded(
+      databases = emptyList(),
+      isLoading = isLoading,
+      errorMessage = errorMessage,
+    )
+  }
 
   fun createLibrary(path: String) {
     viewModelScope.launch {

@@ -8,4 +8,4 @@ import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.flow.StateFlow
 
 fun <T> ViewModel.moleculeState(body: @Composable () -> T): StateFlow<T> =
-  viewModelScope.launchMolecule(RecompositionMode.Immediate, body)
+  viewModelScope.launchMolecule(RecompositionMode.Immediate, body = body)
