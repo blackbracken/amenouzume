@@ -13,7 +13,10 @@ actual class VaultStorage(
   actual suspend fun createDatabaseFile(absolutePath: String) =
     withContext(Dispatchers.IO) {
       context.deleteDatabase("amenouzume_cache.db")
-      AndroidSqliteDriver(AppDatabase.Schema, context, "amenouzume_cache.db").close()
+      AndroidSqliteDriver(AppDatabase.Schema, context, "amenouzume_cache.db").use {
+        // force DB file creation on disk
+        AppDatabase(it).collectionQueries.selectAll().executeAsList()
+      }
       context.getDatabasePath("amenouzume_cache.db").copyTo(File(absolutePath))
       Unit
     }
