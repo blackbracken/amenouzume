@@ -5,9 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.launchMolecule
 import black.bracken.amenouzume.platform.db.LibraryCreator
+import black.bracken.amenouzume.util.moleculeState
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -18,7 +17,7 @@ class OpenDatabaseViewModel(
   private var errorMessage by mutableStateOf<String?>(null)
 
   val state: StateFlow<OpenDatabaseUiState> =
-    viewModelScope.launchMolecule(RecompositionMode.Immediate) {
+    moleculeState {
       OpenDatabaseUiState.Loaded(
         databases = emptyList(),
         isLoading = isLoading,
