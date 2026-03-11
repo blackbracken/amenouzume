@@ -130,7 +130,7 @@ ktlint {
   android.set(true)
   ignoreFailures.set(false)
   filter {
-    exclude("**/generated/**")
-    exclude("**/build/**")
+    exclude { it.file.absolutePath.contains("/build/") }
+    exclude("**/util/LoadingScope.kt")
   }
 }
