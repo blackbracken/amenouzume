@@ -16,7 +16,7 @@ class OpenDatabaseViewModel(
   private val loadingScope = LoadingScope()
   private var errorMessage by mutableStateOf<String?>(null)
 
-  val state: StateFlow<OpenDatabaseUiState> = moleculeState {
+  val uiState: StateFlow<OpenDatabaseUiState> = moleculeState {
     OpenDatabaseUiState.Loaded(
       databases = emptyList(),
       isLoading = loadingScope.isLoading,
@@ -27,7 +27,8 @@ class OpenDatabaseViewModel(
   fun createVault(path: String) {
     loadingScope.launchTracked {
       errorMessage = null
-      vaultRepository.createVault(path).onFailure { errorMessage = it.message }
+      vaultRepository.createVault(path)
+        .onFailure { errorMessage = it.message }
     }
   }
 }
