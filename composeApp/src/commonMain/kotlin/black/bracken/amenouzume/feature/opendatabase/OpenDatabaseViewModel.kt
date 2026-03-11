@@ -4,14 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import black.bracken.amenouzume.platform.db.LibraryCreator
+import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.launchTracked
 import black.bracken.amenouzume.util.moleculeState
 import kotlinx.coroutines.flow.StateFlow
 
 class OpenDatabaseViewModel(
-  private val libraryCreator: LibraryCreator,
+  private val vaultRepository: VaultRepository,
 ) : ViewModel() {
   private val loadingScope = LoadingScope()
   private var errorMessage by mutableStateOf<String?>(null)
@@ -24,10 +24,10 @@ class OpenDatabaseViewModel(
     )
   }
 
-  fun createLibrary(path: String) {
+  fun createVault(path: String) {
     loadingScope.launchTracked {
       errorMessage = null
-      libraryCreator.create(path).onFailure { errorMessage = it.message }
+      vaultRepository.createVault(path).onFailure { errorMessage = it.message }
     }
   }
 }

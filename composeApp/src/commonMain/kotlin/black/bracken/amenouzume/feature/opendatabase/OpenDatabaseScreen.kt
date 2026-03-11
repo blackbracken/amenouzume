@@ -68,7 +68,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = koinViewModel()) 
   val state = viewModel.state.collectAsStateWithLifecycle()
   val launcher =
     rememberDirectoryPickerLauncher { path ->
-      path?.let { viewModel.createLibrary(it) }
+      path?.let { viewModel.createVault(it) }
     }
   OpenDatabaseScreen(
     state = state.value,
