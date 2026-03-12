@@ -20,5 +20,5 @@ class Navigator {
 
   fun navigate(route: AppRoute) = _backStack.update { it + route }
 
-  fun back() = _backStack.update { if (it.size > 1) it.dropLast(1) else it }
+  fun back() = _backStack.update { it.dropLast(1) }
 }

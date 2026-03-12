@@ -66,7 +66,8 @@ class OpenDatabaseViewModel(
         .onSuccess {
           reloadVaults()
           navigator.navigate(CollectionListRoute(vaultPath = filePath))
-        }.handleFailureWithMessage { errorMessage = it }
+        }
+        .handleFailureWithMessage { errorMessage = it }
     }
   }
 
