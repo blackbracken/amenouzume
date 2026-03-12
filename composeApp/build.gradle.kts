@@ -52,6 +52,7 @@ kotlin {
       implementation(libs.kotlinx.coroutines.core)
       implementation(libs.kotlinx.datetime)
       implementation(libs.kotlinx.serialization.core)
+      implementation(libs.material3.adaptive)
       implementation(libs.molecule.runtime)
       implementation(libs.navigation3.runtime)
       implementation(libs.sqldelight.coroutines)

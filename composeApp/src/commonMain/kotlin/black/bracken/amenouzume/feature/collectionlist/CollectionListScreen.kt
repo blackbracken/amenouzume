@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,6 +20,8 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.window.core.layout.WindowSizeClass
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,9 +104,16 @@ private fun CollectionListScreen(
           CircularProgressIndicator()
         }
 
-      is CollectionListUiState.Loaded ->
+      is CollectionListUiState.Loaded -> {
+        val minWidthDp = currentWindowAdaptiveInfo().windowSizeClass.minWidthDp
+        val columns = when {
+          minWidthDp < WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND -> 3
+          minWidthDp < WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND -> 5
+          else -> 7
+        }
+
         LazyVerticalGrid(
-          columns = GridCells.Fixed(3),
+          columns = GridCells.Fixed(columns),
           modifier = Modifier.fillMaxSize().padding(innerPadding),
           contentPadding = PaddingValues(bottom = 64.dp),
         ) {
@@ -117,6 +125,7 @@ private fun CollectionListScreen(
             )
           }
         }
+      }
     }
   }
 }
