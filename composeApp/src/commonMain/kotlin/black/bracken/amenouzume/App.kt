@@ -13,7 +13,11 @@ fun App() {
   KoinContext {
     AmenouzumeTheme {
       val backStack = remember { mutableStateListOf<Any>(OpenDatabaseRoute) }
-      AppNavHost(backStack = backStack)
+      AppNavHost(
+        backStack = backStack,
+        onNavigate = { route -> backStack.add(route) },
+        onBack = { if (backStack.size > 1) backStack.removeLast() },
+      )
     }
   }
 }

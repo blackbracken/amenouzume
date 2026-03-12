@@ -4,3 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object OpenDatabaseRoute
+
+@Serializable
+data class CollectionListRoute(val vaultPath: String)

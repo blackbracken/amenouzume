@@ -11,6 +11,8 @@ import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.handleFailureWithMessage
 import black.bracken.amenouzume.util.launchTracked
 import black.bracken.amenouzume.util.moleculeState
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.StringResource
 
@@ -20,6 +22,9 @@ class OpenDatabaseViewModel(
   private val loadingScope = LoadingScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var databases by mutableStateOf<List<OpenDatabaseEntry>>(emptyList())
+
+  private val _openedVaultPath = MutableSharedFlow<String>(extraBufferCapacity = 1)
+  val openedVaultPath: SharedFlow<String> = _openedVaultPath
 
   init {
     loadingScope.launchTracked {
@@ -50,7 +55,10 @@ class OpenDatabaseViewModel(
     loadingScope.launchTracked {
       errorMessage = null
       vaultRepository.openVault(filePath)
-        .onSuccess { reloadVaults() }
+        .onSuccess {
+          reloadVaults()
+          _openedVaultPath.emit(filePath)
+        }
         .handleFailureWithMessage { errorMessage = it }
     }
   }
