@@ -61,11 +61,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = koinViewModel()) {
+fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel()) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val directoryLauncher = rememberDirectoryPickerLauncher { path ->
     path?.let { viewModel.createVault(it) }

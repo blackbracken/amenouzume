@@ -9,12 +9,14 @@ import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.util.runCatchingSafely
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
 
+@Inject
 class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,

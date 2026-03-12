@@ -13,9 +13,16 @@ import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.handleFailureWithMessage
 import black.bracken.amenouzume.util.launchTracked
 import black.bracken.amenouzume.util.moleculeState
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.StringResource
 
+@Inject
+@ViewModelKey(OpenDatabaseViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
   private val navigator: Navigator,

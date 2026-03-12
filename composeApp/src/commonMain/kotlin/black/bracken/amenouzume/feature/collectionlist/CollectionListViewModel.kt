@@ -2,8 +2,15 @@ package black.bracken.amenouzume.feature.collectionlist
 
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.util.moleculeState
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.StateFlow
 
+@Inject
+@ViewModelKey(CollectionListViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class CollectionListViewModel : ViewModel() {
   val uiState: StateFlow<CollectionListUiState> = moleculeState {
     CollectionListUiState.Loaded(collections = mockCollections)

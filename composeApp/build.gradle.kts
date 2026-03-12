@@ -9,6 +9,7 @@ plugins {
   alias(libs.plugins.composeHotReload)
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.ktlint)
+  alias(libs.plugins.metro)
   alias(libs.plugins.sqldelight)
 }
 
@@ -32,7 +33,6 @@ kotlin {
     androidMain.dependencies {
       implementation(compose.preview)
       implementation(libs.androidx.activity.compose)
-      implementation(libs.koin.android)
       implementation(libs.sqldelight.driver.android)
     }
     commonMain.dependencies {
@@ -46,9 +46,9 @@ kotlin {
       implementation(libs.androidx.lifecycle.viewmodelCompose)
       implementation(libs.androidx.lifecycle.runtimeCompose)
       implementation(libs.coil.compose)
-      implementation(libs.koin.core)
-      implementation(libs.koin.compose)
-      implementation(libs.koin.compose.viewmodel)
+      implementation(libs.metro.runtime)
+      implementation(libs.metro.viewmodel)
+      implementation(libs.metro.viewmodel.compose)
       implementation(libs.kotlinx.coroutines.core)
       implementation(libs.kotlinx.datetime)
       implementation(libs.kotlinx.serialization.core)

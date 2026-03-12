@@ -9,8 +9,9 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
+    val graph = (application as AmenouzumeApplication).graph
     setContent {
-      App()
+      App(graph.metroViewModelFactory, graph.navigator)
     }
   }
 }
