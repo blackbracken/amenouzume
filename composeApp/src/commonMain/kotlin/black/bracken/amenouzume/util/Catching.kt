@@ -9,6 +9,7 @@ import black.bracken.amenouzume.kernel.error.CommonFailure
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+@Suppress("unused")
 fun runWithCatching(
   onFailure: (AppFailure) -> Unit,
   block: () -> Unit,
