@@ -17,8 +17,7 @@ interface AppGraph : ViewModelGraph {
 
   @Provides
   @SingleIn(AppScope::class)
-  fun appDatabase(driverFactory: DatabaseDriverFactory): AppDatabase =
-    AppDatabase(driver = driverFactory.createDriver())
+  fun appDatabase(driverFactory: DatabaseDriverFactory): AppDatabase = AppDatabase(driver = driverFactory.createDriver())
 
   @DependencyGraph.Factory
   fun interface Factory {

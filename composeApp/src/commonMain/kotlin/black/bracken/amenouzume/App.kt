@@ -12,7 +12,10 @@ import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 @Composable
-fun App(metroViewModelFactory: MetroViewModelFactory, navigator: Navigator) {
+fun App(
+  metroViewModelFactory: MetroViewModelFactory,
+  navigator: Navigator,
+) {
   CompositionLocalProvider(
     LocalMetroViewModelFactory provides metroViewModelFactory,
     LocalNavigator provides navigator,

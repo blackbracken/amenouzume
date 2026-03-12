@@ -9,4 +9,6 @@ sealed interface AppRoute
 data object OpenDatabaseRoute : AppRoute
 
 @Serializable
-data class CollectionListRoute(val vaultPath: String) : AppRoute
+data class CollectionListRoute(
+  val vaultPath: String,
+) : AppRoute

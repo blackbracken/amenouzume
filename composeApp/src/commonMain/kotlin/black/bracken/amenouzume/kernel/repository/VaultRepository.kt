@@ -21,33 +21,37 @@ class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
 ) {
-  suspend fun createVault(path: String): Result<Unit> = withContext(Dispatchers.IO) {
-    runCatchingSafely {
-      val targetFile = File(path, "amenouzume.db")
-      if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
-      vaultStorage.createDatabaseFile(targetFile.absolutePath)
-      vaultHistoryStorage.addPath(targetFile.absolutePath)
+  suspend fun createVault(path: String): Result<Unit> =
+    withContext(Dispatchers.IO) {
+      runCatchingSafely {
+        val targetFile = File(path, "amenouzume.db")
+        if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
+        vaultStorage.createDatabaseFile(targetFile.absolutePath)
+        vaultHistoryStorage.addPath(targetFile.absolutePath)
+      }
     }
-  }
 
-  suspend fun openVault(filePath: String): Result<Unit> = withContext(Dispatchers.IO) {
-    runCatchingSafely {
-      val file = File(filePath)
-      if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
-      val magic = ByteArray(16)
-      file.inputStream().use { it.read(magic) }
-      if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
-      vaultHistoryStorage.addPath(filePath)
+  suspend fun openVault(filePath: String): Result<Unit> =
+    withContext(Dispatchers.IO) {
+      runCatchingSafely {
+        val file = File(filePath)
+        if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
+        val magic = ByteArray(16)
+        file.inputStream().use { it.read(magic) }
+        if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
+        vaultHistoryStorage.addPath(filePath)
+      }
     }
-  }
 
-  suspend fun loadVaultHistories(): Result<List<VaultHistory>> = withContext(Dispatchers.IO) {
-    runCatchingSafely {
-      vaultHistoryStorage.loadPaths()
-        .filter { File(it).exists() }
-        .map { File(it).toVaultHistory() }
+  suspend fun loadVaultHistories(): Result<List<VaultHistory>> =
+    withContext(Dispatchers.IO) {
+      runCatchingSafely {
+        vaultHistoryStorage
+          .loadPaths()
+          .filter { File(it).exists() }
+          .map { File(it).toVaultHistory() }
+      }
     }
-  }
 }
 
 private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath, sizeBytes = length())

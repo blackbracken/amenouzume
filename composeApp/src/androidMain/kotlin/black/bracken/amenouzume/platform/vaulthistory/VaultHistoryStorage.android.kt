@@ -5,7 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-actual class VaultHistoryStorage(private val context: Context) {
+actual class VaultHistoryStorage(
+  private val context: Context,
+) {
   private val file get() = File(context.filesDir, "vaults.txt")
 
   actual suspend fun loadPaths(): List<String> =

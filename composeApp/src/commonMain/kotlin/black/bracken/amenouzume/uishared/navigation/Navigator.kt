@@ -19,5 +19,6 @@ class Navigator {
   val backStack: StateFlow<List<AppRoute>> = _backStack
 
   fun navigate(route: AppRoute) = _backStack.update { it + route }
+
   fun back() = _backStack.update { if (it.size > 1) it.dropLast(1) else it }
 }

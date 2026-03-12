@@ -33,7 +33,8 @@ class OpenDatabaseViewModel(
 
   init {
     loadingScope.launchTracked {
-      vaultRepository.loadVaultHistories()
+      vaultRepository
+        .loadVaultHistories()
         .onSuccess { histories -> databases = histories.map { it.toEntry() } }
         .handleFailureWithMessage { errorMessage = it }
     }
@@ -50,7 +51,8 @@ class OpenDatabaseViewModel(
   fun createVault(path: String) {
     loadingScope.launchTracked {
       errorMessage = null
-      vaultRepository.createVault(path)
+      vaultRepository
+        .createVault(path)
         .onSuccess { reloadVaults() }
         .handleFailureWithMessage { errorMessage = it }
     }
@@ -59,21 +61,21 @@ class OpenDatabaseViewModel(
   fun openVault(filePath: String) {
     loadingScope.launchTracked {
       errorMessage = null
-      vaultRepository.openVault(filePath)
+      vaultRepository
+        .openVault(filePath)
         .onSuccess {
           reloadVaults()
           navigator.navigate(CollectionListRoute(vaultPath = filePath))
-        }
-        .handleFailureWithMessage { errorMessage = it }
+        }.handleFailureWithMessage { errorMessage = it }
     }
   }
 
   private suspend fun reloadVaults() {
-    vaultRepository.loadVaultHistories()
+    vaultRepository
+      .loadVaultHistories()
       .onSuccess { paths -> databases = paths.map { it.toEntry() } }
       .handleFailureWithMessage { errorMessage = it }
   }
-
 }
 
 private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path, size = sizeBytes.toSizeText())
