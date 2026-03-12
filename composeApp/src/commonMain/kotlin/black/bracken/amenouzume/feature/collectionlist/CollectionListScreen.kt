@@ -123,7 +123,7 @@ private fun CollectionListScreen(
 
 @Composable
 private fun CollectionListBottomBar() {
-  NavigationBar(modifier = Modifier.height(80.dp)) {
+  NavigationBar {
     NavigationBarItem(
       selected = true,
       onClick = {},
