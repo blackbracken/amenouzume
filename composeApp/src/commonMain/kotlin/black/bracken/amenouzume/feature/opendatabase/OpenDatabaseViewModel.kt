@@ -10,8 +10,7 @@ import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.LoadingScope
-import black.bracken.amenouzume.util.handleFailureWithMessage
-import black.bracken.amenouzume.util.launchTracked
+import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -32,11 +31,10 @@ class OpenDatabaseViewModel(
   private var databases by mutableStateOf<List<OpenDatabaseEntry>>(emptyList())
 
   init {
-    loadingScope.launchTracked {
-      vaultRepository
-        .loadVaultHistories()
-        .onSuccess { histories -> databases = histories.map { it.toEntry() } }
-        .handleFailureWithMessage { errorMessage = it }
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      loadingScope.track {
+        databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
+      }
     }
   }
 
@@ -48,34 +46,21 @@ class OpenDatabaseViewModel(
     )
   }
 
-  fun createVault(path: String) {
-    loadingScope.launchTracked {
-      errorMessage = null
-      vaultRepository
-        .createVault(path)
-        .onSuccess { reloadVaults() }
-        .handleFailureWithMessage { errorMessage = it }
+  fun createVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+    errorMessage = null
+    loadingScope.track {
+      vaultRepository.createVault(path)
+      databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
   }
 
-  fun openVault(filePath: String) {
-    loadingScope.launchTracked {
-      errorMessage = null
-      vaultRepository
-        .openVault(filePath)
-        .onSuccess {
-          reloadVaults()
-          navigator.navigate(CollectionListRoute(vaultPath = filePath))
-        }
-        .handleFailureWithMessage { errorMessage = it }
+  fun openVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+    errorMessage = null
+    loadingScope.track {
+      vaultRepository.openVault(filePath)
+      databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
-  }
-
-  private suspend fun reloadVaults() {
-    vaultRepository
-      .loadVaultHistories()
-      .onSuccess { paths -> databases = paths.map { it.toEntry() } }
-      .handleFailureWithMessage { errorMessage = it }
+    navigator.navigate(CollectionListRoute(vaultPath = filePath))
   }
 }
 

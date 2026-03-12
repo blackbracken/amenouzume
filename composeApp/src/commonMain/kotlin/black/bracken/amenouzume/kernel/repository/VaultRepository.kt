@@ -8,7 +8,6 @@ import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
-import black.bracken.amenouzume.util.runCatchingSafely
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,36 +20,32 @@ class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
 ) {
-  suspend fun createVault(path: String): Result<Unit> =
+  suspend fun createVault(path: String) {
     withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        val targetFile = File(path, "amenouzume.db")
-        if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
-        vaultStorage.createDatabaseFile(targetFile.absolutePath)
-        vaultHistoryStorage.addPath(targetFile.absolutePath)
-      }
+      val targetFile = File(path, "amenouzume.db")
+      if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
+      vaultStorage.createDatabaseFile(targetFile.absolutePath)
+      vaultHistoryStorage.addPath(targetFile.absolutePath)
     }
+  }
 
-  suspend fun openVault(filePath: String): Result<Unit> =
+  suspend fun openVault(filePath: String) {
     withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        val file = File(filePath)
-        if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
-        val magic = ByteArray(16)
-        file.inputStream().use { it.read(magic) }
-        if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
-        vaultHistoryStorage.addPath(filePath)
-      }
+      val file = File(filePath)
+      if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
+      val magic = ByteArray(16)
+      file.inputStream().use { it.read(magic) }
+      if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
+      vaultHistoryStorage.addPath(filePath)
     }
+  }
 
-  suspend fun loadVaultHistories(): Result<List<VaultHistory>> =
+  suspend fun loadVaultHistories(): List<VaultHistory> =
     withContext(Dispatchers.IO) {
-      runCatchingSafely {
-        vaultHistoryStorage
-          .loadPaths()
-          .filter { File(it).exists() }
-          .map { File(it).toVaultHistory() }
-      }
+      vaultHistoryStorage
+        .loadPaths()
+        .filter { File(it).exists() }
+        .map { File(it).toVaultHistory() }
     }
 }
 
