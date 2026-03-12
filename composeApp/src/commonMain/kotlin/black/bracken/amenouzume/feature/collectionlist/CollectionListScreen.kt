@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -125,33 +123,12 @@ private fun CollectionListScreen(
 
 @Composable
 private fun CollectionListBottomBar() {
-  NavigationBar {
-    NavigationBarItem(
-      selected = false,
-      onClick = {},
-      icon = {
-        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-      },
-      label = { Text(stringResource(Res.string.collection_list_tab_add)) },
-      colors = NavigationBarItemDefaults.colors(
-        indicatorColor = Color.Transparent,
-      ),
-    )
+  NavigationBar(modifier = Modifier.height(80.dp)) {
     NavigationBarItem(
       selected = true,
       onClick = {},
       icon = {
-        Box {
-          Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = null)
-          HorizontalDivider(
-            modifier = Modifier
-              .fillMaxWidth()
-              .height(3.dp)
-              .align(Alignment.TopCenter),
-            thickness = 3.dp,
-            color = MaterialTheme.colorScheme.primary,
-          )
-        }
+        Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = null)
       },
       label = {
         Text(
@@ -163,6 +140,17 @@ private fun CollectionListBottomBar() {
         indicatorColor = Color.Transparent,
         selectedIconColor = MaterialTheme.colorScheme.primary,
         selectedTextColor = MaterialTheme.colorScheme.primary,
+      ),
+    )
+    NavigationBarItem(
+      selected = false,
+      onClick = {},
+      icon = {
+        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+      },
+      label = { Text(stringResource(Res.string.collection_list_tab_add)) },
+      colors = NavigationBarItemDefaults.colors(
+        indicatorColor = Color.Transparent,
       ),
     )
   }

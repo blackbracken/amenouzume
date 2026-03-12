@@ -9,8 +9,8 @@
     <string name="error_vault_not_sqlite">SQLiteデータベースファイルではありません</string>
     <string name="error_unexpected">予期しないエラーが発生しました</string>
     <string name="collection_list_filter">フィルター</string>
-    <string name="collection_list_tab_add">コレクション追加</string>
-    <string name="collection_list_tab_collections">コレクション</string>
+    <string name="collection_list_tab_add">Add</string>
+    <string name="collection_list_tab_collections">Collection</string>
     <string name="category_illustration">イラスト</string>
     <string name="category_photo">写真</string>
     <string name="category_fanzine">同人誌</string>
