@@ -8,6 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
+private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
+
 class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
@@ -23,7 +25,11 @@ class VaultRepository(
 
   suspend fun openVault(filePath: String): Result<Unit> = withContext(Dispatchers.IO) {
     runCatchingSafely {
-      check(File(filePath).canRead()) { "ファイルを開けません" }
+      val file = File(filePath)
+      check(file.canRead()) { "ファイルを開けません" }
+      val magic = ByteArray(16)
+      file.inputStream().use { it.read(magic) }
+      check(magic.contentEquals(SQLITE_MAGIC)) { "SQLiteデータベースファイルではありません" }
       vaultHistoryStorage.addPath(filePath)
     }
   }
