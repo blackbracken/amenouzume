@@ -8,4 +8,4 @@ abstract class AppFailure : Exception() {
   abstract val messageRes: StringResource
 }
 
-class CommonFailure(override val messageRes: StringResource = Res.string.error_unexpected) : AppFailure()
+class CommonFailure(override val messageRes: StringResource) : AppFailure()
