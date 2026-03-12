@@ -1,5 +1,4 @@
-package black.bracken.amenouzume.feature.opendatabase
-
+package black.bracken.amenouzume.feature.opendatabase.util
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
