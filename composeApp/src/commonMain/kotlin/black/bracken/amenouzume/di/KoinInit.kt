@@ -3,6 +3,7 @@ package black.bracken.amenouzume.di
 import black.bracken.amenouzume.feature.featureModule
 import black.bracken.amenouzume.platform.PlatformEnvironment
 import black.bracken.amenouzume.platform.platformModule
+import black.bracken.amenouzume.uishared.uiSharedModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -14,6 +15,7 @@ fun initKoin(
     config?.invoke(this)
     modules(
       platformModule(platformEnv),
+      uiSharedModule,
       featureModule,
     )
   }

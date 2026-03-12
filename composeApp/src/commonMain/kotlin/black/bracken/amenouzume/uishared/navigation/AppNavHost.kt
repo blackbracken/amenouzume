@@ -5,14 +5,10 @@ import black.bracken.amenouzume.feature.collectionlist.CollectionListCoordinator
 import black.bracken.amenouzume.feature.opendatabase.OpenDatabaseCoordinator
 
 @Composable
-fun AppNavHost(backStack: List<Any>, onNavigate: (Any) -> Unit, onBack: () -> Unit) {
+fun AppNavHost(backStack: List<AppRoute>) {
   when (backStack.lastOrNull()) {
-    is OpenDatabaseRoute -> OpenDatabaseCoordinator(
-      onOpenVault = { path -> onNavigate(CollectionListRoute(vaultPath = path)) },
-    )
-
-    is CollectionListRoute -> CollectionListCoordinator(
-      onBack = onBack,
-    )
+    is OpenDatabaseRoute -> OpenDatabaseCoordinator()
+    is CollectionListRoute -> CollectionListCoordinator()
+    null -> Unit
   }
 }

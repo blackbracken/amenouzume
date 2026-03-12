@@ -1,0 +1,13 @@
+package black.bracken.amenouzume.uishared.navigation
+
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+
+class Navigator {
+  private val _backStack = MutableStateFlow<List<AppRoute>>(listOf(OpenDatabaseRoute))
+  val backStack: StateFlow<List<AppRoute>> = _backStack
+
+  fun navigate(route: AppRoute) = _backStack.update { it + route }
+  fun back() = _backStack.update { if (it.size > 1) it.dropLast(1) else it }
+}

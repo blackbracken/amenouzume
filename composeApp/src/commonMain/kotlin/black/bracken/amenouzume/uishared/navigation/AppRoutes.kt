@@ -3,7 +3,10 @@ package black.bracken.amenouzume.uishared.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object OpenDatabaseRoute
+sealed interface AppRoute
 
 @Serializable
-data class CollectionListRoute(val vaultPath: String)
+data object OpenDatabaseRoute : AppRoute
+
+@Serializable
+data class CollectionListRoute(val vaultPath: String) : AppRoute

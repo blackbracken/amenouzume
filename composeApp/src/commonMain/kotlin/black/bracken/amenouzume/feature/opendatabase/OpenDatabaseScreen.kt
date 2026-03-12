@@ -48,7 +48,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -66,19 +65,13 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OpenDatabaseCoordinator(
-  onOpenVault: (String) -> Unit,
-  viewModel: OpenDatabaseViewModel = koinViewModel(),
-) {
+fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = koinViewModel()) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val directoryLauncher = rememberDirectoryPickerLauncher { path ->
     path?.let { viewModel.createVault(it) }
   }
   val fileLauncher = rememberFilePickerLauncher { path ->
     path?.let { viewModel.openVault(it) }
-  }
-  LaunchedEffect(Unit) {
-    viewModel.openedVaultPath.collectLatest { path -> onOpenVault(path) }
   }
   OpenDatabaseScreen(
     state = state.value,

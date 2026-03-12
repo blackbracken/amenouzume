@@ -7,24 +7,22 @@ import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.opendatabase.util.toSizeText
 import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
+import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
+import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.handleFailureWithMessage
 import black.bracken.amenouzume.util.launchTracked
 import black.bracken.amenouzume.util.moleculeState
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.StringResource
 
 class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
+  private val navigator: Navigator,
 ) : ViewModel() {
   private val loadingScope = LoadingScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var databases by mutableStateOf<List<OpenDatabaseEntry>>(emptyList())
-
-  private val _openedVaultPath = MutableSharedFlow<String>(extraBufferCapacity = 1)
-  val openedVaultPath: SharedFlow<String> = _openedVaultPath
 
   init {
     loadingScope.launchTracked {
@@ -57,7 +55,7 @@ class OpenDatabaseViewModel(
       vaultRepository.openVault(filePath)
         .onSuccess {
           reloadVaults()
-          _openedVaultPath.emit(filePath)
+          navigator.navigate(CollectionListRoute(vaultPath = filePath))
         }
         .handleFailureWithMessage { errorMessage = it }
     }

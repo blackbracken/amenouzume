@@ -41,18 +41,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import black.bracken.amenouzume.uishared.navigation.Navigator
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CollectionListCoordinator(
-  onBack: () -> Unit,
   viewModel: CollectionListViewModel = koinViewModel(),
+  navigator: Navigator = koinInject(),
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   CollectionListScreen(
     state = state.value,
-    onBack = onBack,
+    onBack = navigator::back,
   )
 }
 
