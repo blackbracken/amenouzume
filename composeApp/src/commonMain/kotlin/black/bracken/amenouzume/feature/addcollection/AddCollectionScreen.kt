@@ -22,9 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
 import black.bracken.amenouzume.uishared.bottombar.VaultTab
-import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
-import black.bracken.amenouzume.uishared.navigation.LocalNavigator
-import black.bracken.amenouzume.uishared.navigation.Navigator
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -32,15 +29,14 @@ import org.jetbrains.compose.resources.stringResource
 fun AddCollectionCoordinator(
   vaultPath: String,
   viewModel: AddCollectionViewModel = metroViewModel(),
-  navigator: Navigator = LocalNavigator.current,
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   AddCollectionScreen(
     state = state.value,
-    onUpdateTitle = viewModel::updateTitle,
-    onUpdateCategory = viewModel::updateCategory,
-    onSubmit = viewModel::addCollection,
-    onNavigateToCollections = { navigator.navigate(CollectionListRoute(vaultPath)) },
+    onUpdateTitle = viewModel::onUpdateTitle,
+    onUpdateCategory = viewModel::onUpdateCategory,
+    onSubmit = viewModel::onAddCollection,
+    onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
   )
 }
 

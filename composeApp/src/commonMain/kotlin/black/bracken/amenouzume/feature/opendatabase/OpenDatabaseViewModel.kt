@@ -46,7 +46,7 @@ class OpenDatabaseViewModel(
     )
   }
 
-  fun createVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     loadingScope.track {
       vaultRepository.createVault(path)
@@ -54,7 +54,7 @@ class OpenDatabaseViewModel(
     }
   }
 
-  fun openVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     loadingScope.track {
       vaultRepository.openVault(filePath)

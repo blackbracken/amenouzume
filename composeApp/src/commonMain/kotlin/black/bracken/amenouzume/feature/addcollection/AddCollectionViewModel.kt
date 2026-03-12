@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
+import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.LoadingScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
+import black.bracken.amenouzume.util.runWithCatching
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -37,15 +39,19 @@ class AddCollectionViewModel(
     )
   }
 
-  fun updateTitle(value: String) {
+  fun onUpdateTitle(value: String) {
     title = value
   }
 
-  fun updateCategory(value: String) {
+  fun onUpdateCategory(value: String) {
     category = value
   }
 
-  fun addCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {
+    navigator.navigateSingleTop(CollectionListRoute(vaultPath))
+  }
+
+  fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     loadingScope.track {
       collectionRepository.addCollection(

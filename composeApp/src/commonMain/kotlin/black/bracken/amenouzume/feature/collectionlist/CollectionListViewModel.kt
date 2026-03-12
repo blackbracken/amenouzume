@@ -1,6 +1,8 @@
 package black.bracken.amenouzume.feature.collectionlist
 
 import androidx.lifecycle.ViewModel
+import black.bracken.amenouzume.uishared.navigation.AddCollectionRoute
+import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.moleculeState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -11,10 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 @Inject
 @ViewModelKey(CollectionListViewModel::class)
 @ContributesIntoMap(AppScope::class)
-class CollectionListViewModel : ViewModel() {
+class CollectionListViewModel(
+  private val navigator: Navigator,
+) : ViewModel() {
   val uiState: StateFlow<CollectionListUiState> = moleculeState {
     CollectionListUiState.Loaded(collections = mockCollections)
   }
+
+  fun onBack() = navigator.back()
+
+  fun onNavigateToAdd(vaultPath: String) = navigator.navigateSingleTop(AddCollectionRoute(vaultPath))
 }
 
 // TODO: remove

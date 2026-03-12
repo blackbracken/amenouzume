@@ -68,10 +68,10 @@ import org.jetbrains.compose.resources.stringResource
 fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel()) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val directoryLauncher = rememberDirectoryPickerLauncher { path ->
-    path?.let { viewModel.createVault(it) }
+    path?.let { viewModel.onCreateVault(it) }
   }
   val fileLauncher = rememberFilePickerLauncher { path ->
-    path?.let { viewModel.openVault(it) }
+    path?.let { viewModel.onOpenVault(it) }
   }
   OpenDatabaseScreen(
     state = state.value,
