@@ -1,7 +1,6 @@
 package black.bracken.amenouzume.di
 
 import black.bracken.amenouzume.db.AppDatabase
-import black.bracken.amenouzume.platform.PlatformEnvironment
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
@@ -18,23 +17,15 @@ interface AppGraph : ViewModelGraph {
 
   @Provides
   @SingleIn(AppScope::class)
-  fun databaseDriverFactory(env: PlatformEnvironment): DatabaseDriverFactory = env.driverFactory
-
-  @Provides
-  @SingleIn(AppScope::class)
   fun appDatabase(driverFactory: DatabaseDriverFactory): AppDatabase =
     AppDatabase(driver = driverFactory.createDriver())
 
-  @Provides
-  @SingleIn(AppScope::class)
-  fun vaultStorage(env: PlatformEnvironment): VaultStorage = env.vaultStorage
-
-  @Provides
-  @SingleIn(AppScope::class)
-  fun vaultHistoryStorage(env: PlatformEnvironment): VaultHistoryStorage = env.vaultHistoryStorage
-
   @DependencyGraph.Factory
   fun interface Factory {
-    fun create(@Provides env: PlatformEnvironment): AppGraph
+    fun create(
+      @Provides driverFactory: DatabaseDriverFactory,
+      @Provides vaultStorage: VaultStorage,
+      @Provides vaultHistoryStorage: VaultHistoryStorage,
+    ): AppGraph
   }
 }

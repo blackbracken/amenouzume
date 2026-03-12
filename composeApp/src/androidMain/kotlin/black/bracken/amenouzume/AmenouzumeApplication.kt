@@ -2,7 +2,6 @@ package black.bracken.amenouzume
 
 import android.app.Application
 import black.bracken.amenouzume.di.AppGraph
-import black.bracken.amenouzume.platform.PlatformEnvironment
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
@@ -16,11 +15,9 @@ class AmenouzumeApplication : Application() {
     super.onCreate()
 
     graph = createGraphFactory<AppGraph.Factory>().create(
-      PlatformEnvironment(
-        DatabaseDriverFactory(applicationContext),
-        VaultStorage(applicationContext),
-        VaultHistoryStorage(applicationContext),
-      ),
+      driverFactory = DatabaseDriverFactory(applicationContext),
+      vaultStorage = VaultStorage(applicationContext),
+      vaultHistoryStorage = VaultHistoryStorage(applicationContext),
     )
   }
 }
