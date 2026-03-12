@@ -15,4 +15,7 @@
     <string name="category_photo">写真</string>
     <string name="category_fanzine">同人誌</string>
     <string name="category_movie">動画</string>
+    <string name="add_collection_field_title">タイトル</string>
+    <string name="add_collection_field_category">カテゴリ</string>
+    <string name="add_collection_submit">追加</string>
 </resources>

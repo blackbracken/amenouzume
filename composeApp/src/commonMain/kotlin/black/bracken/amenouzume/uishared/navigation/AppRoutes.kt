@@ -12,3 +12,8 @@ data object OpenDatabaseRoute : AppRoute
 data class CollectionListRoute(
   val vaultPath: String,
 ) : AppRoute
+
+@Serializable
+data class AddCollectionRoute(
+  val vaultPath: String,
+) : AppRoute

@@ -2,8 +2,6 @@ package black.bracken.amenouzume.feature.collectionlist
 
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.collection_list_filter
-import amenouzume.composeapp.generated.resources.collection_list_tab_add
-import amenouzume.composeapp.generated.resources.collection_list_tab_collections
 import amenouzume.composeapp.generated.resources.collection_list_title
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,8 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -26,9 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,9 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
+import black.bracken.amenouzume.uishared.bottombar.VaultTab
+import black.bracken.amenouzume.uishared.navigation.AddCollectionRoute
 import black.bracken.amenouzume.uishared.navigation.LocalNavigator
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -47,6 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CollectionListCoordinator(
+  vaultPath: String,
   viewModel: CollectionListViewModel = metroViewModel(),
   navigator: Navigator = LocalNavigator.current,
 ) {
@@ -54,6 +50,7 @@ fun CollectionListCoordinator(
   CollectionListScreen(
     state = state.value,
     onBack = navigator::back,
+    onNavigateToAdd = { navigator.navigate(AddCollectionRoute(vaultPath)) },
   )
 }
 
@@ -62,6 +59,7 @@ fun CollectionListCoordinator(
 private fun CollectionListScreen(
   state: CollectionListUiState,
   onBack: () -> Unit,
+  onNavigateToAdd: () -> Unit,
 ) {
   Scaffold(
     topBar = {
@@ -92,7 +90,12 @@ private fun CollectionListScreen(
       )
     },
     bottomBar = {
-      CollectionListBottomBar()
+      VaultBottomBar(
+        selectedTab = VaultTab.COLLECTIONS,
+        onSelectTab = { tab ->
+          if (tab == VaultTab.ADD) onNavigateToAdd()
+        },
+      )
     },
   ) { innerPadding ->
     when (state) {
@@ -127,40 +130,5 @@ private fun CollectionListScreen(
         }
       }
     }
-  }
-}
-
-@Composable
-private fun CollectionListBottomBar() {
-  NavigationBar {
-    NavigationBarItem(
-      selected = true,
-      onClick = {},
-      icon = {
-        Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = null)
-      },
-      label = {
-        Text(
-          text = stringResource(Res.string.collection_list_tab_collections),
-          fontWeight = FontWeight.Bold,
-        )
-      },
-      colors = NavigationBarItemDefaults.colors(
-        indicatorColor = Color.Transparent,
-        selectedIconColor = MaterialTheme.colorScheme.primary,
-        selectedTextColor = MaterialTheme.colorScheme.primary,
-      ),
-    )
-    NavigationBarItem(
-      selected = false,
-      onClick = {},
-      icon = {
-        Icon(imageVector = Icons.Default.Add, contentDescription = null)
-      },
-      label = { Text(stringResource(Res.string.collection_list_tab_add)) },
-      colors = NavigationBarItemDefaults.colors(
-        indicatorColor = Color.Transparent,
-      ),
-    )
   }
 }

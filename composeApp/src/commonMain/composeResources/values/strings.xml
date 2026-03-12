@@ -17,4 +17,8 @@
     <string name="category_photo">Photo</string>
     <string name="category_fanzine">Fanzine</string>
     <string name="category_movie">Movie</string>
+    <string name="add_collection_title" translatable="false">Add Collection</string>
+    <string name="add_collection_field_title">Title</string>
+    <string name="add_collection_field_category">Category</string>
+    <string name="add_collection_submit">Add</string>
 </resources>
