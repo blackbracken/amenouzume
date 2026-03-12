@@ -91,8 +91,9 @@ private fun OpenDatabaseScreen(
   val isLoading = state is OpenDatabaseUiState.Loaded && state.isLoading
   val errorMessage = (state as? OpenDatabaseUiState.Loaded)?.errorMessage
 
-  LaunchedEffect(errorMessage) {
-    errorMessage?.let { snackbarHostState.showSnackbar(it) }
+  val errorText = errorMessage?.let { stringResource(it) }
+  LaunchedEffect(errorText) {
+    errorText?.let { snackbarHostState.showSnackbar(it) }
   }
 
   Scaffold(

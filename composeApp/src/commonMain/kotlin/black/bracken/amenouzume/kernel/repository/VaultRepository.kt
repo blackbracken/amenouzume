@@ -1,5 +1,10 @@
 package black.bracken.amenouzume.kernel.repository
 
+import amenouzume.composeapp.generated.resources.Res
+import amenouzume.composeapp.generated.resources.error_vault_already_exists
+import amenouzume.composeapp.generated.resources.error_vault_not_readable
+import amenouzume.composeapp.generated.resources.error_vault_not_sqlite
+import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
@@ -17,7 +22,7 @@ class VaultRepository(
   suspend fun createVault(path: String): Result<Unit> = withContext(Dispatchers.IO) {
     runCatchingSafely {
       val targetFile = File(path, "amenouzume.db")
-      check(!targetFile.exists()) { "選択したディレクトリには既にヴォールトが存在します" }
+      if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
       vaultStorage.createDatabaseFile(targetFile.absolutePath)
       vaultHistoryStorage.addPath(targetFile.absolutePath)
     }
@@ -26,10 +31,10 @@ class VaultRepository(
   suspend fun openVault(filePath: String): Result<Unit> = withContext(Dispatchers.IO) {
     runCatchingSafely {
       val file = File(filePath)
-      check(file.canRead()) { "ファイルを開けません" }
+      if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
       val magic = ByteArray(16)
       file.inputStream().use { it.read(magic) }
-      check(magic.contentEquals(SQLITE_MAGIC)) { "SQLiteデータベースファイルではありません" }
+      if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
       vaultHistoryStorage.addPath(filePath)
     }
   }
