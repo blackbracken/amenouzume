@@ -24,6 +24,7 @@ class VaultRepository(
     withContext(Dispatchers.IO) {
       val targetFile = File(path, "amenouzume.db")
       if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
+
       vaultStorage.createDatabaseFile(targetFile.absolutePath)
       vaultHistoryStorage.addPath(targetFile.absolutePath)
     }
@@ -33,9 +34,11 @@ class VaultRepository(
     withContext(Dispatchers.IO) {
       val file = File(filePath)
       if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)
+
       val magic = ByteArray(16)
       file.inputStream().use { it.read(magic) }
       if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
+
       vaultHistoryStorage.addPath(filePath)
     }
   }
