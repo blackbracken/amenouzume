@@ -4,6 +4,7 @@ import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.open_database_browse_files
 import amenouzume.composeapp.generated.resources.open_database_import_description
 import amenouzume.composeapp.generated.resources.open_database_import_title
+import amenouzume.composeapp.generated.resources.open_database_retry
 import amenouzume.composeapp.generated.resources.open_database_section_local_databases
 import amenouzume.composeapp.generated.resources.open_database_title
 import androidx.compose.foundation.BorderStroke
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +62,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
+import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -75,6 +78,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel())
   val action = OpenDatabaseUiAction(
     onCreateDatabase = directoryLauncher,
     onBrowseFiles = fileLauncher,
+    onRetry = viewModel::onRetry,
   )
   OpenDatabaseScreen(
     state = state.value,
@@ -119,6 +123,7 @@ internal fun OpenDatabaseScreen(
       databases = state.databases,
       isBusy = state.isBusy,
       onBrowseFiles = action.onBrowseFiles,
+      onRetry = action.onRetry,
       modifier = Modifier.padding(innerPadding),
     )
   }
@@ -126,9 +131,10 @@ internal fun OpenDatabaseScreen(
 
 @Composable
 private fun DatabaseListContent(
-  databases: List<OpenDatabaseEntry>?,
+  databases: Loadable<List<OpenDatabaseEntry>>,
   isBusy: Boolean,
   onBrowseFiles: () -> Unit,
+  onRetry: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   LazyColumn(
@@ -145,11 +151,22 @@ private fun DatabaseListContent(
         modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
       )
     }
-    if (databases == null) {
-      items(3) { DatabaseEntryItemSkeleton() }
-    } else {
-      items(databases) { entry ->
-        DatabaseEntryItem(entry = entry)
+    when (databases) {
+      is Loadable.Loading -> {
+        items(3) { DatabaseEntryItemSkeleton() }
+      }
+      is Loadable.Loaded -> {
+        items(databases.value) { entry ->
+          DatabaseEntryItem(entry = entry)
+        }
+      }
+      is Loadable.Failed -> {
+        item {
+          DatabaseLoadFailedItem(
+            message = stringResource(databases.messageRes),
+            onRetry = onRetry,
+          )
+        }
       }
     }
   }
@@ -326,11 +343,45 @@ private fun DatabaseEntryItemSkeleton() {
   }
 }
 
+@Composable
+private fun DatabaseLoadFailedItem(
+  message: String,
+  onRetry: () -> Unit,
+) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(12.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+  ) {
+    Column(
+      modifier = Modifier.padding(16.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      Text(
+        text = message,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onErrorContainer,
+        modifier = Modifier.fillMaxWidth(),
+      )
+      Button(
+        onClick = onRetry,
+        colors = ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.error,
+          contentColor = MaterialTheme.colorScheme.onError,
+        ),
+      ) {
+        Text(stringResource(Res.string.open_database_retry))
+      }
+    }
+  }
+}
+
 @Preview
 @Composable
 private fun OpenDatabaseScreenPreview() = AmenouzumeTheme {
   OpenDatabaseScreen(
-    state = OpenDatabaseUiState(databases = emptyList()),
+    state = OpenDatabaseUiState(databases = Loadable.Loaded(emptyList()), isBusy = false, errorMessage = null),
     action = OpenDatabaseUiAction.Noop,
   )
 }
@@ -339,7 +390,7 @@ private fun OpenDatabaseScreenPreview() = AmenouzumeTheme {
 @Composable
 private fun OpenDatabaseScreenLoadingPreview() = AmenouzumeTheme {
   OpenDatabaseScreen(
-    state = OpenDatabaseUiState(databases = null),
+    state = OpenDatabaseUiState(databases = Loadable.Loading, isBusy = false, errorMessage = null),
     action = OpenDatabaseUiAction.Noop,
   )
 }

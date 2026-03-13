@@ -1,12 +1,13 @@
 package black.bracken.amenouzume.feature.opendatabase
 
 import black.bracken.amenouzume.uishared.ScreenUiState
+import black.bracken.amenouzume.util.Loadable
 import org.jetbrains.compose.resources.StringResource
 
 data class OpenDatabaseUiState(
-    val databases: List<OpenDatabaseEntry>? = null,
-    override val isBusy: Boolean = false,
-    val errorMessage: StringResource? = null,
+    val databases: Loadable<List<OpenDatabaseEntry>>,
+    override val isBusy: Boolean,
+    val errorMessage: StringResource?,
 ) : ScreenUiState
 
 data class OpenDatabaseEntry(

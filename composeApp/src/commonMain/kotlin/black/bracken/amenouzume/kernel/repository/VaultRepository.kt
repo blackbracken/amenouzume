@@ -9,8 +9,12 @@ import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
+import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -25,6 +29,21 @@ class VaultRepository(
   private val vaultHistoryStorage: VaultHistoryStorage,
   private val driverFactory: DatabaseDriverFactory,
 ) {
+  private val _vaultHistories = MutableStateFlow<Loadable<List<VaultHistory>>>(Loadable.Loading)
+
+  fun getVaultHistories(): Flow<Loadable<List<VaultHistory>>> = _vaultHistories.asStateFlow()
+
+  suspend fun refreshVaultHistories() {
+    _vaultHistories.value = Loadable.from {
+      withContext(Dispatchers.IO) {
+        vaultHistoryStorage
+          .loadPaths()
+          .filter { File(it).exists() }
+          .map { File(it).toVaultHistory() }
+      }
+    }
+  }
+
   suspend fun createVault(path: String) {
     withContext(Dispatchers.IO) {
       val targetFile = File(path, "amenouzume.db")
@@ -33,6 +52,7 @@ class VaultRepository(
       vaultStorage.createDatabaseFile(targetFile.absolutePath)
       vaultHistoryStorage.addPath(targetFile.absolutePath)
     }
+    refreshVaultHistories()
   }
 
   suspend fun openVault(filePath: String) {
@@ -47,15 +67,8 @@ class VaultRepository(
       vaultHistoryStorage.addPath(filePath)
       driverFactory.selectedPath = filePath
     }
+    refreshVaultHistories()
   }
-
-  suspend fun loadVaultHistories(): List<VaultHistory> =
-    withContext(Dispatchers.IO) {
-      vaultHistoryStorage
-        .loadPaths()
-        .filter { File(it).exists() }
-        .map { File(it).toVaultHistory() }
-    }
 }
 
 private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath, sizeBytes = length())

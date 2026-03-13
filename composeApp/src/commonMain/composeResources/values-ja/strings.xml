@@ -4,6 +4,7 @@
     <string name="open_database_import_description">デバイスからデータベースファイルを選択して編集を始めましょう。</string>
     <string name="open_database_browse_files">ファイルを選択</string>
     <string name="open_database_section_local_databases">ローカルデータベース</string>
+    <string name="open_database_retry">再試行</string>
     <string name="error_vault_already_exists">選択したディレクトリには既にヴォールトが存在します</string>
     <string name="error_vault_not_readable">ファイルを開けません</string>
     <string name="error_vault_not_sqlite">SQLiteデータベースファイルではありません</string>

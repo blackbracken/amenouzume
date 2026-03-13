@@ -1,5 +1,7 @@
 package black.bracken.amenouzume.feature.opendatabase
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +11,8 @@ import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
+import black.bracken.amenouzume.util.Loadable
+import black.bracken.amenouzume.util.map
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
@@ -26,40 +30,43 @@ class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
-  private val databasesTrackedScope = TrackedScope()
-  private val actionTrackedScope = TrackedScope()
+  private val busyScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
-  private var databases by mutableStateOf<List<OpenDatabaseEntry>?>(null)
 
   init {
     launchWithCatching({ errorMessage = it.messageRes }) {
-      databasesTrackedScope.track {
-        databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
-      }
+      vaultRepository.refreshVaultHistories()
     }
   }
 
-  val uiState: StateFlow<OpenDatabaseUiState> = moleculeState {
-    OpenDatabaseUiState(
-      databases = databases,
-      isBusy = databasesTrackedScope.isRunning || actionTrackedScope.isRunning,
+  val uiState: StateFlow<OpenDatabaseUiState> = moleculeState { presenter() }
+
+  @Composable
+  private fun presenter(): OpenDatabaseUiState {
+    val databases by vaultRepository.getVaultHistories().collectAsState(Loadable.Loading)
+
+    return OpenDatabaseUiState(
+      databases = databases.map { histories -> histories.map { it.toEntry() } },
+      isBusy = busyScope.isRunning,
       errorMessage = errorMessage,
     )
   }
 
+  fun onRetry() = launchWithCatching({ errorMessage = it.messageRes }) {
+    vaultRepository.refreshVaultHistories()
+  }
+
   fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    actionTrackedScope.track {
+    busyScope.track {
       vaultRepository.createVault(path)
-      databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
   }
 
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    actionTrackedScope.track {
+    busyScope.track {
       vaultRepository.openVault(filePath)
-      databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
     navigator.navigate(CollectionListRoute(vaultPath = filePath))
   }
