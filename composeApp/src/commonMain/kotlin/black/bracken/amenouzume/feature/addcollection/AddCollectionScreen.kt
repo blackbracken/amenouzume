@@ -24,6 +24,7 @@ import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
 import black.bracken.amenouzume.uishared.bottombar.VaultTab
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AddCollectionCoordinator(
@@ -31,23 +32,23 @@ fun AddCollectionCoordinator(
   viewModel: AddCollectionViewModel = metroViewModel(),
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
-  AddCollectionScreen(
-    state = state.value,
+  val action = AddCollectionUiAction(
     onUpdateTitle = viewModel::onUpdateTitle,
     onUpdateCategory = viewModel::onUpdateCategory,
     onSubmit = viewModel::onAddCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
   )
+  AddCollectionScreen(
+    state = state.value,
+    action = action,
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddCollectionScreen(
+internal fun AddCollectionScreen(
   state: AddCollectionUiState,
-  onUpdateTitle: (String) -> Unit,
-  onUpdateCategory: (String) -> Unit,
-  onSubmit: () -> Unit,
-  onNavigateToCollections: () -> Unit,
+  action: AddCollectionUiAction,
 ) {
   Scaffold(
     topBar = {
@@ -57,7 +58,7 @@ private fun AddCollectionScreen(
       VaultBottomBar(
         selectedTab = VaultTab.ADD,
         onSelectTab = { tab ->
-          if (tab == VaultTab.COLLECTIONS) onNavigateToCollections()
+          if (tab == VaultTab.COLLECTIONS) action.onNavigateToCollections()
         },
       )
     },
@@ -71,7 +72,7 @@ private fun AddCollectionScreen(
     ) {
       OutlinedTextField(
         value = state.title,
-        onValueChange = onUpdateTitle,
+        onValueChange = action.onUpdateTitle,
         label = { Text(stringResource(Res.string.add_collection_field_title)) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
@@ -79,14 +80,14 @@ private fun AddCollectionScreen(
 
       OutlinedTextField(
         value = state.category,
-        onValueChange = onUpdateCategory,
+        onValueChange = action.onUpdateCategory,
         label = { Text(stringResource(Res.string.add_collection_field_category)) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
       )
 
       Button(
-        onClick = onSubmit,
+        onClick = action.onSubmit,
         enabled = !state.isLoading && state.title.isNotBlank(),
         modifier = Modifier.fillMaxWidth(),
       ) {
@@ -99,3 +100,13 @@ private fun AddCollectionScreen(
     }
   }
 }
+
+@Preview
+@Composable
+private fun AddCollectionScreenPreview() {
+  AddCollectionScreen(
+    state = AddCollectionUiState(),
+    action = AddCollectionUiAction.Noop,
+  )
+}
+
