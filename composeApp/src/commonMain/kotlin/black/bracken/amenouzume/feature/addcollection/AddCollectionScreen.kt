@@ -88,7 +88,7 @@ internal fun AddCollectionScreen(
 
       Button(
         onClick = action.onSubmit,
-        enabled = !state.isLoading && state.title.isNotBlank(),
+        enabled = !state.isBusy && state.title.isNotBlank(),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Text(stringResource(Res.string.add_collection_submit))
@@ -105,7 +105,7 @@ internal fun AddCollectionScreen(
 @Composable
 private fun AddCollectionScreenPreview() {
   AddCollectionScreen(
-    state = AddCollectionUiState(),
+    state = AddCollectionUiState(title = "", category = "", isBusy = false, errorMessage = null),
     action = AddCollectionUiAction.Noop,
   )
 }

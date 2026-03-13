@@ -1,5 +1,6 @@
 package black.bracken.amenouzume.feature.addcollection
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,19 +26,20 @@ class AddCollectionViewModel(
   private val collectionRepository: CollectionRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
-  private val trackedScope = TrackedScope()
+  private val busyScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var title by mutableStateOf("")
   private var category by mutableStateOf("")
 
-  val uiState: StateFlow<AddCollectionUiState> = moleculeState {
-    AddCollectionUiState(
-      title = title,
-      category = category,
-      isLoading = trackedScope.isRunning,
-      errorMessage = errorMessage,
-    )
-  }
+  val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
+
+  @Composable
+  private fun presenter(): AddCollectionUiState = AddCollectionUiState(
+    title = title,
+    category = category,
+    isBusy = busyScope.isRunning,
+    errorMessage = errorMessage,
+  )
 
   fun onUpdateTitle(value: String) {
     title = value
@@ -53,7 +55,7 @@ class AddCollectionViewModel(
 
   fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    trackedScope.track {
+    busyScope.track {
       collectionRepository.addCollection(
         id = System.currentTimeMillis().toString(),
         title = title,
