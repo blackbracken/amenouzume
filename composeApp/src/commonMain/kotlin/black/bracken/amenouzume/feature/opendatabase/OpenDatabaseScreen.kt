@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Storage
@@ -33,12 +32,10 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -92,10 +89,8 @@ internal fun OpenDatabaseScreen(
   action: OpenDatabaseUiAction,
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
-  val isLoading = state is OpenDatabaseUiState.Loaded && state.isLoading
-  val errorMessage = (state as? OpenDatabaseUiState.Loaded)?.errorMessage
+  val errorText = state.errorMessage?.let { stringResource(it) }
 
-  val errorText = errorMessage?.let { stringResource(it) }
   LaunchedEffect(errorText) {
     errorText?.let { snackbarHostState.showSnackbar(it) }
   }
@@ -104,60 +99,35 @@ internal fun OpenDatabaseScreen(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       TopAppBar(
-        navigationIcon = {
-          IconButton(onClick = {}, enabled = !isLoading) {
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-          }
-        },
         title = { Text(stringResource(Res.string.open_database_title)) },
         actions = {
-          IconButton(onClick = {}, enabled = !isLoading) {
+          IconButton(onClick = {}, enabled = !state.isBusy) {
             Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
           }
         },
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = { if (!isLoading) action.onCreateDatabase() }) {
-        if (isLoading) {
-          CircularProgressIndicator(
-            modifier = Modifier.size(24.dp),
-            strokeWidth = 2.dp,
-            color = LocalContentColor.current,
-          )
-        } else {
-          Icon(imageVector = Icons.Default.Add, contentDescription = null)
-        }
+      FloatingActionButton(
+        onClick = { if (!state.isBusy) action.onCreateDatabase() },
+      ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = null)
       }
     },
   ) { innerPadding ->
-    when (state) {
-      OpenDatabaseUiState.Idle ->
-        Box(
-          modifier =
-            Modifier
-              .fillMaxSize()
-              .padding(innerPadding),
-          contentAlignment = Alignment.Center,
-        ) {
-          CircularProgressIndicator()
-        }
-
-      is OpenDatabaseUiState.Loaded ->
-        DatabaseListContent(
-          databases = state.databases,
-          isLoading = state.isLoading,
-          onBrowseFiles = action.onBrowseFiles,
-          modifier = Modifier.padding(innerPadding),
-        )
-    }
+    DatabaseListContent(
+      databases = state.databases,
+      isBusy = state.isBusy,
+      onBrowseFiles = action.onBrowseFiles,
+      modifier = Modifier.padding(innerPadding),
+    )
   }
 }
 
 @Composable
 private fun DatabaseListContent(
-  databases: List<OpenDatabaseEntry>,
-  isLoading: Boolean,
+  databases: List<OpenDatabaseEntry>?,
+  isBusy: Boolean,
   onBrowseFiles: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -166,7 +136,7 @@ private fun DatabaseListContent(
     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    item { ImportLocalDatabaseCard(enabled = !isLoading, onBrowseFiles = onBrowseFiles) }
+    item { ImportLocalDatabaseCard(enabled = !isBusy, onBrowseFiles = onBrowseFiles) }
     item {
       Text(
         text = stringResource(Res.string.open_database_section_local_databases),
@@ -175,8 +145,12 @@ private fun DatabaseListContent(
         modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
       )
     }
-    items(databases) { entry ->
-      DatabaseEntryItem(entry = entry)
+    if (databases == null) {
+      items(3) { DatabaseEntryItemSkeleton() }
+    } else {
+      items(databases) { entry ->
+        DatabaseEntryItem(entry = entry)
+      }
     }
   }
 }
@@ -304,11 +278,68 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
   }
 }
 
+@Composable
+private fun DatabaseEntryItemSkeleton() {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(12.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+  ) {
+    Row(
+      modifier = Modifier.padding(16.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+      Box(
+        modifier =
+          Modifier
+            .size(40.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
+      )
+      Column(
+        modifier = Modifier.weight(1f),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+      ) {
+        Box(
+          modifier =
+            Modifier
+              .fillMaxWidth(0.4f)
+              .height(12.dp)
+              .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
+        )
+        Box(
+          modifier =
+            Modifier
+              .fillMaxWidth(0.7f)
+              .height(10.dp)
+              .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
+        )
+      }
+      Box(
+        modifier =
+          Modifier
+            .size(width = 32.dp, height = 10.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
+      )
+    }
+  }
+}
+
 @Preview
 @Composable
 private fun OpenDatabaseScreenPreview() = AmenouzumeTheme {
   OpenDatabaseScreen(
-    state = OpenDatabaseUiState.Loaded(databases = emptyList()),
+    state = OpenDatabaseUiState(databases = emptyList()),
+    action = OpenDatabaseUiAction.Noop,
+  )
+}
+
+@Preview
+@Composable
+private fun OpenDatabaseScreenLoadingPreview() = AmenouzumeTheme {
+  OpenDatabaseScreen(
+    state = OpenDatabaseUiState(databases = null),
     action = OpenDatabaseUiAction.Noop,
   )
 }

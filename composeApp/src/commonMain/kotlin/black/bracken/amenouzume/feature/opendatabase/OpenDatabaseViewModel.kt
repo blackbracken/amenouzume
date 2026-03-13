@@ -26,29 +26,30 @@ class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
-  private val loadingScope = LoadingScope()
+  private val databasesLoadingScope = LoadingScope()
+  private val actionLoadingScope = LoadingScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
-  private var databases by mutableStateOf<List<OpenDatabaseEntry>>(emptyList())
+  private var databases by mutableStateOf<List<OpenDatabaseEntry>?>(null)
 
   init {
     launchWithCatching({ errorMessage = it.messageRes }) {
-      loadingScope.track {
+      databasesLoadingScope.track {
         databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
       }
     }
   }
 
   val uiState: StateFlow<OpenDatabaseUiState> = moleculeState {
-    OpenDatabaseUiState.Loaded(
+    OpenDatabaseUiState(
       databases = databases,
-      isLoading = loadingScope.isLoading,
+      isBusy = databasesLoadingScope.isLoading || actionLoadingScope.isLoading,
       errorMessage = errorMessage,
     )
   }
 
   fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    loadingScope.track {
+    actionLoadingScope.track {
       vaultRepository.createVault(path)
       databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
@@ -56,7 +57,7 @@ class OpenDatabaseViewModel(
 
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    loadingScope.track {
+    actionLoadingScope.track {
       vaultRepository.openVault(filePath)
       databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
