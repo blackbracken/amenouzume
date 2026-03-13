@@ -15,9 +15,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.window.core.layout.WindowSizeClass
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,15 +23,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowSizeClass
 import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
 import black.bracken.amenouzume.uishared.bottombar.VaultTab
+import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -97,46 +96,64 @@ internal fun CollectionListScreen(
       )
     },
   ) { innerPadding ->
-    when (state) {
-      CollectionListUiState.Idle ->
-        Box(
-          modifier = Modifier.fillMaxSize().padding(innerPadding),
-          contentAlignment = Alignment.Center,
-        ) {
-          CircularProgressIndicator()
-        }
+    CollectionGridContent(
+      collections = state.collections,
+      modifier = Modifier.padding(innerPadding),
+    )
+  }
+}
 
-      is CollectionListUiState.Loaded -> {
-        val minWidthDp = currentWindowAdaptiveInfo().windowSizeClass.minWidthDp
-        val columns = when {
-          minWidthDp < WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND -> 3
-          minWidthDp < WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND -> 5
-          else -> 7
-        }
+@Composable
+private fun CollectionGridContent(
+  collections: Loadable<List<CollectionListEntry>>,
+  modifier: Modifier = Modifier,
+) {
+  val minWidthDp = currentWindowAdaptiveInfo().windowSizeClass.minWidthDp
+  val columns = when {
+    minWidthDp < WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND -> 3
+    minWidthDp < WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND -> 5
+    else -> 7
+  }
 
-        LazyVerticalGrid(
-          columns = GridCells.Fixed(columns),
-          modifier = Modifier.fillMaxSize().padding(innerPadding),
-          contentPadding = PaddingValues(bottom = 64.dp),
-        ) {
-          items(state.collections) { entry ->
-            Box(
-              modifier = Modifier
-                .aspectRatio(1f)
-                .background(Color(entry.color.toInt())),
-            )
-          }
+  LazyVerticalGrid(
+    columns = GridCells.Fixed(columns),
+    modifier = modifier.fillMaxSize(),
+    contentPadding = PaddingValues(bottom = 64.dp),
+  ) {
+    when (collections) {
+      is Loadable.Loading -> {
+        items(columns * 3) {
+          CollectionItemSkeleton()
         }
       }
+      is Loadable.Loaded -> {
+        items(collections.value) { entry ->
+          Box(
+            modifier = Modifier
+              .aspectRatio(1f)
+              .background(Color(entry.color.toInt())),
+          )
+        }
+      }
+      is Loadable.Failed -> {}
     }
   }
+}
+
+@Composable
+private fun CollectionItemSkeleton() {
+  Box(
+    modifier = Modifier
+      .aspectRatio(1f)
+      .background(MaterialTheme.colorScheme.surfaceVariant),
+  )
 }
 
 @Preview
 @Composable
 private fun CollectionListScreenPreview() {
   CollectionListScreen(
-    state = CollectionListUiState.Loaded(collections = emptyList()),
+    state = CollectionListUiState(collections = Loadable.Loaded(emptyList()), isBusy = false),
     action = CollectionListUiAction.Noop,
   )
 }

@@ -1,12 +1,12 @@
 package black.bracken.amenouzume.feature.collectionlist
 
-sealed interface CollectionListUiState {
-  data object Idle : CollectionListUiState
+import black.bracken.amenouzume.uishared.ScreenUiState
+import black.bracken.amenouzume.util.Loadable
 
-  data class Loaded(
-    val collections: List<CollectionListEntry>,
-  ) : CollectionListUiState
-}
+data class CollectionListUiState(
+  val collections: Loadable<List<CollectionListEntry>>,
+  override val isBusy: Boolean,
+) : ScreenUiState
 
 enum class CollectionCategory { ILLUSTRATION, PHOTO, FANZINE, MOVIE }
 

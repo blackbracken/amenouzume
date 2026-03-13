@@ -1,8 +1,10 @@
 package black.bracken.amenouzume.feature.collectionlist
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.uishared.navigation.AddCollectionRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
+import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.moleculeState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -16,9 +18,13 @@ import kotlinx.coroutines.flow.StateFlow
 class CollectionListViewModel(
   private val navigator: Navigator,
 ) : ViewModel() {
-  val uiState: StateFlow<CollectionListUiState> = moleculeState {
-    CollectionListUiState.Loaded(collections = mockCollections)
-  }
+  val uiState: StateFlow<CollectionListUiState> = moleculeState { presenter() }
+
+  @Composable
+  private fun presenter(): CollectionListUiState = CollectionListUiState(
+    collections = Loadable.Loaded(mockCollections),
+    isBusy = false,
+  )
 
   fun onBack() = navigator.back()
 
