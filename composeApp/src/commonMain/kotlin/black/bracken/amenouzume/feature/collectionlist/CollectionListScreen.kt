@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
 import black.bracken.amenouzume.uishared.bottombar.VaultTab
@@ -43,25 +44,27 @@ fun CollectionListCoordinator(
   viewModel: CollectionListViewModel = metroViewModel(),
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
-  CollectionListScreen(
-    state = state.value,
+  val action = CollectionListUiAction(
     onBack = viewModel::onBack,
     onNavigateToAdd = { viewModel.onNavigateToAdd(vaultPath) },
+  )
+  CollectionListScreen(
+    state = state.value,
+    action = action,
   )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CollectionListScreen(
+internal fun CollectionListScreen(
   state: CollectionListUiState,
-  onBack: () -> Unit,
-  onNavigateToAdd: () -> Unit,
+  action: CollectionListUiAction,
 ) {
   Scaffold(
     topBar = {
       TopAppBar(
         navigationIcon = {
-          IconButton(onClick = onBack) {
+          IconButton(onClick = action.onBack) {
             Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = null,
@@ -89,7 +92,7 @@ private fun CollectionListScreen(
       VaultBottomBar(
         selectedTab = VaultTab.COLLECTIONS,
         onSelectTab = { tab ->
-          if (tab == VaultTab.ADD) onNavigateToAdd()
+          if (tab == VaultTab.ADD) action.onNavigateToAdd()
         },
       )
     },
@@ -127,4 +130,13 @@ private fun CollectionListScreen(
       }
     }
   }
+}
+
+@Preview
+@Composable
+private fun CollectionListScreenPreview() {
+  CollectionListScreen(
+    state = CollectionListUiState.Loaded(collections = emptyList()),
+    action = CollectionListUiAction.Noop,
+  )
 }
