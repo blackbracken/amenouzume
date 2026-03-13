@@ -58,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
@@ -73,19 +74,21 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel())
   val fileLauncher = rememberFilePickerLauncher { path ->
     path?.let { viewModel.onOpenVault(it) }
   }
-  OpenDatabaseScreen(
-    state = state.value,
+  val action = OpenDatabaseUiAction(
     onCreateDatabase = directoryLauncher,
     onBrowseFiles = fileLauncher,
+  )
+  OpenDatabaseScreen(
+    state = state.value,
+    action = action,
   )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun OpenDatabaseScreen(
+internal fun OpenDatabaseScreen(
   state: OpenDatabaseUiState,
-  onCreateDatabase: () -> Unit,
-  onBrowseFiles: () -> Unit,
+  action: OpenDatabaseUiAction,
 ) {
   val snackbarHostState = remember { SnackbarHostState() }
   val isLoading = state is OpenDatabaseUiState.Loaded && state.isLoading
@@ -114,7 +117,7 @@ private fun OpenDatabaseScreen(
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = { if (!isLoading) onCreateDatabase() }) {
+      FloatingActionButton(onClick = { if (!isLoading) action.onCreateDatabase() }) {
         if (isLoading) {
           CircularProgressIndicator(
             modifier = Modifier.size(24.dp),
@@ -143,7 +146,7 @@ private fun OpenDatabaseScreen(
         DatabaseListContent(
           databases = state.databases,
           isLoading = state.isLoading,
-          onBrowseFiles = onBrowseFiles,
+          onBrowseFiles = action.onBrowseFiles,
           modifier = Modifier.padding(innerPadding),
         )
     }
@@ -298,4 +301,13 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
       )
     }
   }
+}
+
+@Preview
+@Composable
+private fun OpenDatabaseScreenPreview() {
+  OpenDatabaseScreen(
+    state = OpenDatabaseUiState.Loaded(databases = emptyList()),
+    action = OpenDatabaseUiAction.Noop,
+  )
 }
