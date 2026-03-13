@@ -9,7 +9,7 @@ import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
-import black.bracken.amenouzume.util.LoadingScope
+import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import dev.zacsweers.metro.AppScope
@@ -26,14 +26,14 @@ class OpenDatabaseViewModel(
   private val vaultRepository: VaultRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
-  private val databasesLoadingScope = LoadingScope()
-  private val actionLoadingScope = LoadingScope()
+  private val databasesTrackedScope = TrackedScope()
+  private val actionTrackedScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var databases by mutableStateOf<List<OpenDatabaseEntry>?>(null)
 
   init {
     launchWithCatching({ errorMessage = it.messageRes }) {
-      databasesLoadingScope.track {
+      databasesTrackedScope.track {
         databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
       }
     }
@@ -42,14 +42,14 @@ class OpenDatabaseViewModel(
   val uiState: StateFlow<OpenDatabaseUiState> = moleculeState {
     OpenDatabaseUiState(
       databases = databases,
-      isBusy = databasesLoadingScope.isLoading || actionLoadingScope.isLoading,
+      isBusy = databasesTrackedScope.isRunning || actionTrackedScope.isRunning,
       errorMessage = errorMessage,
     )
   }
 
   fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    actionLoadingScope.track {
+    actionTrackedScope.track {
       vaultRepository.createVault(path)
       databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }
@@ -57,7 +57,7 @@ class OpenDatabaseViewModel(
 
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    actionLoadingScope.track {
+    actionTrackedScope.track {
       vaultRepository.openVault(filePath)
       databases = vaultRepository.loadVaultHistories().map { it.toEntry() }
     }

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
-import black.bracken.amenouzume.util.LoadingScope
+import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
@@ -25,7 +25,7 @@ class AddCollectionViewModel(
   private val collectionRepository: CollectionRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
-  private val loadingScope = LoadingScope()
+  private val trackedScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var title by mutableStateOf("")
   private var category by mutableStateOf("")
@@ -34,7 +34,7 @@ class AddCollectionViewModel(
     AddCollectionUiState(
       title = title,
       category = category,
-      isLoading = loadingScope.isLoading,
+      isLoading = trackedScope.isRunning,
       errorMessage = errorMessage,
     )
   }
@@ -53,7 +53,7 @@ class AddCollectionViewModel(
 
   fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
-    loadingScope.track {
+    trackedScope.track {
       collectionRepository.addCollection(
         id = System.currentTimeMillis().toString(),
         title = title,

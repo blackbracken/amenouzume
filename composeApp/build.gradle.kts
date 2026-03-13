@@ -134,6 +134,6 @@ ktlint {
   ignoreFailures.set(false)
   filter {
     exclude { it.file.absolutePath.contains("/build/") }
-    exclude("**/util/LoadingScope.kt")
+    exclude("**/util/TrackedScope.kt")
   }
 }
