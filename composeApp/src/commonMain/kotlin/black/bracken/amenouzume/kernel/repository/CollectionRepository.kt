@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 
 @Inject
 class CollectionRepository(
-  private val database: AppDatabase,
+  database: AppDatabase,
 ) {
   private val queries = database.collectionQueries
 

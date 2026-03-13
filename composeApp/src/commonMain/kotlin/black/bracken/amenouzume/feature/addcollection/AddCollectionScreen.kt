@@ -18,13 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
 import black.bracken.amenouzume.uishared.bottombar.VaultTab
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AddCollectionCoordinator(
@@ -105,8 +105,7 @@ internal fun AddCollectionScreen(
 @Composable
 private fun AddCollectionScreenPreview() {
   AddCollectionScreen(
-    state = AddCollectionUiState(title = "", category = "", isBusy = false, errorMessage = null),
+    state = AddCollectionUiState(isBusy = false, title = "", category = "", errorMessage = null),
     action = AddCollectionUiAction.Noop,
   )
 }
-

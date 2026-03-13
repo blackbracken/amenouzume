@@ -12,9 +12,9 @@ import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
-import black.bracken.amenouzume.util.map
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
+import black.bracken.amenouzume.util.map
 import black.bracken.amenouzume.util.moleculeState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -46,30 +46,33 @@ class OpenDatabaseViewModel(
     val databases by vaultRepository.getVaultHistories().collectAsState(Loadable.Loading)
 
     return OpenDatabaseUiState(
-      databases = databases.map { histories -> histories.map { it.toEntry() } },
       isBusy = busyScope.isRunning,
+      databases = databases.map { histories -> histories.map { it.toEntry() } },
       errorMessage = errorMessage,
     )
   }
 
-  fun onRetry() = launchWithCatching({ errorMessage = it.messageRes }) {
-    vaultRepository.refreshVaultHistories()
-  }
-
-  fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
-    busyScope.track {
-      vaultRepository.createVault(path)
+  fun onRetry() =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      vaultRepository.refreshVaultHistories()
     }
-  }
 
-  fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
-    busyScope.track {
-      vaultRepository.openVault(filePath)
+  fun onCreateVault(path: String) =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      errorMessage = null
+      busyScope.track {
+        vaultRepository.createVault(path)
+      }
     }
-    navigator.navigate(CollectionListRoute(vaultPath = filePath))
-  }
+
+  fun onOpenVault(filePath: String) =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      errorMessage = null
+      busyScope.track {
+        vaultRepository.openVault(filePath)
+      }
+      navigator.navigate(CollectionListRoute(vaultPath = filePath))
+    }
 }
 
 private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path, size = sizeBytes.toSizeText())

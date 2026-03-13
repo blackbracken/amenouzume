@@ -56,8 +56,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
@@ -379,18 +379,20 @@ private fun DatabaseLoadFailedItem(
 
 @Preview
 @Composable
-private fun OpenDatabaseScreenPreview() = AmenouzumeTheme {
-  OpenDatabaseScreen(
-    state = OpenDatabaseUiState(databases = Loadable.Loaded(emptyList()), isBusy = false, errorMessage = null),
-    action = OpenDatabaseUiAction.Noop,
-  )
-}
+private fun OpenDatabaseScreenPreview() =
+  AmenouzumeTheme {
+    OpenDatabaseScreen(
+      state = OpenDatabaseUiState(isBusy = false, databases = Loadable.Loaded(emptyList()), errorMessage = null),
+      action = OpenDatabaseUiAction.Noop,
+    )
+  }
 
 @Preview
 @Composable
-private fun OpenDatabaseScreenLoadingPreview() = AmenouzumeTheme {
-  OpenDatabaseScreen(
-    state = OpenDatabaseUiState(databases = Loadable.Loading, isBusy = false, errorMessage = null),
-    action = OpenDatabaseUiAction.Noop,
-  )
-}
+private fun OpenDatabaseScreenLoadingPreview() =
+  AmenouzumeTheme {
+    OpenDatabaseScreen(
+      state = OpenDatabaseUiState(isBusy = false, databases = Loadable.Loading, errorMessage = null),
+      action = OpenDatabaseUiAction.Noop,
+    )
+  }

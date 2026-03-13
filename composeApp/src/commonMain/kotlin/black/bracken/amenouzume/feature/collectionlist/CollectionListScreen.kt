@@ -153,7 +153,7 @@ private fun CollectionItemSkeleton() {
 @Composable
 private fun CollectionListScreenPreview() {
   CollectionListScreen(
-    state = CollectionListUiState(collections = Loadable.Loaded(emptyList()), isBusy = false),
+    state = CollectionListUiState(isBusy = false, collections = Loadable.Loaded(emptyList())),
     action = CollectionListUiAction.Noop,
   )
 }

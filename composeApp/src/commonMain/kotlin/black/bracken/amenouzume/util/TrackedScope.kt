@@ -3,6 +3,7 @@ package black.bracken.amenouzume.util
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+
 class TrackedScope {
   private var trackedCount by mutableIntStateOf(0)
 

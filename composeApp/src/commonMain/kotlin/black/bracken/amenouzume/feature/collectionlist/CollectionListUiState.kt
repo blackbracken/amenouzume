@@ -4,8 +4,8 @@ import black.bracken.amenouzume.uishared.ScreenUiState
 import black.bracken.amenouzume.util.Loadable
 
 data class CollectionListUiState(
-  val collections: Loadable<List<CollectionListEntry>>,
   override val isBusy: Boolean,
+  val collections: Loadable<List<CollectionListEntry>>,
 ) : ScreenUiState
 
 enum class CollectionCategory { ILLUSTRATION, PHOTO, FANZINE, MOVIE }

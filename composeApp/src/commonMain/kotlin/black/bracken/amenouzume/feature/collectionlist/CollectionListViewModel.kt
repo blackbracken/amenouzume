@@ -21,10 +21,11 @@ class CollectionListViewModel(
   val uiState: StateFlow<CollectionListUiState> = moleculeState { presenter() }
 
   @Composable
-  private fun presenter(): CollectionListUiState = CollectionListUiState(
-    collections = Loadable.Loaded(mockCollections),
-    isBusy = false,
-  )
+  private fun presenter(): CollectionListUiState =
+    CollectionListUiState(
+      isBusy = false,
+      collections = Loadable.Loaded(mockCollections),
+    )
 
   fun onBack() = navigator.back()
 

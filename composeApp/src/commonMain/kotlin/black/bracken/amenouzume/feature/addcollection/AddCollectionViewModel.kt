@@ -34,12 +34,13 @@ class AddCollectionViewModel(
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
   @Composable
-  private fun presenter(): AddCollectionUiState = AddCollectionUiState(
-    title = title,
-    category = category,
-    isBusy = busyScope.isRunning,
-    errorMessage = errorMessage,
-  )
+  private fun presenter(): AddCollectionUiState =
+    AddCollectionUiState(
+      isBusy = busyScope.isRunning,
+      title = title,
+      category = category,
+      errorMessage = errorMessage,
+    )
 
   fun onUpdateTitle(value: String) {
     title = value
@@ -49,20 +50,22 @@ class AddCollectionViewModel(
     category = value
   }
 
-  fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {
-    navigator.navigateSingleTop(CollectionListRoute(vaultPath))
-  }
-
-  fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
-    busyScope.track {
-      collectionRepository.addCollection(
-        id = System.currentTimeMillis().toString(),
-        title = title,
-        category = category,
-        contentType = category,
-      )
+  fun onNavigateToCollections(vaultPath: String) =
+    runWithCatching({ errorMessage = it.messageRes }) {
+      navigator.navigateSingleTop(CollectionListRoute(vaultPath))
     }
-    navigator.back()
-  }
+
+  fun onAddCollection() =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      errorMessage = null
+      busyScope.track {
+        collectionRepository.addCollection(
+          id = System.currentTimeMillis().toString(),
+          title = title,
+          category = category,
+          contentType = category,
+        )
+      }
+      navigator.back()
+    }
 }

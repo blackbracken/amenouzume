@@ -5,13 +5,13 @@ import black.bracken.amenouzume.util.Loadable
 import org.jetbrains.compose.resources.StringResource
 
 data class OpenDatabaseUiState(
-    val databases: Loadable<List<OpenDatabaseEntry>>,
-    override val isBusy: Boolean,
-    val errorMessage: StringResource?,
+  override val isBusy: Boolean,
+  val databases: Loadable<List<OpenDatabaseEntry>>,
+  val errorMessage: StringResource?,
 ) : ScreenUiState
 
 data class OpenDatabaseEntry(
-    val name: String,
-    val path: String,
-    val size: String,
+  val name: String,
+  val path: String,
+  val size: String,
 )

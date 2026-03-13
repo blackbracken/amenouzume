@@ -6,8 +6,14 @@ import org.jetbrains.compose.resources.StringResource
 
 sealed interface Loadable<out T> {
   data object Loading : Loadable<Nothing>
-  data class Loaded<T>(val value: T) : Loadable<T>
-  data class Failed(val messageRes: StringResource) : Loadable<Nothing>
+
+  data class Loaded<T>(
+    val value: T,
+  ) : Loadable<T>
+
+  data class Failed(
+    val messageRes: StringResource,
+  ) : Loadable<Nothing>
 
   companion object {
     suspend fun <T> from(block: suspend () -> T): Loadable<T> =
@@ -21,8 +27,8 @@ sealed interface Loadable<out T> {
   }
 }
 
-inline fun <T, R> Loadable<T>.map(transform: (T) -> R): Loadable<R> = when (this) {
-  is Loadable.Loading -> Loadable.Loading
-  is Loadable.Loaded -> Loadable.Loaded(transform(value))
-  is Loadable.Failed -> this
-}
+inline fun <T, R> Loadable<T>.map(transform: (T) -> R): Loadable<R> =
+  when (this) {
+    is Loadable.Loading, is Loadable.Failed -> this
+    is Loadable.Loaded -> Loadable.Loaded(transform(value))
+  }
