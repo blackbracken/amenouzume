@@ -6,10 +6,12 @@ import black.bracken.amenouzume.db.AppDatabase
 import java.io.File
 
 actual class DatabaseDriverFactory {
+  actual var selectedPath: String? = null
+
   actual fun createDriver(): SqlDriver {
-    val databasePath = File(System.getProperty("user.home"), ".amenouzume/amenouzume.db")
+    val path = selectedPath ?: throw IllegalStateException("Database path is not selected")
+    val databasePath = File(path)
     val databaseExists = databasePath.exists()
-    databasePath.parentFile?.mkdirs()
     return JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}").also {
       if (!databaseExists) AppDatabase.Schema.create(it)
     }

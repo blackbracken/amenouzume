@@ -6,6 +6,7 @@ import amenouzume.composeapp.generated.resources.error_vault_not_readable
 import amenouzume.composeapp.generated.resources.error_vault_not_sqlite
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.VaultHistory
+import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import dev.zacsweers.metro.Inject
@@ -15,10 +16,14 @@ import java.io.File
 
 private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
 
+/**
+ * Accessing vault data without calling [openVault] first will throw [IllegalStateException].
+ */
 @Inject
 class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
+  private val driverFactory: DatabaseDriverFactory,
 ) {
   suspend fun createVault(path: String) {
     withContext(Dispatchers.IO) {
@@ -40,6 +45,7 @@ class VaultRepository(
       if (!magic.contentEquals(SQLITE_MAGIC)) throw CommonFailure(Res.string.error_vault_not_sqlite)
 
       vaultHistoryStorage.addPath(filePath)
+      driverFactory.selectedPath = filePath
     }
   }
 
