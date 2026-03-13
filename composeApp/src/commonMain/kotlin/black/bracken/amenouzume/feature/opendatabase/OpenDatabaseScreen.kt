@@ -62,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
+import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -305,7 +306,7 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
 
 @Preview
 @Composable
-private fun OpenDatabaseScreenPreview() {
+private fun OpenDatabaseScreenPreview() = AmenouzumeTheme {
   OpenDatabaseScreen(
     state = OpenDatabaseUiState.Loaded(databases = emptyList()),
     action = OpenDatabaseUiAction.Noop,
