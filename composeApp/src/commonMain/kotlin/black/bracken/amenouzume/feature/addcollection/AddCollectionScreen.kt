@@ -38,7 +38,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Button
@@ -128,7 +128,7 @@ internal fun AddCollectionScreen(
       TopAppBar(
         navigationIcon = {
           IconButton(onClick = action.onClose) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = null)
+            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
           }
         },
         title = { Text(stringResource(Res.string.add_collection_title)) },
