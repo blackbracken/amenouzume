@@ -34,8 +34,7 @@ fun DashedBorderArea(
           ),
           cornerRadius = CornerRadius(16.dp.toPx()),
         )
-      }
-      .background(primary.copy(alpha = 0.05f), shape)
+      }.background(primary.copy(alpha = 0.05f), shape)
       .padding(32.dp),
     contentAlignment = Alignment.Center,
     content = content,
