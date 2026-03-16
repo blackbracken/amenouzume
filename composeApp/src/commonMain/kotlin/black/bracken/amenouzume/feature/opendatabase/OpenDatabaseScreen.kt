@@ -78,6 +78,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel())
     onCreateDatabase = directoryLauncher,
     onBrowseFiles = fileLauncher,
     onRetry = viewModel::onRetry,
+    onOpenEntry = viewModel::onOpenEntry,
     onDeleteEntry = viewModel::onDeleteEntry,
   )
   OpenDatabaseScreen(
@@ -117,6 +118,7 @@ internal fun OpenDatabaseScreen(
       isBusy = state.isBusy,
       onBrowseFiles = action.onBrowseFiles,
       onRetry = action.onRetry,
+      onOpenEntry = action.onOpenEntry,
       onDeleteEntry = action.onDeleteEntry,
       modifier = Modifier.padding(innerPadding),
     )
@@ -129,6 +131,7 @@ private fun DatabaseListContent(
   isBusy: Boolean,
   onBrowseFiles: () -> Unit,
   onRetry: () -> Unit,
+  onOpenEntry: (OpenDatabaseEntry) -> Unit,
   onDeleteEntry: (OpenDatabaseEntry) -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -152,7 +155,7 @@ private fun DatabaseListContent(
       }
       is Loadable.Loaded -> {
         items(databases.value) { entry ->
-          DatabaseEntryItem(entry = entry, onDelete = { onDeleteEntry(entry) })
+          DatabaseEntryItem(entry = entry, onClick = { onOpenEntry(entry) }, onDelete = { onDeleteEntry(entry) })
         }
       }
       is Loadable.Failed -> {
@@ -239,9 +242,9 @@ private fun ImportLocalDatabaseCard(
 }
 
 @Composable
-private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onDelete: () -> Unit) {
+private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onDelete: () -> Unit) {
   Card(
-    onClick = {},
+    onClick = onClick,
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(12.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

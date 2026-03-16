@@ -52,6 +52,15 @@ class OpenDatabaseViewModel(
     )
   }
 
+  fun onOpenEntry(entry: OpenDatabaseEntry) =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      errorMessage = null
+      busyScope.track {
+        vaultRepository.openVault(entry.path)
+      }
+      navigator.navigate(CollectionListRoute(vaultPath = entry.path))
+    }
+
   fun onDeleteEntry(entry: OpenDatabaseEntry) =
     launchWithCatching({ errorMessage = it.messageRes }) {
       vaultRepository.removeVaultHistory(entry.path)

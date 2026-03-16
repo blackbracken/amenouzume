@@ -4,6 +4,7 @@ data class OpenDatabaseUiAction(
   val onCreateDatabase: () -> Unit,
   val onBrowseFiles: () -> Unit,
   val onRetry: () -> Unit,
+  val onOpenEntry: (OpenDatabaseEntry) -> Unit,
   val onDeleteEntry: (OpenDatabaseEntry) -> Unit,
 ) {
   companion object {
@@ -11,6 +12,7 @@ data class OpenDatabaseUiAction(
       onCreateDatabase = {},
       onBrowseFiles = {},
       onRetry = {},
+      onOpenEntry = {},
       onDeleteEntry = {},
     )
   }
