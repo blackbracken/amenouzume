@@ -39,7 +39,7 @@ class VaultRepository(
         vaultHistoryStorage
           .loadPaths()
           .filter { File(it).exists() }
-          .map { File(it).toVaultHistory() }
+          .map { VaultHistory.from(File(it)) }
       }
     }
   }
@@ -77,5 +77,3 @@ class VaultRepository(
     refreshVaultHistories()
   }
 }
-
-private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath)

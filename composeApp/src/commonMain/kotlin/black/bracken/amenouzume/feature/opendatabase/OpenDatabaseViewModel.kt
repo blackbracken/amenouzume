@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
@@ -46,7 +45,7 @@ class OpenDatabaseViewModel(
 
     return OpenDatabaseUiState(
       isBusy = busyScope.isRunning,
-      databases = databases.map { histories -> histories.map { it.toEntry() } },
+      databases = databases.map { histories -> histories.map { OpenDatabaseEntry.from(it) } },
       errorMessage = errorMessage,
     )
   }
@@ -87,5 +86,3 @@ class OpenDatabaseViewModel(
       navigator.navigate(CollectionListRoute(vaultPath = filePath))
     }
 }
-
-private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path)
