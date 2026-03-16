@@ -48,16 +48,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
@@ -176,24 +173,7 @@ private fun ImportLocalDatabaseCard(
   onBrowseFiles: () -> Unit,
 ) {
   val primary = MaterialTheme.colorScheme.primary
-  Box(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .drawBehind {
-          drawRoundRect(
-            color = primary.copy(alpha = 0.2f),
-            style =
-              Stroke(
-                width = 2.dp.toPx(),
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(12.dp.toPx(), 8.dp.toPx())),
-              ),
-            cornerRadius = CornerRadius(24.dp.toPx()),
-          )
-        }.background(primary.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
-        .padding(32.dp),
-    contentAlignment = Alignment.Center,
-  ) {
+  DashedBorderArea {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(4.dp),

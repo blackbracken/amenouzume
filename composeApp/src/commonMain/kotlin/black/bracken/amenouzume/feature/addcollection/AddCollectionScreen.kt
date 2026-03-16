@@ -19,9 +19,7 @@ import amenouzume.composeapp.generated.resources.category_fanzine
 import amenouzume.composeapp.generated.resources.category_illustration
 import amenouzume.composeapp.generated.resources.category_movie
 import amenouzume.composeapp.generated.resources.category_photo
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -63,16 +61,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.StringResource
@@ -239,29 +234,12 @@ private fun UploadArtworkSection(onUploadArtwork: () -> Unit) {
 
 @Composable
 private fun UploadDropArea(onUploadArtwork: () -> Unit) {
-  val primary = MaterialTheme.colorScheme.primary
-  Box(
-    modifier = Modifier
-      .fillMaxWidth()
-      .drawBehind {
-        drawRoundRect(
-          color = primary.copy(alpha = 0.3f),
-          style = Stroke(
-            width = 2.dp.toPx(),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(12.dp.toPx(), 8.dp.toPx())),
-          ),
-          cornerRadius = CornerRadius(16.dp.toPx()),
-        )
-      }
-      .background(primary.copy(alpha = 0.04f), RoundedCornerShape(16.dp))
-      .padding(32.dp),
-    contentAlignment = Alignment.Center,
-  ) {
+  DashedBorderArea {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Icon(
         imageVector = Icons.Default.AddPhotoAlternate,
         contentDescription = null,
-        tint = primary,
+        tint = MaterialTheme.colorScheme.primary,
         modifier = Modifier.size(40.dp),
       )
       Spacer(modifier = Modifier.height(12.dp))
