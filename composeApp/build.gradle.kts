@@ -10,6 +10,7 @@ plugins {
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.ktlint)
   alias(libs.plugins.metro)
+  alias(libs.plugins.roborazzi)
   alias(libs.plugins.sqldelight)
 }
 
@@ -65,6 +66,11 @@ kotlin {
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutinesSwing)
       implementation(libs.sqldelight.driver.jvm)
+    }
+    jvmTest.dependencies {
+      implementation(libs.roborazzi.compose.desktop)
+      @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+      implementation(compose.uiTest)
     }
   }
 }
