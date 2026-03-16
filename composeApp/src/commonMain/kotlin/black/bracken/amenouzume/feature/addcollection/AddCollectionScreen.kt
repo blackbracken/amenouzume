@@ -5,8 +5,6 @@ import amenouzume.composeapp.generated.resources.add_collection_authors
 import amenouzume.composeapp.generated.resources.add_collection_field_title
 import amenouzume.composeapp.generated.resources.add_collection_field_title_placeholder
 import amenouzume.composeapp.generated.resources.add_collection_section_category
-import amenouzume.composeapp.generated.resources.add_collection_section_details
-import amenouzume.composeapp.generated.resources.add_collection_section_upload
 import amenouzume.composeapp.generated.resources.add_collection_submit
 import amenouzume.composeapp.generated.resources.add_collection_tags
 import amenouzume.composeapp.generated.resources.add_collection_title
@@ -16,9 +14,7 @@ import amenouzume.composeapp.generated.resources.category_illustration
 import amenouzume.composeapp.generated.resources.category_movie
 import amenouzume.composeapp.generated.resources.category_photo
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -148,11 +144,11 @@ internal fun AddCollectionScreen(
         requireNotNull(editing)
 
         Column {
-          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+          Spacer(modifier = Modifier.height(16.dp))
 
           AddFilesSection(onAddFiles = action.onAddFiles)
 
-          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+          Spacer(modifier = Modifier.height(16.dp))
 
           CollectionDetailsSection(
             title = editing.title,
@@ -194,7 +190,7 @@ private fun CategorySection(
   selectedCategory: CollectionCategory?,
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+  Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     SectionHeader(text = stringResource(Res.string.add_collection_section_category))
     Spacer(modifier = Modifier.height(12.dp))
     FlowRow(
@@ -234,9 +230,7 @@ private fun CategoryChip(
 
 @Composable
 private fun AddFilesSection(onAddFiles: () -> Unit) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-    SectionHeader(text = stringResource(Res.string.add_collection_section_upload))
-    Spacer(modifier = Modifier.height(12.dp))
+  Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     DashedBorderArea {
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
@@ -245,7 +239,7 @@ private fun AddFilesSection(onAddFiles: () -> Unit) {
           tint = MaterialTheme.colorScheme.primary,
           modifier = Modifier.size(40.dp),
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
           text = stringResource(Res.string.add_collection_upload_title),
           style = MaterialTheme.typography.titleSmall,
@@ -264,22 +258,22 @@ private fun CollectionDetailsSection(
   tags: List<String>,
   onTagsClick: () -> Unit,
 ) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-    SectionHeader(text = stringResource(Res.string.add_collection_section_details))
-    Spacer(modifier = Modifier.height(16.dp))
-
+  Column {
     Text(
       text = stringResource(Res.string.add_collection_field_title),
       style = MaterialTheme.typography.labelSmall,
       color = MaterialTheme.colorScheme.onSurfaceVariant,
       fontWeight = FontWeight.Bold,
+      modifier = Modifier.padding(horizontal = 16.dp),
     )
     Spacer(modifier = Modifier.height(8.dp))
     OutlinedTextField(
       value = title,
       onValueChange = onUpdateTitle,
       placeholder = { Text(stringResource(Res.string.add_collection_field_title_placeholder)) },
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp),
       singleLine = true,
       shape = MaterialTheme.shapes.small,
       colors = OutlinedTextFieldDefaults.colors(
@@ -287,12 +281,13 @@ private fun CollectionDetailsSection(
       ),
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(24.dp))
     HorizontalDivider()
 
     DetailRow(
       icon = { Icon(imageVector = Icons.Default.People, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_authors),
+      modifier = Modifier.padding(horizontal = 16.dp),
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
           authors.forEach { author ->
@@ -312,6 +307,7 @@ private fun CollectionDetailsSection(
     DetailRow(
       icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_tags),
+      modifier = Modifier.padding(horizontal = 16.dp),
       onClick = onTagsClick,
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -326,6 +322,8 @@ private fun CollectionDetailsSection(
         }
       },
     )
+
+    HorizontalDivider()
   }
 }
 
@@ -333,14 +331,15 @@ private fun CollectionDetailsSection(
 private fun DetailRow(
   icon: @Composable () -> Unit,
   label: String,
+  modifier: Modifier = Modifier,
   onClick: (() -> Unit)? = null,
   trailing: @Composable () -> Unit,
 ) {
   Row(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-      .padding(vertical = 12.dp),
+      .padding(vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     icon()
@@ -359,7 +358,7 @@ private fun DetailRow(
 private fun SectionHeader(text: String) {
   Text(
     text = text,
-    style = MaterialTheme.typography.labelMedium,
+    style = MaterialTheme.typography.titleSmall,
     color = MaterialTheme.colorScheme.primary,
     fontWeight = FontWeight.Bold,
   )

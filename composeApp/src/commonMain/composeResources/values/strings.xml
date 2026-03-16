@@ -19,10 +19,10 @@
     <string name="category_fanzine" translatable="false">FANZINE</string>
     <string name="category_movie" translatable="false">MOVIE</string>
     <string name="add_collection_title" translatable="false">Add Collection</string>
-    <string name="add_collection_section_category">1. SELECT CATEGORY</string>
-    <string name="add_collection_section_upload">2. ADD FILES</string>
+    <string name="add_collection_section_category">SELECT CATEGORY</string>
+    <string name="add_collection_section_upload">ADD FILES</string>
     <string name="add_collection_upload_title">Add Files</string>
-    <string name="add_collection_section_details">3. COLLECTION DETAILS</string>
+    <string name="add_collection_section_details">COLLECTION DETAILS</string>
     <string name="add_collection_field_title">COLLECTION TITLE</string>
     <string name="add_collection_field_title_placeholder">e.g. Neo-Noir Concept Art</string>
     <string name="add_collection_field_category">Category</string>
