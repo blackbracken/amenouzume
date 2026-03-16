@@ -19,19 +19,15 @@
     <string name="category_fanzine" translatable="false">FANZINE</string>
     <string name="category_movie" translatable="false">MOVIE</string>
     <string name="add_collection_title" translatable="false">Add Collection</string>
-    <string name="add_collection_save_draft">SAVE DRAFT</string>
     <string name="add_collection_section_category">1. SELECT CATEGORY</string>
-    <string name="add_collection_section_upload">2. UPLOAD ARTWORK</string>
-    <string name="add_collection_upload_title">Add Illustration</string>
-    <string name="add_collection_upload_description">PNG, JPG or WebP up to 10MB</string>
+    <string name="add_collection_section_upload">2. ADD FILES</string>
+    <string name="add_collection_upload_title">Add Files</string>
     <string name="add_collection_section_details">3. COLLECTION DETAILS</string>
     <string name="add_collection_field_title">COLLECTION TITLE</string>
     <string name="add_collection_field_title_placeholder">e.g. Neo-Noir Concept Art</string>
     <string name="add_collection_field_category">Category</string>
     <string name="add_collection_authors">Authors</string>
     <string name="add_collection_tags">Tags</string>
-    <string name="add_collection_public">Public Collection</string>
-    <string name="add_collection_public_description">Visible to everyone in the feed</string>
     <string name="add_collection_submit">CREATE COLLECTION</string>
     <string name="select_tags_title">Select Tags</string>
     <string name="select_tags_done">Done</string>

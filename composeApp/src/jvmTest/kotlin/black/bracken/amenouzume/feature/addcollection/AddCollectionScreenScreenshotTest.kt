@@ -22,12 +22,11 @@ class AddCollectionScreenScreenshotTest {
           state = AddCollectionUiState(
             isBusy = false,
             selectedCategory = CollectionCategory.ILLUSTRATION,
-            editing = AddCollectionUiState.Editing.Illustration(
+            editing = AddCollectionUiState.Editing(
               title = "",
               authors = listOf("@jdoe_art"),
               tags = listOf("Cyberpunk", "Noir"),
               availableTags = listOf("Architecture", "Design", "Engineering"),
-              isPublic = true,
             ),
             errorMessage = null,
           ),

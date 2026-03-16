@@ -11,14 +11,10 @@ data class AddCollectionUiState(
   val errorMessage: StringResource?,
 ) : ScreenUiState {
 
-  sealed interface Editing {
-
-    data class Illustration(
-      val title: String,
-      val authors: List<String>,
-      val tags: List<String>,
-      val availableTags: List<String>,
-      val isPublic: Boolean,
-    ) : Editing
-  }
+  data class Editing(
+    val title: String,
+    val authors: List<String>,
+    val tags: List<String>,
+    val availableTags: List<String>,
+  )
 }
