@@ -72,9 +72,10 @@ class OpenDatabaseViewModel(
   fun onCreateVault(path: String) =
     launchWithCatching({ errorMessage = it.messageRes }) {
       errorMessage = null
-      busyScope.track {
-        vaultRepository.createVault(path)
+      val vaultPath = busyScope.track {
+        vaultRepository.createVault(path).also { vaultRepository.openVault(it) }
       }
+      navigator.navigate(CollectionListRoute(vaultPath = vaultPath))
     }
 
   fun onOpenVault(filePath: String) =

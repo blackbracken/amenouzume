@@ -44,15 +44,17 @@ class VaultRepository(
     }
   }
 
-  suspend fun createVault(path: String) {
-    withContext(Dispatchers.IO) {
+  suspend fun createVault(path: String): String {
+    val vaultPath = withContext(Dispatchers.IO) {
       val targetFile = File(path, "amenouzume.db")
       if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
 
       vaultStorage.createDatabaseFile(targetFile.absolutePath)
       vaultHistoryStorage.addPath(targetFile.absolutePath)
+      targetFile.absolutePath
     }
     refreshVaultHistories()
+    return vaultPath
   }
 
   suspend fun removeVaultHistory(path: String) {
