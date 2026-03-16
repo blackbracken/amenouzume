@@ -10,9 +10,9 @@ class TrackedScope {
   /** Backed by [mutableIntStateOf]. */
   val isRunning get() = trackedCount > 0
 
-  suspend fun track(block: suspend () -> Unit) {
+  suspend fun <T> track(block: suspend () -> T): T {
     trackedCount++
-    try {
+    return try {
       block()
     } finally {
       trackedCount--
