@@ -15,6 +15,10 @@ import amenouzume.composeapp.generated.resources.category_fanzine
 import amenouzume.composeapp.generated.resources.category_illustration
 import amenouzume.composeapp.generated.resources.category_movie
 import amenouzume.composeapp.generated.resources.category_photo
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -137,40 +141,47 @@ internal fun AddCollectionScreen(
       )
 
       val editing = state.editing
-      if (editing != null) {
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+      AnimatedVisibility(
+        visible = editing != null,
+        enter = fadeIn(),
+      ) {
+        requireNotNull(editing)
 
-        AddFilesSection(onAddFiles = action.onAddFiles)
+        Column {
+          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+          AddFilesSection(onAddFiles = action.onAddFiles)
 
-        CollectionDetailsSection(
-          title = editing.title,
-          onUpdateTitle = action.onUpdateTitle,
-          authors = editing.authors,
-          tags = editing.tags,
-          onTagsClick = { showTagsSheet = true },
-        )
+          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-          onClick = action.onSubmit,
-          enabled = !state.isBusy && editing.title.isNotBlank(),
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-          shape = MaterialTheme.shapes.medium,
-          colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-          ),
-        ) {
-          Text(
-            text = stringResource(Res.string.add_collection_submit),
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 8.dp),
+          CollectionDetailsSection(
+            title = editing.title,
+            onUpdateTitle = action.onUpdateTitle,
+            authors = editing.authors,
+            tags = editing.tags,
+            onTagsClick = { showTagsSheet = true },
           )
+
+          Spacer(modifier = Modifier.weight(1f))
+
+          Button(
+            onClick = action.onSubmit,
+            enabled = !state.isBusy && editing.title.isNotBlank(),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 16.dp),
+            shape = MaterialTheme.shapes.medium,
+            colors = ButtonDefaults.buttonColors(
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+          ) {
+            Text(
+              text = stringResource(Res.string.add_collection_submit),
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.padding(vertical = 8.dp),
+            )
+          }
         }
       }
     }
@@ -183,12 +194,11 @@ private fun CategorySection(
   selectedCategory: CollectionCategory?,
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+  Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
     SectionHeader(text = stringResource(Res.string.add_collection_section_category))
     Spacer(modifier = Modifier.height(12.dp))
     FlowRow(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       CategoryChip(CollectionCategory.ILLUSTRATION, Res.string.category_illustration, selectedCategory, onSelectCategory)
       CategoryChip(CollectionCategory.PHOTO, Res.string.category_photo, selectedCategory, onSelectCategory)
