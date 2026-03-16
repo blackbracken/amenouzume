@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Upload
@@ -77,6 +78,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel())
     onCreateDatabase = directoryLauncher,
     onBrowseFiles = fileLauncher,
     onRetry = viewModel::onRetry,
+    onDeleteEntry = viewModel::onDeleteEntry,
   )
   OpenDatabaseScreen(
     state = state.value,
@@ -115,6 +117,7 @@ internal fun OpenDatabaseScreen(
       isBusy = state.isBusy,
       onBrowseFiles = action.onBrowseFiles,
       onRetry = action.onRetry,
+      onDeleteEntry = action.onDeleteEntry,
       modifier = Modifier.padding(innerPadding),
     )
   }
@@ -126,6 +129,7 @@ private fun DatabaseListContent(
   isBusy: Boolean,
   onBrowseFiles: () -> Unit,
   onRetry: () -> Unit,
+  onDeleteEntry: (OpenDatabaseEntry) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   LazyColumn(
@@ -148,7 +152,7 @@ private fun DatabaseListContent(
       }
       is Loadable.Loaded -> {
         items(databases.value) { entry ->
-          DatabaseEntryItem(entry = entry)
+          DatabaseEntryItem(entry = entry, onDelete = { onDeleteEntry(entry) })
         }
       }
       is Loadable.Failed -> {
@@ -235,7 +239,7 @@ private fun ImportLocalDatabaseCard(
 }
 
 @Composable
-private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
+private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onDelete: () -> Unit) {
   Card(
     onClick = {},
     modifier = Modifier.fillMaxWidth(),
@@ -244,7 +248,7 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
   ) {
     Row(
-      modifier = Modifier.padding(16.dp),
+      modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 4.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -282,6 +286,14 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry) {
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
+      IconButton(onClick = onDelete) {
+        Icon(
+          imageVector = Icons.Default.Delete,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          modifier = Modifier.size(18.dp),
+        )
+      }
     }
   }
 }

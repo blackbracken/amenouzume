@@ -52,6 +52,11 @@ class OpenDatabaseViewModel(
     )
   }
 
+  fun onDeleteEntry(entry: OpenDatabaseEntry) =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      vaultRepository.removeVaultHistory(entry.path)
+    }
+
   fun onRetry() =
     launchWithCatching({ errorMessage = it.messageRes }) {
       vaultRepository.refreshVaultHistories()

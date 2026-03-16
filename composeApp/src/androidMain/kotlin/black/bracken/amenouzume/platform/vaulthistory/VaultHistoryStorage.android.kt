@@ -23,4 +23,11 @@ actual class VaultHistoryStorage(
         file.appendText("$path\n")
       }
     }
+
+  actual suspend fun removePath(path: String) =
+    withContext(Dispatchers.IO) {
+      if (!file.exists()) return@withContext
+      val remaining = file.readLines().filter { it.isNotBlank() && it != path }
+      file.writeText(remaining.joinToString("\n", postfix = "\n"))
+    }
 }

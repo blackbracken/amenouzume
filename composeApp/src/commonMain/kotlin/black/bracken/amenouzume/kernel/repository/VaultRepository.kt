@@ -55,6 +55,13 @@ class VaultRepository(
     refreshVaultHistories()
   }
 
+  suspend fun removeVaultHistory(path: String) {
+    withContext(Dispatchers.IO) {
+      vaultHistoryStorage.removePath(path)
+    }
+    refreshVaultHistories()
+  }
+
   suspend fun openVault(filePath: String) {
     withContext(Dispatchers.IO) {
       val file = File(filePath)
