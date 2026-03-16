@@ -14,12 +14,23 @@
     <string name="collection_list_filter">Filter</string>
     <string name="collection_list_tab_add" translatable="false">Add</string>
     <string name="collection_list_tab_collections" translatable="false">Collection</string>
-    <string name="category_illustration">Illustration</string>
-    <string name="category_photo">Photo</string>
-    <string name="category_fanzine">Fanzine</string>
-    <string name="category_movie">Movie</string>
+    <string name="category_illustration" translatable="false">ILLUSTRATION</string>
+    <string name="category_photo" translatable="false">PHOTO</string>
+    <string name="category_fanzine" translatable="false">FANZINE</string>
+    <string name="category_movie" translatable="false">MOVIE</string>
     <string name="add_collection_title" translatable="false">Add Collection</string>
-    <string name="add_collection_field_title">Title</string>
+    <string name="add_collection_save_draft">SAVE DRAFT</string>
+    <string name="add_collection_section_category">1. SELECT CATEGORY</string>
+    <string name="add_collection_section_upload">2. UPLOAD ARTWORK</string>
+    <string name="add_collection_upload_title">Add Illustration</string>
+    <string name="add_collection_upload_description">PNG, JPG or WebP up to 10MB</string>
+    <string name="add_collection_section_details">3. COLLECTION DETAILS</string>
+    <string name="add_collection_field_title">COLLECTION TITLE</string>
+    <string name="add_collection_field_title_placeholder">e.g. Neo-Noir Concept Art</string>
     <string name="add_collection_field_category">Category</string>
-    <string name="add_collection_submit">Add</string>
+    <string name="add_collection_authors">Authors</string>
+    <string name="add_collection_tags">Tags</string>
+    <string name="add_collection_public">Public Collection</string>
+    <string name="add_collection_public_description">Visible to everyone in the feed</string>
+    <string name="add_collection_submit">CREATE COLLECTION</string>
 </resources>

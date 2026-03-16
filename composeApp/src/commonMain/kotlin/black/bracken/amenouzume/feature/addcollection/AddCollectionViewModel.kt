@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
@@ -28,8 +29,9 @@ class AddCollectionViewModel(
 ) : ViewModel() {
   private val busyScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
+  private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
   private var title by mutableStateOf("")
-  private var category by mutableStateOf("")
+  private var isPublic by mutableStateOf(true)
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
@@ -37,18 +39,30 @@ class AddCollectionViewModel(
   private fun presenter(): AddCollectionUiState =
     AddCollectionUiState(
       isBusy = busyScope.isRunning,
+      selectedCategory = selectedCategory,
       title = title,
-      category = category,
+      authors = emptyList(),
+      tags = emptyList(),
+      isPublic = isPublic,
       errorMessage = errorMessage,
     )
+
+  fun onSelectCategory(category: CollectionCategory) {
+    selectedCategory = category
+  }
 
   fun onUpdateTitle(value: String) {
     title = value
   }
 
-  fun onUpdateCategory(value: String) {
-    category = value
+  fun onTogglePublic(value: Boolean) {
+    isPublic = value
   }
+
+  fun onClose() =
+    runWithCatching({ errorMessage = it.messageRes }) {
+      navigator.back()
+    }
 
   fun onNavigateToCollections(vaultPath: String) =
     runWithCatching({ errorMessage = it.messageRes }) {
@@ -62,8 +76,8 @@ class AddCollectionViewModel(
         collectionRepository.addCollection(
           id = System.currentTimeMillis().toString(),
           title = title,
-          category = category,
-          contentType = category,
+          category = selectedCategory?.name.orEmpty(),
+          contentType = selectedCategory?.name.orEmpty(),
         )
       }
       navigator.back()

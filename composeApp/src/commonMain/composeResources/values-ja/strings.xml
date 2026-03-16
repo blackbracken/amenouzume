@@ -12,11 +12,18 @@
     <string name="collection_list_filter">フィルター</string>
     <string name="collection_list_tab_add">Add</string>
     <string name="collection_list_tab_collections">Collection</string>
-    <string name="category_illustration">イラスト</string>
-    <string name="category_photo">写真</string>
-    <string name="category_fanzine">同人誌</string>
-    <string name="category_movie">動画</string>
-    <string name="add_collection_field_title">タイトル</string>
+    <string name="add_collection_save_draft">下書き保存</string>
+    <string name="add_collection_section_category">1. カテゴリを選択</string>
+    <string name="add_collection_section_upload">2. アートワークをアップロード</string>
+    <string name="add_collection_upload_title">イラストを追加</string>
+    <string name="add_collection_upload_description">PNG, JPG, WebP（10MBまで）</string>
+    <string name="add_collection_section_details">3. コレクション詳細</string>
+    <string name="add_collection_field_title">コレクションタイトル</string>
+    <string name="add_collection_field_title_placeholder">例: ネオノワール・コンセプトアート</string>
     <string name="add_collection_field_category">カテゴリ</string>
-    <string name="add_collection_submit">追加</string>
+    <string name="add_collection_authors">作者</string>
+    <string name="add_collection_tags">タグ</string>
+    <string name="add_collection_public">公開コレクション</string>
+    <string name="add_collection_public_description">フィード上で全員に表示されます</string>
+    <string name="add_collection_submit">コレクションを作成</string>
 </resources>
