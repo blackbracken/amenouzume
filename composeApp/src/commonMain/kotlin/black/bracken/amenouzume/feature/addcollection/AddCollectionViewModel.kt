@@ -31,6 +31,10 @@ class AddCollectionViewModel(
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
   private var title by mutableStateOf("")
+  private var tags by mutableStateOf<List<String>>(emptyList())
+  private var availableTags by mutableStateOf(
+    listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
+  )
   private var isPublic by mutableStateOf(true)
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
@@ -44,7 +48,8 @@ class AddCollectionViewModel(
         CollectionCategory.ILLUSTRATION -> AddCollectionUiState.Editing.Illustration(
           title = title,
           authors = emptyList(),
-          tags = emptyList(),
+          tags = tags,
+          availableTags = availableTags,
           isPublic = isPublic,
         )
         else -> null
@@ -58,6 +63,20 @@ class AddCollectionViewModel(
 
   fun onUpdateTitle(value: String) {
     title = value
+  }
+
+  fun onUpdateTags(value: List<String>) {
+    tags = value
+  }
+
+  fun onAddTag(name: String) {
+    val trimmed = name.trim()
+    if (trimmed.isNotEmpty() && trimmed !in availableTags) {
+      availableTags = availableTags + trimmed
+    }
+    if (trimmed.isNotEmpty() && trimmed !in tags) {
+      tags = tags + trimmed
+    }
   }
 
   fun onTogglePublic(value: Boolean) {

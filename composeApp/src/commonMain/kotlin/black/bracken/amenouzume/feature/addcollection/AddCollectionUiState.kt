@@ -17,6 +17,7 @@ data class AddCollectionUiState(
       val title: String,
       val authors: List<String>,
       val tags: List<String>,
+      val availableTags: List<String>,
       val isPublic: Boolean,
     ) : Editing
   }

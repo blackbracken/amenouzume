@@ -26,6 +26,7 @@ class AddCollectionScreenScreenshotTest {
               title = "",
               authors = listOf("@jdoe_art"),
               tags = listOf("Cyberpunk", "Noir"),
+              availableTags = listOf("Architecture", "Design", "Engineering"),
               isPublic = true,
             ),
             errorMessage = null,
