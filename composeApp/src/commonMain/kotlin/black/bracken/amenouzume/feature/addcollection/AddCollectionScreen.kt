@@ -2,6 +2,7 @@ package black.bracken.amenouzume.feature.addcollection
 
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.add_collection_authors
+import amenouzume.composeapp.generated.resources.add_collection_browse_files
 import amenouzume.composeapp.generated.resources.add_collection_field_title
 import amenouzume.composeapp.generated.resources.add_collection_field_title_placeholder
 import amenouzume.composeapp.generated.resources.add_collection_section_category
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -64,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.platform.launcher.rememberMultipleFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -76,10 +79,17 @@ fun AddCollectionCoordinator(
   viewModel: AddCollectionViewModel = metroViewModel(),
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
+  val mimeTypes = state.value.selectedCategory
+    ?.acceptableMimeTypes
+    .orEmpty()
+  val filePickerLauncher = rememberMultipleFilePickerLauncher(
+    mimeTypes = mimeTypes,
+    onResult = viewModel::onAddFiles,
+  )
   val action = AddCollectionUiAction(
     onClose = viewModel::onClose,
     onSelectCategory = viewModel::onSelectCategory,
-    onAddFiles = {},
+    onAddFiles = filePickerLauncher,
     onUpdateTitle = viewModel::onUpdateTitle,
     onUpdateTags = viewModel::onUpdateTags,
     onAddTag = viewModel::onAddTag,
@@ -250,6 +260,17 @@ private fun AddFilesSection(onAddFiles: () -> Unit) {
           style = MaterialTheme.typography.titleSmall,
           fontWeight = FontWeight.Bold,
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+          onClick = onAddFiles,
+          shape = CircleShape,
+        ) {
+          Text(
+            text = stringResource(Res.string.add_collection_browse_files),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+          )
+        }
       }
     }
   }
@@ -379,6 +400,7 @@ private fun AddCollectionScreenPreview() {
         selectedCategory = CollectionCategory.ILLUSTRATION,
         editing = AddCollectionUiState.Editing(
           title = "",
+          filePaths = emptyList(),
           authors = listOf("@jdoe_art"),
           tags = listOf("Cyberpunk", "Noir"),
           availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),

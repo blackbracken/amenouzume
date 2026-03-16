@@ -54,9 +54,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
+import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -224,7 +224,11 @@ private fun ImportLocalDatabaseCard(
 }
 
 @Composable
-private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onDelete: () -> Unit) {
+private fun DatabaseEntryItem(
+  entry: OpenDatabaseEntry,
+  onClick: () -> Unit,
+  onDelete: () -> Unit,
+) {
   Card(
     onClick = onClick,
     modifier = Modifier.fillMaxWidth(),

@@ -10,9 +10,9 @@ data class AddCollectionUiState(
   val editing: Editing?,
   val errorMessage: StringResource?,
 ) : ScreenUiState {
-
   data class Editing(
     val title: String,
+    val filePaths: List<String>,
     val authors: List<String>,
     val tags: List<String>,
     val availableTags: List<String>,

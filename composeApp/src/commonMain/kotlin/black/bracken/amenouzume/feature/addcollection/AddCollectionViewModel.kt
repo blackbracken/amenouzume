@@ -31,6 +31,7 @@ class AddCollectionViewModel(
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
   private var title by mutableStateOf("")
+  private var filePaths by mutableStateOf<List<String>>(emptyList())
   private var tags by mutableStateOf<List<String>>(emptyList())
   private var availableTags by mutableStateOf<List<String>>(emptyList())
 
@@ -44,6 +45,7 @@ class AddCollectionViewModel(
       editing = if (selectedCategory != null) {
         AddCollectionUiState.Editing(
           title = title,
+          filePaths = filePaths,
           authors = emptyList(),
           tags = tags,
           availableTags = availableTags,
@@ -56,6 +58,10 @@ class AddCollectionViewModel(
 
   fun onSelectCategory(category: CollectionCategory) {
     selectedCategory = category
+  }
+
+  fun onAddFiles(paths: List<String>) {
+    filePaths = (filePaths + paths).distinct()
   }
 
   fun onUpdateTitle(value: String) {

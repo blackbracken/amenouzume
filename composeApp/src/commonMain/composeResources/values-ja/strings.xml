@@ -16,6 +16,7 @@
     <string name="add_collection_section_category">カテゴリを選択</string>
     <string name="add_collection_section_upload">ファイルを追加</string>
     <string name="add_collection_upload_title">ファイルを追加</string>
+    <string name="add_collection_browse_files">ファイルを選択</string>
     <string name="add_collection_section_details">コレクション詳細</string>
     <string name="add_collection_field_title">コレクションタイトル</string>
     <string name="add_collection_field_title_placeholder">例: ネオノワール・コンセプトアート</string>
