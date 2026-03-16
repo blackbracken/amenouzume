@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +21,7 @@ fun DashedBorderArea(
   content: @Composable BoxScope.() -> Unit,
 ) {
   val primary = MaterialTheme.colorScheme.primary
+  val shape = MaterialTheme.shapes.large
   Box(
     modifier = modifier
       .fillMaxWidth()
@@ -35,7 +35,7 @@ fun DashedBorderArea(
           cornerRadius = CornerRadius(16.dp.toPx()),
         )
       }
-      .background(primary.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
+      .background(primary.copy(alpha = 0.05f), shape)
       .padding(32.dp),
     contentAlignment = Alignment.Center,
     content = content,

@@ -31,8 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
-import black.bracken.amenouzume.uishared.bottombar.VaultBottomBar
-import black.bracken.amenouzume.uishared.bottombar.VaultTab
+import black.bracken.amenouzume.uishared.component.VaultBottomBar
+import black.bracken.amenouzume.uishared.component.VaultTab
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource

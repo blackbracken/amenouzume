@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
@@ -226,7 +225,7 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onD
   Card(
     onClick = onClick,
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
   ) {
@@ -239,7 +238,7 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onD
         modifier =
           Modifier
             .size(40.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
+            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
         contentAlignment = Alignment.Center,
       ) {
         Icon(
@@ -280,7 +279,7 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onD
 private fun DatabaseEntryItemSkeleton() {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
   ) {
@@ -293,7 +292,7 @@ private fun DatabaseEntryItemSkeleton() {
         modifier =
           Modifier
             .size(40.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
+            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
       )
       Column(
         modifier = Modifier.weight(1f),
@@ -304,14 +303,14 @@ private fun DatabaseEntryItemSkeleton() {
             Modifier
               .fillMaxWidth(0.4f)
               .height(12.dp)
-              .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
+              .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
         )
         Box(
           modifier =
             Modifier
               .fillMaxWidth(0.7f)
               .height(10.dp)
-              .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
+              .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
         )
       }
     }
@@ -325,7 +324,7 @@ private fun DatabaseLoadFailedItem(
 ) {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
   ) {
     Column(

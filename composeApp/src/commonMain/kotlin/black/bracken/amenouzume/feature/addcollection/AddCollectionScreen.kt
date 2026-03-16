@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Label
@@ -158,7 +157,7 @@ internal fun AddCollectionScreen(
             modifier = Modifier
               .fillMaxWidth()
               .padding(horizontal = 16.dp, vertical = 16.dp),
-            shape = RoundedCornerShape(12.dp),
+            shape = MaterialTheme.shapes.medium,
             colors = ButtonDefaults.buttonColors(
               containerColor = MaterialTheme.colorScheme.primary,
               contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -285,7 +284,7 @@ private fun CollectionDetailsSection(
       placeholder = { Text(stringResource(Res.string.add_collection_field_title_placeholder)) },
       modifier = Modifier.fillMaxWidth(),
       singleLine = true,
-      shape = RoundedCornerShape(8.dp),
+      shape = MaterialTheme.shapes.small,
       colors = OutlinedTextFieldDefaults.colors(
         unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
       ),

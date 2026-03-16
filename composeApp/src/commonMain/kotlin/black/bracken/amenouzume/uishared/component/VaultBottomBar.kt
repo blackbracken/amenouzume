@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.uishared.bottombar
+package black.bracken.amenouzume.uishared.component
 
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.collection_list_tab_add
