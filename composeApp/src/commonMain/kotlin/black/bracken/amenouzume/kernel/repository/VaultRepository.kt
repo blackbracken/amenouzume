@@ -78,4 +78,4 @@ class VaultRepository(
   }
 }
 
-private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath, sizeBytes = length())
+private fun File.toVaultHistory() = VaultHistory(name = name, path = absolutePath)

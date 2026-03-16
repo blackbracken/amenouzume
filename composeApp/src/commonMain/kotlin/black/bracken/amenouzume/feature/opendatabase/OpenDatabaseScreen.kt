@@ -284,11 +284,6 @@ private fun DatabaseEntryItem(entry: OpenDatabaseEntry, onClick: () -> Unit, onD
           overflow = TextOverflow.Ellipsis,
         )
       }
-      Text(
-        text = entry.size,
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
       IconButton(onClick = onDelete) {
         Icon(
           imageVector = Icons.Default.Delete,
@@ -339,12 +334,6 @@ private fun DatabaseEntryItemSkeleton() {
               .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
         )
       }
-      Box(
-        modifier =
-          Modifier
-            .size(width = 32.dp, height = 10.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(4.dp)),
-      )
     }
   }
 }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import black.bracken.amenouzume.feature.opendatabase.util.toSizeText
 import black.bracken.amenouzume.kernel.model.VaultHistory
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
@@ -89,4 +88,4 @@ class OpenDatabaseViewModel(
     }
 }
 
-private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path, size = sizeBytes.toSizeText())
+private fun VaultHistory.toEntry() = OpenDatabaseEntry(name = name, path = path)

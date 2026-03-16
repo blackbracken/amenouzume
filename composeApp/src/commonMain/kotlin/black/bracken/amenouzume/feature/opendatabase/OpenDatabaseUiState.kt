@@ -13,5 +13,4 @@ data class OpenDatabaseUiState(
 data class OpenDatabaseEntry(
   val name: String,
   val path: String,
-  val size: String,
 )
