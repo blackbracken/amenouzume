@@ -26,7 +26,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
@@ -101,11 +100,6 @@ internal fun OpenDatabaseScreen(
     topBar = {
       TopAppBar(
         title = { Text(stringResource(Res.string.open_database_title)) },
-        actions = {
-          IconButton(onClick = {}, enabled = !state.isBusy) {
-            Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
-          }
-        },
       )
     },
   ) { innerPadding ->
@@ -150,7 +144,7 @@ private fun DatabaseListContent(
         items(3) { DatabaseEntryItemSkeleton() }
       }
       is Loadable.Loaded -> {
-        items(databases.value) { entry ->
+        items(databases.value.take(5)) { entry ->
           DatabaseEntryItem(entry = entry, onClick = { onOpenEntry(entry) }, onDelete = { onDeleteEntry(entry) })
         }
       }
