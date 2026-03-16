@@ -191,8 +191,13 @@ private fun CategorySection(
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    SectionHeader(text = stringResource(Res.string.add_collection_section_category))
-    Spacer(modifier = Modifier.height(12.dp))
+    Text(
+      text = stringResource(Res.string.add_collection_section_category),
+      style = MaterialTheme.typography.labelSmall,
+      color = MaterialTheme.colorScheme.onSurface,
+      fontWeight = FontWeight.Bold,
+    )
+    Spacer(modifier = Modifier.height(2.dp))
     FlowRow(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -287,7 +292,6 @@ private fun CollectionDetailsSection(
     DetailRow(
       icon = { Icon(imageVector = Icons.Default.People, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_authors),
-      modifier = Modifier.padding(horizontal = 16.dp),
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
           authors.forEach { author ->
@@ -307,7 +311,6 @@ private fun CollectionDetailsSection(
     DetailRow(
       icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_tags),
-      modifier = Modifier.padding(horizontal = 16.dp),
       onClick = onTagsClick,
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -331,15 +334,17 @@ private fun CollectionDetailsSection(
 private fun DetailRow(
   icon: @Composable () -> Unit,
   label: String,
-  modifier: Modifier = Modifier,
   onClick: (() -> Unit)? = null,
   trailing: @Composable () -> Unit,
 ) {
   Row(
-    modifier = modifier
+    modifier = Modifier
       .fillMaxWidth()
       .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-      .padding(vertical = 8.dp),
+      .padding(
+        horizontal = 16.dp,
+        vertical = 16.dp,
+      ),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     icon()
