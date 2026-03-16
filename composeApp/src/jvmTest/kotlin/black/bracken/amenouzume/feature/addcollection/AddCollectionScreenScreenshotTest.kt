@@ -22,10 +22,12 @@ class AddCollectionScreenScreenshotTest {
           state = AddCollectionUiState(
             isBusy = false,
             selectedCategory = CollectionCategory.ILLUSTRATION,
-            title = "",
-            authors = listOf("@jdoe_art"),
-            tags = listOf("Cyberpunk", "Noir"),
-            isPublic = true,
+            editing = AddCollectionUiState.Editing.Illustration(
+              title = "",
+              authors = listOf("@jdoe_art"),
+              tags = listOf("Cyberpunk", "Noir"),
+              isPublic = true,
+            ),
             errorMessage = null,
           ),
           action = AddCollectionUiAction.Noop,

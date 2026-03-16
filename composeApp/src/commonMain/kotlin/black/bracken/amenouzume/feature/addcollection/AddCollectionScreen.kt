@@ -138,40 +138,46 @@ internal fun AddCollectionScreen(
         onSelectCategory = action.onSelectCategory,
       )
 
-      HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+      when (val editing = state.editing) {
+        is AddCollectionUiState.Editing.Illustration -> {
+          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-      UploadArtworkSection(onUploadArtwork = action.onUploadArtwork)
+          UploadArtworkSection(onUploadArtwork = action.onUploadArtwork)
 
-      HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+          HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 
-      CollectionDetailsSection(
-        title = state.title,
-        onUpdateTitle = action.onUpdateTitle,
-        authors = state.authors,
-        tags = state.tags,
-        isPublic = state.isPublic,
-        onTogglePublic = action.onTogglePublic,
-      )
+          CollectionDetailsSection(
+            title = editing.title,
+            onUpdateTitle = action.onUpdateTitle,
+            authors = editing.authors,
+            tags = editing.tags,
+            isPublic = editing.isPublic,
+            onTogglePublic = action.onTogglePublic,
+          )
 
-      Spacer(modifier = Modifier.weight(1f))
+          Spacer(modifier = Modifier.weight(1f))
 
-      Button(
-        onClick = action.onSubmit,
-        enabled = !state.isBusy && state.title.isNotBlank(),
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-          containerColor = MaterialTheme.colorScheme.primary,
-          contentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-      ) {
-        Text(
-          text = stringResource(Res.string.add_collection_submit),
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(vertical = 8.dp),
-        )
+          Button(
+            onClick = action.onSubmit,
+            enabled = !state.isBusy && editing.title.isNotBlank(),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 16.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+          ) {
+            Text(
+              text = stringResource(Res.string.add_collection_submit),
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.padding(vertical = 8.dp),
+            )
+          }
+        }
+
+        null -> {}
       }
     }
   }
@@ -415,10 +421,12 @@ private fun AddCollectionScreenPreview() {
       state = AddCollectionUiState(
         isBusy = false,
         selectedCategory = CollectionCategory.ILLUSTRATION,
-        title = "",
-        authors = listOf("@jdoe_art"),
-        tags = listOf("Cyberpunk", "Noir"),
-        isPublic = true,
+        editing = AddCollectionUiState.Editing.Illustration(
+          title = "",
+          authors = listOf("@jdoe_art"),
+          tags = listOf("Cyberpunk", "Noir"),
+          isPublic = true,
+        ),
         errorMessage = null,
       ),
       action = AddCollectionUiAction.Noop,

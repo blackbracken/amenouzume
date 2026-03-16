@@ -7,9 +7,17 @@ import org.jetbrains.compose.resources.StringResource
 data class AddCollectionUiState(
   override val isBusy: Boolean,
   val selectedCategory: CollectionCategory?,
-  val title: String,
-  val authors: List<String>,
-  val tags: List<String>,
-  val isPublic: Boolean,
+  val editing: Editing?,
   val errorMessage: StringResource?,
-) : ScreenUiState
+) : ScreenUiState {
+
+  sealed interface Editing {
+
+    data class Illustration(
+      val title: String,
+      val authors: List<String>,
+      val tags: List<String>,
+      val isPublic: Boolean,
+    ) : Editing
+  }
+}

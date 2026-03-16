@@ -40,10 +40,15 @@ class AddCollectionViewModel(
     AddCollectionUiState(
       isBusy = busyScope.isRunning,
       selectedCategory = selectedCategory,
-      title = title,
-      authors = emptyList(),
-      tags = emptyList(),
-      isPublic = isPublic,
+      editing = when (selectedCategory) {
+        CollectionCategory.ILLUSTRATION -> AddCollectionUiState.Editing.Illustration(
+          title = title,
+          authors = emptyList(),
+          tags = emptyList(),
+          isPublic = isPublic,
+        )
+        else -> null
+      },
       errorMessage = errorMessage,
     )
 
