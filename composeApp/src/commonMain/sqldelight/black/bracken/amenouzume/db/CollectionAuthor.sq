@@ -1,6 +1,6 @@
 CREATE TABLE CollectionAuthor (
-    collection_id TEXT NOT NULL REFERENCES Collection(collection_id),
-    author_id TEXT NOT NULL REFERENCES Author(author_id),
+    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id),
+    author_id INTEGER NOT NULL REFERENCES Author(author_id),
     PRIMARY KEY (collection_id, author_id)
 );
 

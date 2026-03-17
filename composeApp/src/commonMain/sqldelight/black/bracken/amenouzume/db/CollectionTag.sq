@@ -1,6 +1,6 @@
 CREATE TABLE CollectionTag (
-    collection_id TEXT NOT NULL REFERENCES Collection(collection_id),
-    tag_id TEXT NOT NULL REFERENCES Tag(tag_id),
+    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id),
+    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id),
     PRIMARY KEY (collection_id, tag_id)
 );
 

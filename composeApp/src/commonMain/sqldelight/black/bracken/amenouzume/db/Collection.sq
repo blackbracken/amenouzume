@@ -1,5 +1,5 @@
 CREATE TABLE Collection (
-    collection_id TEXT NOT NULL PRIMARY KEY,
+    collection_id INTEGER NOT NULL PRIMARY KEY,
     title TEXT NOT NULL,
     thumbnail_path TEXT,
     category TEXT NOT NULL,
@@ -18,8 +18,8 @@ selectByCategory:
 SELECT * FROM Collection WHERE category = ?;
 
 insert:
-INSERT INTO Collection(collection_id, title, thumbnail_path, category, created_at, updated_at, content_type)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at, content_type)
+VALUES (?, ?, ?, ?, ?, ?);
 
 deleteById:
 DELETE FROM Collection WHERE collection_id = ?;

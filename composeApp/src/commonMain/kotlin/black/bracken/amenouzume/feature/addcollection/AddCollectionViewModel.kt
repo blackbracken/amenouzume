@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
+import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.TrackedScope
@@ -25,6 +26,7 @@ import org.jetbrains.compose.resources.StringResource
 @ContributesIntoMap(AppScope::class)
 class AddCollectionViewModel(
   private val collectionRepository: CollectionRepository,
+  private val tagRepository: TagRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
   private val busyScope = TrackedScope()
@@ -36,6 +38,15 @@ class AddCollectionViewModel(
   private var availableTags by mutableStateOf<List<String>>(emptyList())
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
+
+  init {
+    loadAvailableTags()
+  }
+
+  private fun loadAvailableTags() =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      availableTags = tagRepository.getAllPrimaryNames()
+    }
 
   @Composable
   private fun presenter(): AddCollectionUiState =
@@ -72,15 +83,20 @@ class AddCollectionViewModel(
     tags = value
   }
 
-  fun onAddTag(name: String) {
-    val trimmed = name.trim()
-    if (trimmed.isNotEmpty() && trimmed !in availableTags) {
-      availableTags = availableTags + trimmed
+  fun onAddTag(name: String) =
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      val trimmed = name.trim()
+      if (trimmed.isEmpty()) return@launchWithCatching
+
+      tagRepository.addTag(trimmed)
+
+      if (trimmed !in availableTags) {
+        availableTags = availableTags + trimmed
+      }
+      if (trimmed !in tags) {
+        tags = tags + trimmed
+      }
     }
-    if (trimmed.isNotEmpty() && trimmed !in tags) {
-      tags = tags + trimmed
-    }
-  }
 
   fun onClose() =
     runWithCatching({ errorMessage = it.messageRes }) {
@@ -97,7 +113,6 @@ class AddCollectionViewModel(
       errorMessage = null
       busyScope.track {
         collectionRepository.addCollection(
-          id = System.currentTimeMillis().toString(),
           title = title,
           category = selectedCategory?.name.orEmpty(),
           contentType = selectedCategory?.name.orEmpty(),

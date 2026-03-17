@@ -1,6 +1,6 @@
 CREATE TABLE AuthorName (
-    author_name_id TEXT NOT NULL PRIMARY KEY,
-    author_id TEXT NOT NULL REFERENCES Author(author_id),
+    author_name_id INTEGER NOT NULL PRIMARY KEY,
+    author_id INTEGER NOT NULL REFERENCES Author(author_id),
     name TEXT NOT NULL UNIQUE,
     is_primary INTEGER NOT NULL
 );
@@ -14,7 +14,7 @@ selectPrimaryByAuthorId:
 SELECT * FROM AuthorName WHERE author_id = ? AND is_primary = 1;
 
 insert:
-INSERT INTO AuthorName(author_name_id, author_id, name, is_primary) VALUES (?, ?, ?, ?);
+INSERT INTO AuthorName(author_id, name, is_primary) VALUES (?, ?, ?);
 
 deleteById:
 DELETE FROM AuthorName WHERE author_name_id = ?;

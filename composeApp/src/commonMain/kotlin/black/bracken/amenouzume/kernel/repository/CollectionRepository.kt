@@ -12,7 +12,6 @@ class CollectionRepository(
   private val queries = database.collectionQueries
 
   suspend fun addCollection(
-    id: String,
     title: String,
     category: String,
     contentType: String,
@@ -20,7 +19,6 @@ class CollectionRepository(
     withContext(Dispatchers.IO) {
       val now = System.currentTimeMillis()
       queries.insert(
-        collection_id = id,
         title = title,
         thumbnail_path = null,
         category = category,
