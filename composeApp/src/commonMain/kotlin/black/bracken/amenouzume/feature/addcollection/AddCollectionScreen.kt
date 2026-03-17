@@ -71,6 +71,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
+import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -248,9 +250,13 @@ private fun CategoryChip(
   selectedCategory: CollectionCategory?,
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
+  val haptic = rememberHapticFeedback()
   FilterChip(
     selected = selectedCategory == category,
-    onClick = { onSelectCategory(category) },
+    onClick = {
+      haptic(AppHapticFeedbackType.LightTap)
+      onSelectCategory(category)
+    },
     label = {
       Text(
         text = stringResource(labelRes),
@@ -271,6 +277,7 @@ private fun AddFilesSection(
   onAddFiles: () -> Unit,
   onNavigateToEditOrder: () -> Unit,
 ) {
+  val haptic = rememberHapticFeedback()
   Column {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
       DashedBorderArea {
@@ -289,7 +296,10 @@ private fun AddFilesSection(
           )
           Spacer(modifier = Modifier.height(8.dp))
           Button(
-            onClick = onAddFiles,
+            onClick = {
+              haptic(AppHapticFeedbackType.LightTap)
+              onAddFiles()
+            },
             shape = CircleShape,
           ) {
             Text(
@@ -445,10 +455,20 @@ private fun DetailRow(
   onClick: (() -> Unit)? = null,
   trailing: @Composable () -> Unit,
 ) {
+  val haptic = rememberHapticFeedback()
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+      .then(
+        if (onClick != null) {
+          Modifier.clickable {
+            haptic(AppHapticFeedbackType.LightTap)
+            onClick()
+          }
+        } else {
+          Modifier
+        },
+      )
       .padding(
         horizontal = 16.dp,
         vertical = 16.dp,

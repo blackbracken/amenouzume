@@ -53,6 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
+import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
@@ -105,8 +107,14 @@ internal fun OpenDatabaseScreen(
       )
     },
     floatingActionButton = {
+      val haptic = rememberHapticFeedback()
       FloatingActionButton(
-        onClick = { if (!state.isBusy) action.onCreateDatabase() },
+        onClick = {
+          if (!state.isBusy) {
+            haptic(AppHapticFeedbackType.LightTap)
+            action.onCreateDatabase()
+          }
+        },
       ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = null)
       }
@@ -174,6 +182,7 @@ private fun ImportLocalDatabaseCard(
   enabled: Boolean,
   onBrowseFiles: () -> Unit,
 ) {
+  val haptic = rememberHapticFeedback()
   val primary = MaterialTheme.colorScheme.primary
   DashedBorderArea {
     Column(
@@ -209,7 +218,10 @@ private fun ImportLocalDatabaseCard(
       )
       Spacer(Modifier.height(8.dp))
       Button(
-        onClick = onBrowseFiles,
+        onClick = {
+          haptic(AppHapticFeedbackType.LightTap)
+          onBrowseFiles()
+        },
         shape = CircleShape,
         enabled = enabled,
       ) {
@@ -229,8 +241,12 @@ private fun DatabaseEntryItem(
   onClick: () -> Unit,
   onDelete: () -> Unit,
 ) {
+  val haptic = rememberHapticFeedback()
   Card(
-    onClick = onClick,
+    onClick = {
+      haptic(AppHapticFeedbackType.LightTap)
+      onClick()
+    },
     modifier = Modifier.fillMaxWidth(),
     shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -270,7 +286,10 @@ private fun DatabaseEntryItem(
           overflow = TextOverflow.Ellipsis,
         )
       }
-      IconButton(onClick = onDelete) {
+      IconButton(onClick = {
+        haptic(AppHapticFeedbackType.LightTap)
+        onDelete()
+      }) {
         Icon(
           imageVector = Icons.Default.Delete,
           contentDescription = null,
