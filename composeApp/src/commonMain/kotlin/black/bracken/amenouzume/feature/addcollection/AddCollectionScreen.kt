@@ -182,35 +182,42 @@ internal fun AddCollectionScreen(
             onNavigateToEditOrder = action.onNavigateToEditOrder,
           )
 
-          Spacer(modifier = Modifier.height(16.dp))
-
-          CollectionDetailsSection(
-            title = editing.title,
-            onUpdateTitle = action.onUpdateTitle,
-            authors = editing.authors,
-            tags = editing.tags,
-            onTagsClick = { showTagsSheet = true },
-          )
-
-          Spacer(modifier = Modifier.weight(1f))
-
-          Button(
-            onClick = action.onSubmit,
-            enabled = !state.isBusy && editing.title.isNotBlank(),
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp, vertical = 16.dp),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-              containerColor = MaterialTheme.colorScheme.primary,
-              contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
+          AnimatedVisibility(
+            visible = editing.filePaths.isNotEmpty(),
+            enter = fadeIn(),
           ) {
-            Text(
-              text = stringResource(Res.string.add_collection_submit),
-              fontWeight = FontWeight.Bold,
-              modifier = Modifier.padding(vertical = 8.dp),
-            )
+            Column {
+              Spacer(modifier = Modifier.height(16.dp))
+
+              CollectionDetailsSection(
+                title = editing.title,
+                onUpdateTitle = action.onUpdateTitle,
+                authors = editing.authors,
+                tags = editing.tags,
+                onTagsClick = { showTagsSheet = true },
+              )
+
+              Spacer(modifier = Modifier.weight(1f))
+
+              Button(
+                onClick = action.onSubmit,
+                enabled = !state.isBusy && editing.title.isNotBlank(),
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 16.dp),
+                shape = MaterialTheme.shapes.medium,
+                colors = ButtonDefaults.buttonColors(
+                  containerColor = MaterialTheme.colorScheme.primary,
+                  contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+              ) {
+                Text(
+                  text = stringResource(Res.string.add_collection_submit),
+                  fontWeight = FontWeight.Bold,
+                  modifier = Modifier.padding(vertical = 8.dp),
+                )
+              }
+            }
           }
         }
       }
