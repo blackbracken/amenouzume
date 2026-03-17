@@ -24,7 +24,7 @@ class AddCollectionScreenScreenshotTest {
               selectedCategory = CollectionCategory.ILLUSTRATION,
               editing = AddCollectionUiState.Editing(
                 title = "",
-                filePaths = emptyList(),
+                filePaths = listOf("/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"),
                 authors = listOf("@jdoe_art"),
                 tags = listOf("Cyberpunk", "Noir"),
                 availableTags = listOf("Architecture", "Design", "Engineering"),

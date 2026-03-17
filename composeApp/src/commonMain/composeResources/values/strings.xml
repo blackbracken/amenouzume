@@ -29,6 +29,7 @@
     <string name="add_collection_field_category">Category</string>
     <string name="add_collection_authors">Authors</string>
     <string name="add_collection_tags">Tags</string>
+    <string name="add_collection_edit_order">Edit Order / Manage (%1$d items)</string>
     <string name="add_collection_submit">CREATE COLLECTION</string>
     <string name="select_tags_title">Select Tags</string>
     <string name="select_tags_done">Done</string>

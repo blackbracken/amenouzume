@@ -11,6 +11,7 @@ data class AddCollectionUiAction(
   val onAddTag: (String) -> Unit,
   val onSubmit: () -> Unit,
   val onNavigateToCollections: () -> Unit,
+  val onNavigateToEditOrder: () -> Unit,
 ) {
   companion object {
     val Noop = AddCollectionUiAction(
@@ -22,6 +23,7 @@ data class AddCollectionUiAction(
       onAddTag = {},
       onSubmit = {},
       onNavigateToCollections = {},
+      onNavigateToEditOrder = {},
     )
   }
 }

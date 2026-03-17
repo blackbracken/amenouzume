@@ -23,6 +23,7 @@
     <string name="add_collection_field_category">カテゴリ</string>
     <string name="add_collection_authors">作者</string>
     <string name="add_collection_tags">タグ</string>
+    <string name="add_collection_edit_order">順序変更 / 管理 (%1$d 件)</string>
     <string name="add_collection_submit">コレクションを作成</string>
     <string name="select_tags_title">タグを選択</string>
     <string name="select_tags_done">完了</string>
