@@ -1,6 +1,7 @@
 package black.bracken.amenouzume.feature.addcollection
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +11,7 @@ import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
+import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
@@ -35,22 +37,27 @@ class AddCollectionViewModel(
   private var title by mutableStateOf("")
   private var filePaths by mutableStateOf<List<String>>(emptyList())
   private var tags by mutableStateOf<List<String>>(emptyList())
-  private var availableTags by mutableStateOf<List<String>>(emptyList())
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
   init {
-    loadAvailableTags()
+    refreshAvailableTags()
   }
 
-  private fun loadAvailableTags() =
+  private fun refreshAvailableTags() =
     launchWithCatching({ errorMessage = it.messageRes }) {
-      availableTags = tagRepository.getAllPrimaryNames()
+      tagRepository.refreshAllPrimaryNames()
     }
 
   @Composable
-  private fun presenter(): AddCollectionUiState =
-    AddCollectionUiState(
+  private fun presenter(): AddCollectionUiState {
+    val availableTagsLoadable by tagRepository.getAllPrimaryNames().collectAsState(Loadable.Loading)
+    val availableTags = when (val l = availableTagsLoadable) {
+      is Loadable.Loaded -> l.value
+      else -> emptyList()
+    }
+
+    return AddCollectionUiState(
       isBusy = busyScope.isRunning,
       selectedCategory = selectedCategory,
       editing = if (selectedCategory != null) {
@@ -66,6 +73,7 @@ class AddCollectionViewModel(
       },
       errorMessage = errorMessage,
     )
+  }
 
   fun onSelectCategory(category: CollectionCategory) {
     selectedCategory = category
@@ -89,10 +97,8 @@ class AddCollectionViewModel(
       if (trimmed.isEmpty()) return@launchWithCatching
 
       tagRepository.addTag(trimmed)
+      tagRepository.refreshAllPrimaryNames()
 
-      if (trimmed !in availableTags) {
-        availableTags = availableTags + trimmed
-      }
       if (trimmed !in tags) {
         tags = tags + trimmed
       }
