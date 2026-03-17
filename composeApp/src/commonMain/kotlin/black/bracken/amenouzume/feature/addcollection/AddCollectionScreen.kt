@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -301,45 +302,13 @@ private fun AddFilesSection(
       }
     }
 
-    if (filePaths.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(12.dp))
-
+    Spacer(modifier = Modifier.height(12.dp))
+    
+    AnimatedVisibility(filePaths.isNotEmpty()) {
       FileCarousel(
         filePaths = filePaths,
         onAddFiles = onAddFiles,
       )
-
-      Spacer(modifier = Modifier.height(12.dp))
-
-      Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp)
-          .clip(MaterialTheme.shapes.medium)
-          .clickable(onClick = onNavigateToEditOrder)
-          .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-      ) {
-        Icon(
-          imageVector = Icons.Default.GridView,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.size(20.dp),
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-          text = stringResource(Res.string.add_collection_edit_order, filePaths.size),
-          style = MaterialTheme.typography.bodyMedium,
-          fontWeight = FontWeight.Medium,
-          color = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.weight(1f),
-        )
-        Icon(
-          imageVector = Icons.Default.ChevronRight,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
     }
   }
 }
@@ -385,7 +354,7 @@ private fun FileCarousel(
         contentAlignment = Alignment.Center,
       ) {
         Icon(
-          imageVector = Icons.Default.Add,
+          imageVector = Icons.Default.SwapVert,
           contentDescription = null,
           tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
