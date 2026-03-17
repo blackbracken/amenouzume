@@ -46,6 +46,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Button
@@ -434,7 +435,7 @@ private fun CollectionDetailsSection(
     HorizontalDivider()
 
     DetailRow(
-      icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Label, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+      icon = { Icon(imageVector = Icons.Filled.Numbers, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_tags),
       onClick = onTagsClick,
       trailing = {

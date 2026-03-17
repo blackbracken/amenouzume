@@ -1,6 +1,7 @@
 package black.bracken.amenouzume.feature.addcollection.composable
 
 import amenouzume.composeapp.generated.resources.Res
+import amenouzume.composeapp.generated.resources.select_tags_create
 import amenouzume.composeapp.generated.resources.select_tags_done
 import amenouzume.composeapp.generated.resources.select_tags_manage
 import amenouzume.composeapp.generated.resources.select_tags_recommended
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,11 +25,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -137,43 +136,24 @@ internal fun ColumnScope.SelectTagsContent(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    Row(
+    OutlinedTextField(
+      value = searchQuery,
+      onValueChange = { searchQuery = it },
+      placeholder = { Text(stringResource(Res.string.select_tags_search_placeholder)) },
       modifier = Modifier.fillMaxWidth(),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-      OutlinedTextField(
-        value = searchQuery,
-        onValueChange = { searchQuery = it },
-        placeholder = { Text(stringResource(Res.string.select_tags_search_placeholder)) },
-        modifier = Modifier.weight(1f),
-        singleLine = true,
-        shape = MaterialTheme.shapes.small,
-        colors = OutlinedTextFieldDefaults.colors(
-          unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-        ),
-      )
-      Button(
-        onClick = {
-          if (searchQuery.isNotBlank()) {
-            onAddTag(searchQuery)
-            searchQuery = ""
-          }
-        },
-        modifier = Modifier.size(48.dp),
-        shape = MaterialTheme.shapes.small,
-        colors = ButtonDefaults.buttonColors(
-          containerColor = MaterialTheme.colorScheme.primary,
-          contentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-        contentPadding = PaddingValues(0.dp),
-      ) {
+      singleLine = true,
+      leadingIcon = {
         Icon(
-          imageVector = Icons.Default.Add,
+          imageVector = Icons.Default.Numbers,
           contentDescription = null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-      }
-    }
+      },
+      shape = MaterialTheme.shapes.small,
+      colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+      ),
+    )
 
     if (selectedTags.isNotEmpty()) {
       Spacer(modifier = Modifier.height(16.dp))
@@ -213,6 +193,36 @@ internal fun ColumnScope.SelectTagsContent(
   }
 
   LazyColumn(modifier = Modifier.weight(1f)) {
+    if (searchQuery.isNotBlank()) {
+      val trimmedQuery = searchQuery.trim()
+      item(key = "create_tag") {
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+              onAddTag(trimmedQuery)
+              searchQuery = ""
+            }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Icon(
+            imageVector = Icons.Default.Numbers,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+          )
+          Spacer(modifier = Modifier.width(16.dp))
+          Text(
+            text = stringResource(Res.string.select_tags_create, trimmedQuery),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Medium,
+          )
+        }
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+      }
+    }
+
     items(filteredTags) { tag ->
       val isSelected = tag in selectedTags
       Row(
@@ -223,7 +233,7 @@ internal fun ColumnScope.SelectTagsContent(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
-          imageVector = Icons.Default.Tag,
+          imageVector = Icons.Default.Numbers,
           contentDescription = null,
           tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
         )

@@ -33,9 +33,10 @@
     <string name="add_collection_submit">CREATE COLLECTION</string>
     <string name="select_tags_title">Select Tags</string>
     <string name="select_tags_done">Done</string>
-    <string name="select_tags_search_placeholder">Search tags</string>
+    <string name="select_tags_search_placeholder">Tag to add</string>
     <string name="select_tags_selected">SELECTED TAGS</string>
     <string name="select_tags_recommended">RECOMMENDED TAGS</string>
     <string name="select_tags_manage">Manage Tags</string>
+    <string name="select_tags_create">Create tag #%1$s</string>
     <string name="select_tags_update">UPDATE SELECTION</string>
 </resources>
