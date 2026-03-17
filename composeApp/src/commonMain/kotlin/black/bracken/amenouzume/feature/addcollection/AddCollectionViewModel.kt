@@ -44,8 +44,7 @@ class AddCollectionViewModel(
     refreshAvailableTags()
   }
 
-  private fun refreshAvailableTags() =
-    launchWithCatching({ errorMessage = it.messageRes }) {
+  private fun refreshAvailableTags() = launchWithCatching({ errorMessage = it.messageRes }) {
       tagRepository.refreshAllPrimaryNames()
     }
 
@@ -91,8 +90,7 @@ class AddCollectionViewModel(
     tags = value
   }
 
-  fun onAddTag(name: String) =
-    launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onAddTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
       val trimmed = name.trim()
       if (trimmed.isEmpty()) return@launchWithCatching
 
@@ -104,18 +102,15 @@ class AddCollectionViewModel(
       }
     }
 
-  fun onClose() =
-    runWithCatching({ errorMessage = it.messageRes }) {
+  fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
       navigator.back()
     }
 
-  fun onNavigateToCollections(vaultPath: String) =
-    runWithCatching({ errorMessage = it.messageRes }) {
+  fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {
       navigator.navigateSingleTop(CollectionListRoute(vaultPath))
     }
 
-  fun onAddCollection() =
-    launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
       errorMessage = null
       busyScope.track {
         collectionRepository.addCollection(

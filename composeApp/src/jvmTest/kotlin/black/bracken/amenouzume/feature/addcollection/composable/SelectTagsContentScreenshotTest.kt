@@ -11,8 +11,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalTestApi::class)
 class SelectTagsContentScreenshotTest {
   @Test
-  fun selectTagsContent() =
-    runDesktopComposeUiTest(
+  fun selectTagsContent() = runDesktopComposeUiTest(
       width = 400,
       height = 900,
     ) {

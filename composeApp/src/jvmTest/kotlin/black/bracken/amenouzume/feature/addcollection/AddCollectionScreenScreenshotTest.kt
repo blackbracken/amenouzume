@@ -11,8 +11,7 @@ import kotlin.test.Test
 @OptIn(ExperimentalTestApi::class)
 class AddCollectionScreenScreenshotTest {
   @Test
-  fun addCollectionScreen() =
-    runDesktopComposeUiTest(
+  fun addCollectionScreen() = runDesktopComposeUiTest(
       width = 400,
       height = 1200,
     ) {
