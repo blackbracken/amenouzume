@@ -74,6 +74,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.size.Size
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
@@ -356,7 +359,10 @@ private fun FileCarousel(
           .background(MaterialTheme.colorScheme.surfaceVariant),
       ) {
         AsyncImage(
-          model = pathToCoilModel(path),
+          model = ImageRequest.Builder(LocalPlatformContext.current)
+            .data(pathToCoilModel(path))
+            .size(Size(240, 240))
+            .build(),
           contentDescription = null,
           modifier = Modifier.fillMaxSize(),
           contentScale = ContentScale.Crop,
