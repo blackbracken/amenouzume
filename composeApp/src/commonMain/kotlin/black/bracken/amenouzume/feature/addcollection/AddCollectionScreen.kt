@@ -22,6 +22,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -269,31 +270,33 @@ private fun AddFilesSection(
   onAddFiles: () -> Unit,
   onNavigateToEditOrder: () -> Unit,
 ) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    DashedBorderArea {
-      Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-          imageVector = Icons.Default.AddPhotoAlternate,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.size(40.dp),
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-          text = stringResource(Res.string.add_collection_upload_title),
-          style = MaterialTheme.typography.titleSmall,
-          fontWeight = FontWeight.Bold,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-          onClick = onAddFiles,
-          shape = CircleShape,
-        ) {
+  Column {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+      DashedBorderArea {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Icon(
+            imageVector = Icons.Default.AddPhotoAlternate,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(40.dp),
+          )
+          Spacer(modifier = Modifier.height(8.dp))
           Text(
-            text = stringResource(Res.string.add_collection_browse_files),
-            style = MaterialTheme.typography.labelMedium,
+            text = stringResource(Res.string.add_collection_upload_title),
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
           )
+          Spacer(modifier = Modifier.height(8.dp))
+          Button(
+            onClick = onAddFiles,
+            shape = CircleShape,
+          ) {
+            Text(
+              text = stringResource(Res.string.add_collection_browse_files),
+              style = MaterialTheme.typography.labelMedium,
+              fontWeight = FontWeight.Bold,
+            )
+          }
         }
       }
     }
@@ -311,6 +314,7 @@ private fun AddFilesSection(
       Row(
         modifier = Modifier
           .fillMaxWidth()
+          .padding(horizontal = 16.dp)
           .clip(MaterialTheme.shapes.medium)
           .clickable(onClick = onNavigateToEditOrder)
           .padding(vertical = 12.dp),
@@ -349,6 +353,7 @@ private fun FileCarousel(
   val thumbnailShape = RoundedCornerShape(12.dp)
 
   LazyRow(
+    contentPadding = PaddingValues(horizontal = 16.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     items(filePaths) { path ->
