@@ -349,7 +349,8 @@ private fun FileCarousel(
   filePaths: List<String>,
   onAddFiles: () -> Unit,
 ) {
-  val thumbnailSize = 72.dp
+  val thumbnailSizePx = 72
+  val thumbnailSizeDp = thumbnailSizePx.dp
   val thumbnailShape = RoundedCornerShape(12.dp)
 
   LazyRow(
@@ -359,14 +360,14 @@ private fun FileCarousel(
     items(filePaths) { path ->
       Box(
         modifier = Modifier
-          .size(thumbnailSize)
+          .size(thumbnailSizeDp)
           .clip(thumbnailShape)
           .background(MaterialTheme.colorScheme.surfaceVariant),
       ) {
         AsyncImage(
           model = ImageRequest.Builder(LocalPlatformContext.current)
             .data(pathToCoilModel(path))
-            .size(Size(240, 240))
+            .size(Size(3 * thumbnailSizePx, 3 * thumbnailSizePx))
             .build(),
           contentDescription = null,
           modifier = Modifier.fillMaxSize(),
@@ -377,7 +378,7 @@ private fun FileCarousel(
     item {
       Box(
         modifier = Modifier
-          .size(thumbnailSize)
+          .size(thumbnailSizeDp)
           .clip(thumbnailShape)
           .background(MaterialTheme.colorScheme.surfaceVariant)
           .clickable(onClick = onAddFiles),
