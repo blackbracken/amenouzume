@@ -109,6 +109,7 @@ fun AddCollectionCoordinator(
     onSelectCategory = viewModel::onSelectCategory,
     onAddFiles = filePickerLauncher,
     onUpdateTitle = viewModel::onUpdateTitle,
+    onUpdateTagSearchQuery = viewModel::onUpdateTagSearchQuery,
     onToggleTag = viewModel::onToggleTag,
     onAttachTag = viewModel::onAttachTag,
     onCreateTag = viewModel::onCreateTag,
@@ -135,6 +136,8 @@ internal fun AddCollectionScreen(
     if (editing != null) {
       SelectTagsBottomSheet(
         selectedTags = editing.tags,
+        searchQuery = editing.tagSearchQuery,
+        onSearchQueryChange = action.onUpdateTagSearchQuery,
         availableTags = editing.availableTags,
         recentTags = editing.recentTags,
         onToggleTag = action.onToggleTag,
@@ -519,6 +522,7 @@ private fun AddCollectionScreenPreview() {
           filePaths = listOf("/path/to/image1.png", "/path/to/image2.png"),
           authors = listOf("@jdoe_art"),
           tags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir")),
+          tagSearchQuery = "",
           availableTags = listOf(Tag(TagId(3), "Architecture"), Tag(TagId(4), "Design"), Tag(TagId(5), "Engineering"), Tag(TagId(6), "Marketing"), Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX")),
           recentTags = listOf(Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX"), Tag(TagId(6), "Marketing")),
         ),
@@ -528,3 +532,5 @@ private fun AddCollectionScreenPreview() {
     )
   }
 }
+
+

@@ -16,6 +16,7 @@ data class AddCollectionUiState(
     val filePaths: List<String>,
     val authors: List<String>,
     val tags: List<Tag>,
+    val tagSearchQuery: String,
     val availableTags: List<Tag>,
     val recentTags: List<Tag>,
   )

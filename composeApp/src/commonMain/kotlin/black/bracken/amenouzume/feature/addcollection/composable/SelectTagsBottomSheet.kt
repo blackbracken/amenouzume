@@ -39,24 +39,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
+import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SelectTagsBottomSheet(
   selectedTags: List<Tag>,
+  searchQuery: String,
+  onSearchQueryChange: (String) -> Unit,
   availableTags: List<Tag>,
   recentTags: List<Tag>,
   onToggleTag: (Tag) -> Unit,
@@ -72,6 +74,8 @@ internal fun SelectTagsBottomSheet(
   ) {
     SelectTagsContent(
       selectedTags = selectedTags,
+      searchQuery = searchQuery,
+      onSearchQueryChange = onSearchQueryChange,
       availableTags = availableTags,
       recentTags = recentTags,
       onToggleTag = onToggleTag,
@@ -87,6 +91,8 @@ internal fun SelectTagsBottomSheet(
 @Composable
 internal fun ColumnScope.SelectTagsContent(
   selectedTags: List<Tag>,
+  searchQuery: String,
+  onSearchQueryChange: (String) -> Unit,
   availableTags: List<Tag>,
   recentTags: List<Tag>,
   onToggleTag: (Tag) -> Unit,
@@ -95,7 +101,6 @@ internal fun ColumnScope.SelectTagsContent(
   onAttachTag: (Tag) -> Unit,
   onDone: () -> Unit,
 ) {
-  var searchQuery by rememberSaveable { mutableStateOf("") }
 
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     Text(
@@ -108,7 +113,7 @@ internal fun ColumnScope.SelectTagsContent(
 
     OutlinedTextField(
       value = searchQuery,
-      onValueChange = { searchQuery = it },
+      onValueChange = onSearchQueryChange,
       placeholder = { Text(stringResource(Res.string.select_tags_search_placeholder)) },
       modifier = Modifier.fillMaxWidth(),
       singleLine = true,
@@ -167,10 +172,7 @@ internal fun ColumnScope.SelectTagsContent(
         Row(
           modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-              onCreateTag(trimmedQuery)
-              searchQuery = ""
-            }
+            .clickable { onCreateTag(trimmedQuery) }
             .padding(horizontal = 16.dp, vertical = 12.dp),
           verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -265,6 +267,29 @@ internal fun ColumnScope.SelectTagsContent(
       fontWeight = FontWeight.Bold,
       modifier = Modifier.padding(vertical = 8.dp),
     )
+  }
+}
+
+@Preview
+@Composable
+private fun SelectTagsContentSearchingPreview() {
+  AmenouzumeTheme {
+    Surface {
+      Column {
+        SelectTagsContent(
+          selectedTags = listOf(Tag(TagId(1), "Cyberpunk")),
+          searchQuery = "Vaporw",
+          onSearchQueryChange = {},
+          availableTags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir"), Tag(TagId(3), "Photography")),
+          recentTags = listOf(Tag(TagId(3), "Photography"), Tag(TagId(2), "Noir")),
+          onToggleTag = {},
+          onRemoveTag = {},
+          onCreateTag = {},
+          onAttachTag = {},
+          onDone = {},
+        )
+      }
+    }
   }
 }
 

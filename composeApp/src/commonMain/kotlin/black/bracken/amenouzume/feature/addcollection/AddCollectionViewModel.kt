@@ -42,6 +42,7 @@ class AddCollectionViewModel(
   private var title by mutableStateOf("")
   private var filePaths by mutableStateOf<List<String>>(emptyList())
   private var tags by mutableStateOf<List<Tag>>(emptyList())
+  private var tagSearchQuery by mutableStateOf("")
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
@@ -78,6 +79,7 @@ class AddCollectionViewModel(
           filePaths = filePaths,
           authors = emptyList(),
           tags = sortedTags,
+          tagSearchQuery = tagSearchQuery,
           availableTags = sortedAvailableTags,
           recentTags = recentTags,
         )
@@ -107,6 +109,10 @@ class AddCollectionViewModel(
     title = value
   }
 
+  fun onUpdateTagSearchQuery(value: String) {
+    tagSearchQuery = value
+  }
+
   fun onToggleTag(tag: Tag) {
     tags = if (tag in tags) tags - tag else tags + tag
   }
@@ -124,6 +130,7 @@ class AddCollectionViewModel(
     if (tag !in tags) {
       tags = tags + tag
     }
+    tagSearchQuery = ""
   }
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
