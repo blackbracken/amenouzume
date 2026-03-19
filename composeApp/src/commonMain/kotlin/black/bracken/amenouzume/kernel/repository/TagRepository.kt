@@ -4,6 +4,7 @@ import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.error_tag_already_exists
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
+import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
@@ -19,40 +20,41 @@ class TagRepository(
 ) {
   private val tagQueries = database.tagQueries
 
-  private val _allPrimaryNames = MutableStateFlow<Loadable<List<String>>>(Loadable.Loading)
-  private val _recentlyAddedNames = MutableStateFlow<Loadable<List<String>>>(Loadable.Loading)
+  private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
+  private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
 
-  fun getAllPrimaryNames(): Flow<Loadable<List<String>>> = _allPrimaryNames.asStateFlow()
+  fun getAllTags(): Flow<Loadable<List<Tag>>> = _allTags.asStateFlow()
 
-  fun getRecentlyAddedNames(): Flow<Loadable<List<String>>> = _recentlyAddedNames.asStateFlow()
+  fun getRecentlyAddedTags(): Flow<Loadable<List<Tag>>> = _recentlyAddedTags.asStateFlow()
 
-  suspend fun refreshAllPrimaryNames() {
-    _allPrimaryNames.value = Loadable.from {
+  suspend fun refreshAllTags() {
+    _allTags.value = Loadable.from {
       withContext(Dispatchers.IO) {
-        tagQueries.selectAll().executeAsList().map { it.primary_name }
+        tagQueries.selectAll().executeAsList().map { Tag.from(it) }
       }
     }
   }
 
-  suspend fun refreshRecentlyAddedNames() {
-    _recentlyAddedNames.value = Loadable.from {
+  suspend fun refreshRecentlyAddedTags() {
+    _recentlyAddedTags.value = Loadable.from {
       withContext(Dispatchers.IO) {
-        tagQueries.selectRecentlyAdded().executeAsList().map { it.primary_name }
+        tagQueries.selectRecentlyAdded().executeAsList().map { Tag.from(it) }
       }
     }
   }
 
-  suspend fun createTag(name: String): TagId {
+  suspend fun createTag(name: String): Tag {
     return withContext(Dispatchers.IO) {
       val existing = tagQueries.selectByName(name).executeAsOneOrNull()
       if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
       database.transactionWithResult {
         tagQueries.insert(name, System.currentTimeMillis())
-        TagId(tagQueries.lastInsertRowId().executeAsOne())
+        val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
+        Tag(id = id, primaryName = name)
       }.also {
-        refreshAllPrimaryNames()
-        refreshRecentlyAddedNames()
+        refreshAllTags()
+        refreshRecentlyAddedTags()
       }
     }
   }

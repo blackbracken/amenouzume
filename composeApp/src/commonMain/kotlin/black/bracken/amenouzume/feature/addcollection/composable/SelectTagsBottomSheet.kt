@@ -50,16 +50,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import black.bracken.amenouzume.kernel.model.Tag
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SelectTagsBottomSheet(
-  selectedTags: List<String>,
-  availableTags: List<String>,
-  recentTags: List<String>,
-  onToggleTag: (String) -> Unit,
-  onAttachTag: (String) -> Unit,
+  selectedTags: List<Tag>,
+  availableTags: List<Tag>,
+  recentTags: List<Tag>,
+  onToggleTag: (Tag) -> Unit,
+  onAttachTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
   onDismiss: () -> Unit,
 ) {
@@ -85,13 +86,13 @@ internal fun SelectTagsBottomSheet(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun ColumnScope.SelectTagsContent(
-  selectedTags: List<String>,
-  availableTags: List<String>,
-  recentTags: List<String>,
-  onToggleTag: (String) -> Unit,
-  onRemoveTag: (String) -> Unit,
+  selectedTags: List<Tag>,
+  availableTags: List<Tag>,
+  recentTags: List<Tag>,
+  onToggleTag: (Tag) -> Unit,
+  onRemoveTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
-  onAttachTag: (String) -> Unit,
+  onAttachTag: (Tag) -> Unit,
   onDone: () -> Unit,
 ) {
   var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -136,7 +137,7 @@ internal fun ColumnScope.SelectTagsContent(
           InputChip(
             selected = true,
             onClick = { onRemoveTag(tag) },
-            label = { Text(tag, fontWeight = FontWeight.Medium) },
+            label = { Text(tag.primaryName, fontWeight = FontWeight.Medium) },
             trailingIcon = {
               Icon(
                 imageVector = Icons.Default.Close,
@@ -197,7 +198,7 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    items(recentTags) { tag ->
+    items(recentTags, key = { it.id.value }) { tag ->
       Row(
         modifier = Modifier
           .fillMaxWidth()
@@ -212,7 +213,7 @@ internal fun ColumnScope.SelectTagsContent(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-          text = tag,
+          text = tag.primaryName,
           style = MaterialTheme.typography.bodyLarge,
         )
       }

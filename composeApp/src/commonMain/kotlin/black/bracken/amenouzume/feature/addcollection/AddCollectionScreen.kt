@@ -75,6 +75,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import black.bracken.amenouzume.platform.image.pathToCoilModel
@@ -385,7 +387,7 @@ private fun CollectionDetailsSection(
   title: String,
   onUpdateTitle: (String) -> Unit,
   authors: List<String>,
-  tags: List<String>,
+  tags: List<Tag>,
   onTagsClick: () -> Unit,
 ) {
   Column {
@@ -442,7 +444,7 @@ private fun CollectionDetailsSection(
           tags.forEach { tag ->
             SuggestionChip(
               onClick = {},
-              label = { Text(tag.uppercase(), style = MaterialTheme.typography.labelSmall) },
+              label = { Text(tag.primaryName.uppercase(), style = MaterialTheme.typography.labelSmall) },
             )
             Spacer(modifier = Modifier.width(4.dp))
           }
@@ -516,9 +518,9 @@ private fun AddCollectionScreenPreview() {
           title = "",
           filePaths = listOf("/path/to/image1.png", "/path/to/image2.png"),
           authors = listOf("@jdoe_art"),
-          tags = listOf("Cyberpunk", "Noir"),
-          availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
-          recentTags = listOf("Photography", "UI/UX", "Marketing"),
+          tags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir")),
+          availableTags = listOf(Tag(TagId(3), "Architecture"), Tag(TagId(4), "Design"), Tag(TagId(5), "Engineering"), Tag(TagId(6), "Marketing"), Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX")),
+          recentTags = listOf(Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX"), Tag(TagId(6), "Marketing")),
         ),
         errorMessage = null,
       ),

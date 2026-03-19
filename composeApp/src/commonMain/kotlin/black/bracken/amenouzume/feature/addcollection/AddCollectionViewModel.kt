@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.error.CommonFailure
+import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
@@ -39,28 +40,26 @@ class AddCollectionViewModel(
   private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
   private var title by mutableStateOf("")
   private var filePaths by mutableStateOf<List<String>>(emptyList())
-  private var tags by mutableStateOf<List<String>>(emptyList())
+  private var tags by mutableStateOf<List<Tag>>(emptyList())
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
   init {
-    refreshAvailableTags()
-  }
-
-  private fun refreshAvailableTags() = launchWithCatching({ errorMessage = it.messageRes }) {
-    tagRepository.refreshAllPrimaryNames()
-    tagRepository.refreshRecentlyAddedNames()
+    launchWithCatching({ errorMessage = it.messageRes }) {
+      tagRepository.refreshAllTags()
+      tagRepository.refreshRecentlyAddedTags()
+    }
   }
 
   @Composable
   private fun presenter(): AddCollectionUiState {
-    val availableTagsLoadable by tagRepository.getAllPrimaryNames().collectAsState(Loadable.Loading)
+    val availableTagsLoadable by tagRepository.getAllTags().collectAsState(Loadable.Loading)
     val availableTags = when (val l = availableTagsLoadable) {
       is Loadable.Loaded -> l.value
       else -> emptyList()
     }
 
-    val recentTagsLoadable by tagRepository.getRecentlyAddedNames().collectAsState(Loadable.Loading)
+    val recentTagsLoadable by tagRepository.getRecentlyAddedTags().collectAsState(Loadable.Loading)
     val recentTags = when (val l = recentTagsLoadable) {
       is Loadable.Loaded -> l.value
       else -> emptyList()
@@ -104,22 +103,22 @@ class AddCollectionViewModel(
     title = value
   }
 
-  fun onToggleTag(name: String) {
-    tags = if (name in tags) tags - name else tags + name
+  fun onToggleTag(tag: Tag) {
+    tags = if (tag in tags) tags - tag else tags + tag
   }
 
-  fun onAttachTag(name: String) {
-    if (name !in tags) tags = tags + name
+  fun onAttachTag(tag: Tag) {
+    if (tag !in tags) tags = tags + tag
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     val trimmed = name.trim()
     if (trimmed.isEmpty()) return@launchWithCatching
 
-    tagRepository.createTag(trimmed)
+    val tag = tagRepository.createTag(trimmed)
 
-    if (trimmed !in tags) {
-      tags = tags + trimmed
+    if (tag !in tags) {
+      tags = tags + tag
     }
   }
 
