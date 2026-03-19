@@ -5,7 +5,6 @@ import amenouzume.composeapp.generated.resources.select_tags_create
 import amenouzume.composeapp.generated.resources.select_tags_manage
 import amenouzume.composeapp.generated.resources.select_tags_recommended
 import amenouzume.composeapp.generated.resources.select_tags_search_placeholder
-import amenouzume.composeapp.generated.resources.select_tags_selected
 import amenouzume.composeapp.generated.resources.select_tags_title
 import amenouzume.composeapp.generated.resources.select_tags_update
 import androidx.compose.animation.AnimatedVisibility
@@ -162,9 +161,22 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    if (searchQuery.isNotBlank() && searchResultTags.none { it.primaryName.equals(searchQuery.trim(), ignoreCase = true) }) {
+    val showCreateTag = searchQuery.isNotBlank()
+      && searchResultTags.none { it.primaryName.equals(searchQuery.trim(), ignoreCase = true) }
+    val showSearchSuggestions = searchResultTags.isNotEmpty()
+    val showSuggestionsAnything = showCreateTag || showSearchSuggestions
+
+    if (showSuggestionsAnything) {
+      item {
+        Spacer(modifier = Modifier.height(8.dp))
+      }
+    }
+
+    if (showCreateTag) {
       val trimmedQuery = searchQuery.trim()
+
       item(key = "create_tag") {
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
         Row(
           modifier = Modifier
             .fillMaxWidth()
@@ -188,7 +200,7 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    if (searchResultTags.isNotEmpty()) {
+    if (showSearchSuggestions) {
       items(searchResultTags, key = { "search_${it.id.value}" }) { tag ->
         HorizontalDivider(modifier = Modifier.fillMaxWidth())
         Row(
@@ -210,7 +222,9 @@ internal fun ColumnScope.SelectTagsContent(
           )
         }
       }
+    }
 
+    if (showSuggestionsAnything) {
       item(key = "search_results_divider") {
         HorizontalDivider(modifier = Modifier.fillMaxWidth())
       }
@@ -278,6 +292,10 @@ internal fun ColumnScope.SelectTagsContent(
           tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
+    }
+
+    item {
+      HorizontalDivider(modifier = Modifier.fillMaxWidth())
     }
   }
 
