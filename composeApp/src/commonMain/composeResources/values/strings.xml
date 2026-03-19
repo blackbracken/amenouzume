@@ -41,4 +41,9 @@
     <string name="select_tags_create">Create tag %1$s</string>
     <string name="select_tags_search_results">SEARCH RESULTS</string>
     <string name="select_tags_update">UPDATE SELECTION</string>
+    <string name="manage_tags_title">Manage Tags</string>
+    <string name="manage_tags_search_placeholder">Search tags</string>
+    <string name="manage_tags_section_all">ALL TAGS</string>
+    <string name="manage_tags_total">%1$d TOTAL</string>
+    <string name="manage_tags_create">Create tag %1$s</string>
 </resources>

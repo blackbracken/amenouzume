@@ -17,3 +17,6 @@ data class CollectionListRoute(
 data class AddCollectionRoute(
   val vaultPath: String,
 ) : AppRoute
+
+@Serializable
+data object ManageTagRoute : AppRoute

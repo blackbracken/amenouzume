@@ -4,6 +4,8 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlin.test.Test
@@ -25,10 +27,11 @@ class AddCollectionScreenScreenshotTest {
               title = "",
               filePaths = listOf("/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"),
               authors = listOf("@jdoe_art"),
-              tags = listOf("Cyberpunk", "Noir"),
-              availableTags = listOf("Architecture", "Design", "Engineering"),
+              tags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir")),
+              tagSearchQuery = "",
+              availableTags = listOf(Tag(TagId(3), "Architecture"), Tag(TagId(4), "Design"), Tag(TagId(5), "Engineering")),
               searchResultTags = emptyList(),
-              recentTags = listOf("Engineering", "Design"),
+              recentTags = listOf(Tag(TagId(5), "Engineering"), Tag(TagId(4), "Design")),
             ),
             errorMessage = null,
           ),

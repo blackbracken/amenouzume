@@ -115,6 +115,7 @@ fun AddCollectionCoordinator(
     onSubmit = viewModel::onCreateCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
     onNavigateToEditOrder = {},
+    onNavigateToManageTags = viewModel::onNavigateToManageTags,
   )
   AddCollectionScreen(
     state = state.value,
@@ -142,6 +143,10 @@ internal fun AddCollectionScreen(
         onToggleTag = action.onToggleTag,
         onAttachTag = action.onAttachTag,
         onCreateTag = action.onCreateTag,
+        onNavigateToManageTags = {
+          showTagsSheet = false
+          action.onNavigateToManageTags()
+        },
         onDismiss = { showTagsSheet = false },
       )
     }

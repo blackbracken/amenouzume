@@ -15,6 +15,7 @@ import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
+import black.bracken.amenouzume.uishared.navigation.ManageTagRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
@@ -145,6 +146,10 @@ class AddCollectionViewModel(
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
     navigator.back()
+  }
+
+  fun onNavigateToManageTags() = runWithCatching({ errorMessage = it.messageRes }) {
+    navigator.navigate(ManageTagRoute)
   }
 
   fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {

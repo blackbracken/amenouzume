@@ -64,6 +64,7 @@ internal fun SelectTagsBottomSheet(
   onToggleTag: (Tag) -> Unit,
   onAttachTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
+  onNavigateToManageTags: () -> Unit,
   onDismiss: () -> Unit,
 ) {
   val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -81,6 +82,7 @@ internal fun SelectTagsBottomSheet(
       onRemoveTag = onToggleTag,
       onCreateTag = onCreateTag,
       onAttachTag = onAttachTag,
+      onNavigateToManageTags = onNavigateToManageTags,
       onDone = onDismiss,
     )
   }
@@ -97,6 +99,7 @@ internal fun ColumnScope.SelectTagsContent(
   onRemoveTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
   onAttachTag: (Tag) -> Unit,
+  onNavigateToManageTags: () -> Unit,
   onDone: () -> Unit,
 ) {
   LazyColumn(modifier = Modifier.weight(1f)) {
@@ -270,7 +273,7 @@ internal fun ColumnScope.SelectTagsContent(
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { }
+          .clickable { onNavigateToManageTags() }
           .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
@@ -333,6 +336,7 @@ private fun SelectTagsContentSearchingPreview() {
           onRemoveTag = {},
           onCreateTag = {},
           onAttachTag = {},
+          onNavigateToManageTags = {},
           onDone = {},
         )
       }
