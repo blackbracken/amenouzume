@@ -44,6 +44,14 @@ class TagRepository(
     }
   }
 
+  suspend fun searchTags(query: String): List<Tag> {
+    if (query.isBlank()) return emptyList()
+
+    return withContext(Dispatchers.IO) {
+      tagQueries.searchByName(query.trim()).executeAsList().map { Tag.from(it) }
+    }
+  }
+
   suspend fun createTag(name: String): Tag {
     return withContext(Dispatchers.IO) {
       val existing = tagQueries.selectByName(name).executeAsOneOrNull()
