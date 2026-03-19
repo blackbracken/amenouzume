@@ -27,7 +27,6 @@
     <string name="add_collection_browse_files">Browse Files</string>
     <string name="add_collection_section_details">COLLECTION DETAILS</string>
     <string name="add_collection_field_title">COLLECTION TITLE</string>
-    <string name="add_collection_field_title_placeholder">e.g. Neo-Noir Concept Art</string>
     <string name="add_collection_field_category">Category</string>
     <string name="add_collection_authors">Authors</string>
     <string name="add_collection_tags">Tags</string>

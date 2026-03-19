@@ -21,7 +21,6 @@
     <string name="add_collection_browse_files">ファイルを選択</string>
     <string name="add_collection_section_details">コレクション詳細</string>
     <string name="add_collection_field_title">コレクションタイトル</string>
-    <string name="add_collection_field_title_placeholder">例: ネオノワール・コンセプトアート</string>
     <string name="add_collection_field_category">カテゴリ</string>
     <string name="add_collection_authors">作者</string>
     <string name="add_collection_tags">タグ</string>

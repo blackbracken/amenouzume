@@ -4,7 +4,6 @@ import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.add_collection_authors
 import amenouzume.composeapp.generated.resources.add_collection_browse_files
 import amenouzume.composeapp.generated.resources.add_collection_field_title
-import amenouzume.composeapp.generated.resources.add_collection_field_title_placeholder
 import amenouzume.composeapp.generated.resources.add_collection_section_category
 import amenouzume.composeapp.generated.resources.add_collection_submit
 import amenouzume.composeapp.generated.resources.add_collection_tags
@@ -405,7 +404,6 @@ private fun CollectionDetailsSection(
     OutlinedTextField(
       value = title,
       onValueChange = onUpdateTitle,
-      placeholder = { Text(stringResource(Res.string.add_collection_field_title_placeholder)) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp),

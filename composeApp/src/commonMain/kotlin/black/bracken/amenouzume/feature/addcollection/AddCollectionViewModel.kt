@@ -25,7 +25,11 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.StringResource
 
 @Inject
@@ -39,7 +43,7 @@ class AddCollectionViewModel(
   private val busyScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
-  private var title by mutableStateOf("")
+  private var title by mutableStateOf(defaultTitle())
   private var filePaths by mutableStateOf<List<String>>(emptyList())
   private var tags by mutableStateOf<List<Tag>>(emptyList())
   private var tagSearchQuery by mutableStateOf("")
@@ -157,5 +161,15 @@ class AddCollectionViewModel(
       )
     }
     navigator.back()
+  }
+
+  companion object {
+    private val DefaultTitleFormat = kotlinx.datetime.LocalDateTime.Format {
+      year(); monthNumber(); day(); hour(); minute(); second()
+    }
+
+    private fun defaultTitle(): String = Clock.System.now()
+      .toLocalDateTime(TimeZone.currentSystemDefault())
+      .format(DefaultTitleFormat)
   }
 }
