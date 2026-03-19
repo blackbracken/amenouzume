@@ -42,7 +42,7 @@ class TagRepository(
     }
   }
 
-  suspend fun addTag(name: String): TagId {
+  suspend fun createTag(name: String): TagId {
     return withContext(Dispatchers.IO) {
       val existing = tagQueries.selectByName(name).executeAsOneOrNull()
       if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)

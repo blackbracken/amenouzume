@@ -109,8 +109,8 @@ fun AddCollectionCoordinator(
     onUpdateTitle = viewModel::onUpdateTitle,
     onToggleTag = viewModel::onToggleTag,
     onAttachTag = viewModel::onAttachTag,
-    onAddTag = viewModel::onAddTag,
-    onSubmit = viewModel::onAddCollection,
+    onCreateTag = viewModel::onCreateTag,
+    onSubmit = viewModel::onCreateCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
     onNavigateToEditOrder = {},
   )
@@ -137,7 +137,7 @@ internal fun AddCollectionScreen(
         recentTags = editing.recentTags,
         onToggleTag = action.onToggleTag,
         onAttachTag = action.onAttachTag,
-        onAddTag = action.onAddTag,
+        onCreateTag = action.onCreateTag,
         onDismiss = { showTagsSheet = false },
       )
     }

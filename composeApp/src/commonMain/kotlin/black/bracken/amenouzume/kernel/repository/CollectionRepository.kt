@@ -12,7 +12,7 @@ class CollectionRepository(
 ) {
   private val queries = database.collectionQueries
 
-  suspend fun addCollection(
+  suspend fun createCollection(
     title: String,
     category: String,
     contentType: String,

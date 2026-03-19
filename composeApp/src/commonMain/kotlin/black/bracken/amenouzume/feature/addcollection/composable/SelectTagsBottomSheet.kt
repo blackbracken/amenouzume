@@ -60,7 +60,7 @@ internal fun SelectTagsBottomSheet(
   recentTags: List<String>,
   onToggleTag: (String) -> Unit,
   onAttachTag: (String) -> Unit,
-  onAddTag: (String) -> Unit,
+  onCreateTag: (String) -> Unit,
   onDismiss: () -> Unit,
 ) {
   val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -75,7 +75,7 @@ internal fun SelectTagsBottomSheet(
       recentTags = recentTags,
       onToggleTag = onToggleTag,
       onRemoveTag = onToggleTag,
-      onAddTag = onAddTag,
+      onCreateTag = onCreateTag,
       onAttachTag = onAttachTag,
       onDone = onDismiss,
     )
@@ -90,7 +90,7 @@ internal fun ColumnScope.SelectTagsContent(
   recentTags: List<String>,
   onToggleTag: (String) -> Unit,
   onRemoveTag: (String) -> Unit,
-  onAddTag: (String) -> Unit,
+  onCreateTag: (String) -> Unit,
   onAttachTag: (String) -> Unit,
   onDone: () -> Unit,
 ) {
@@ -167,7 +167,7 @@ internal fun ColumnScope.SelectTagsContent(
           modifier = Modifier
             .fillMaxWidth()
             .clickable {
-              onAddTag(trimmedQuery)
+              onCreateTag(trimmedQuery)
               searchQuery = ""
             }
             .padding(horizontal = 16.dp, vertical = 12.dp),

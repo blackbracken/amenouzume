@@ -24,7 +24,7 @@ class SelectTagsContentScreenshotTest {
             recentTags = listOf("Photography", "UI/UX", "Marketing"),
             onToggleTag = {},
             onRemoveTag = {},
-            onAddTag = {},
+            onCreateTag = {},
             onAttachTag = {},
             onDone = {},
           )

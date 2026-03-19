@@ -112,11 +112,11 @@ class AddCollectionViewModel(
     if (name !in tags) tags = tags + name
   }
 
-  fun onAddTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     val trimmed = name.trim()
     if (trimmed.isEmpty()) return@launchWithCatching
 
-    tagRepository.addTag(trimmed)
+    tagRepository.createTag(trimmed)
 
     if (trimmed !in tags) {
       tags = tags + trimmed
@@ -131,10 +131,10 @@ class AddCollectionViewModel(
     navigator.navigateSingleTop(CollectionListRoute(vaultPath))
   }
 
-  fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onCreateCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     busyScope.track {
-      collectionRepository.addCollection(
+      collectionRepository.createCollection(
         title = title,
         category = selectedCategory?.name.orEmpty(),
         contentType = selectedCategory?.name.orEmpty(),
