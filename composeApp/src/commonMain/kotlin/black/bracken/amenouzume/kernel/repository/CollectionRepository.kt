@@ -5,6 +5,7 @@ import black.bracken.amenouzume.kernel.model.CollectionId
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.time.Clock
 
 @Inject
 class CollectionRepository(
@@ -19,7 +20,7 @@ class CollectionRepository(
   ): CollectionId {
     return withContext(Dispatchers.IO) {
       database.transactionWithResult {
-        val now = System.currentTimeMillis()
+        val now = Clock.System.now().toString()
         queries.insert(
           title = title,
           thumbnail_path = null,

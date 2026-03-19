@@ -9,6 +9,7 @@ import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,7 +50,7 @@ class TagRepository(
       if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
       database.transactionWithResult {
-        tagQueries.insert(name, System.currentTimeMillis())
+        tagQueries.insert(name, Clock.System.now().toString())
         val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
         Tag(id = id, primaryName = name)
       }.also {

@@ -1,7 +1,7 @@
 CREATE TABLE Tag (
     tag_id INTEGER NOT NULL PRIMARY KEY,
     primary_name TEXT NOT NULL UNIQUE,
-    created_at INTEGER NOT NULL
+    created_at TEXT NOT NULL
 );
 
 selectAll:
