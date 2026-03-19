@@ -1,5 +1,7 @@
 package black.bracken.amenouzume.feature.addcollection
 
+import amenouzume.composeapp.generated.resources.Res
+import amenouzume.composeapp.generated.resources.error_unsupported_file_type
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -7,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
@@ -78,8 +81,15 @@ class AddCollectionViewModel(
     selectedCategory = category
   }
 
-  fun onAddFiles(paths: List<String>) {
-    filePaths = (filePaths + paths).distinct()
+  fun onAddFiles(paths: List<String>) = runWithCatching({ errorMessage = it.messageRes }) {
+    val category = selectedCategory ?: return@runWithCatching
+    val (valid, invalid) = paths.partition { category.acceptsFile(it) }
+
+    if (invalid.isNotEmpty()) {
+      throw CommonFailure(Res.string.error_unsupported_file_type)
+    } else {
+      filePaths = (filePaths + valid).distinct()
+    }
   }
 
   fun onUpdateTitle(value: String) {

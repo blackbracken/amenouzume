@@ -9,6 +9,7 @@
     <string name="error_vault_already_exists">A vault already exists in the selected directory</string>
     <string name="error_vault_not_readable">Cannot open the file</string>
     <string name="error_vault_not_sqlite">Not a SQLite database file</string>
+    <string name="error_unsupported_file_type">Some files were not added due to unsupported file type</string>
     <string name="error_tag_already_exists">Tag already exists</string>
     <string name="error_unexpected">An unexpected error occurred</string>
     <string name="collection_list_title" translatable="false">Collection View</string>
