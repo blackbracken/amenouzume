@@ -53,9 +53,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
 import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
@@ -191,9 +191,9 @@ private fun ImportLocalDatabaseCard(
     ) {
       Box(
         modifier =
-          Modifier
-            .size(64.dp)
-            .background(primary.copy(alpha = 0.1f), CircleShape),
+        Modifier
+          .size(64.dp)
+          .background(primary.copy(alpha = 0.1f), CircleShape),
         contentAlignment = Alignment.Center,
       ) {
         Icon(
@@ -259,9 +259,9 @@ private fun DatabaseEntryItem(
     ) {
       Box(
         modifier =
-          Modifier
-            .size(40.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+        Modifier
+          .size(40.dp)
+          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
         contentAlignment = Alignment.Center,
       ) {
         Icon(
@@ -316,9 +316,9 @@ private fun DatabaseEntryItemSkeleton() {
     ) {
       Box(
         modifier =
-          Modifier
-            .size(40.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+        Modifier
+          .size(40.dp)
+          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
       )
       Column(
         modifier = Modifier.weight(1f),
@@ -326,17 +326,17 @@ private fun DatabaseEntryItemSkeleton() {
       ) {
         Box(
           modifier =
-            Modifier
-              .fillMaxWidth(0.4f)
-              .height(12.dp)
-              .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
+          Modifier
+            .fillMaxWidth(0.4f)
+            .height(12.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
         )
         Box(
           modifier =
-            Modifier
-              .fillMaxWidth(0.7f)
-              .height(10.dp)
-              .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
+          Modifier
+            .fillMaxWidth(0.7f)
+            .height(10.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
         )
       }
     }

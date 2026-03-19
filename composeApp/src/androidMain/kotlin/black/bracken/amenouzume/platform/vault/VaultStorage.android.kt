@@ -3,9 +3,9 @@ package black.bracken.amenouzume.platform.vault
 import android.content.Context
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import black.bracken.amenouzume.db.AppDatabase
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
 actual class VaultStorage(
   private val context: Context,

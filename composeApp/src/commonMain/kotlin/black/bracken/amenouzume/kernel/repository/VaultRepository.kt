@@ -11,12 +11,12 @@ import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
-import java.io.File
 
 private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
 

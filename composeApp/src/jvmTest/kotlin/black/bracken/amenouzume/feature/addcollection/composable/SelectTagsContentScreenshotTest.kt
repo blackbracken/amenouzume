@@ -12,23 +12,23 @@ import kotlin.test.Test
 class SelectTagsContentScreenshotTest {
   @Test
   fun selectTagsContent() = runDesktopComposeUiTest(
-      width = 400,
-      height = 900,
-    ) {
-      setContent {
-        AmenouzumeTheme(darkTheme = false) {
-          Column {
-            SelectTagsContent(
-              selectedTags = listOf("Design", "UI/UX", "Mobile"),
-              availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
-              onToggleTag = {},
-              onRemoveTag = {},
-              onAddTag = {},
-              onDone = {},
-            )
-          }
+    width = 400,
+    height = 900,
+  ) {
+    setContent {
+      AmenouzumeTheme(darkTheme = false) {
+        Column {
+          SelectTagsContent(
+            selectedTags = listOf("Design", "UI/UX", "Mobile"),
+            availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
+            onToggleTag = {},
+            onRemoveTag = {},
+            onAddTag = {},
+            onDone = {},
+          )
         }
       }
-      onRoot().captureRoboImage("src/jvmTest/snapshots/SelectTagsContent.png")
     }
+    onRoot().captureRoboImage("src/jvmTest/snapshots/SelectTagsContent.png")
+  }
 }

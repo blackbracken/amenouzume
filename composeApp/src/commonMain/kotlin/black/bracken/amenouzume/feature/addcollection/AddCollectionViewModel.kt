@@ -45,8 +45,8 @@ class AddCollectionViewModel(
   }
 
   private fun refreshAvailableTags() = launchWithCatching({ errorMessage = it.messageRes }) {
-      tagRepository.refreshAllPrimaryNames()
-    }
+    tagRepository.refreshAllPrimaryNames()
+  }
 
   @Composable
   private fun presenter(): AddCollectionUiState {
@@ -91,34 +91,34 @@ class AddCollectionViewModel(
   }
 
   fun onAddTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-      val trimmed = name.trim()
-      if (trimmed.isEmpty()) return@launchWithCatching
+    val trimmed = name.trim()
+    if (trimmed.isEmpty()) return@launchWithCatching
 
-      tagRepository.addTag(trimmed)
-      tagRepository.refreshAllPrimaryNames()
+    tagRepository.addTag(trimmed)
+    tagRepository.refreshAllPrimaryNames()
 
-      if (trimmed !in tags) {
-        tags = tags + trimmed
-      }
+    if (trimmed !in tags) {
+      tags = tags + trimmed
     }
+  }
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
-      navigator.back()
-    }
+    navigator.back()
+  }
 
   fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {
-      navigator.navigateSingleTop(CollectionListRoute(vaultPath))
-    }
+    navigator.navigateSingleTop(CollectionListRoute(vaultPath))
+  }
 
   fun onAddCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
-      errorMessage = null
-      busyScope.track {
-        collectionRepository.addCollection(
-          title = title,
-          category = selectedCategory?.name.orEmpty(),
-          contentType = selectedCategory?.name.orEmpty(),
-        )
-      }
-      navigator.back()
+    errorMessage = null
+    busyScope.track {
+      collectionRepository.addCollection(
+        title = title,
+        category = selectedCategory?.name.orEmpty(),
+        contentType = selectedCategory?.name.orEmpty(),
+      )
     }
+    navigator.back()
+  }
 }

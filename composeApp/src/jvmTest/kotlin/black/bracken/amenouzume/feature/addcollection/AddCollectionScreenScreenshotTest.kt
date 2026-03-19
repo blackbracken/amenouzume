@@ -12,28 +12,28 @@ import kotlin.test.Test
 class AddCollectionScreenScreenshotTest {
   @Test
   fun addCollectionScreen() = runDesktopComposeUiTest(
-      width = 400,
-      height = 1200,
-    ) {
-      setContent {
-        AmenouzumeTheme(darkTheme = false) {
-          AddCollectionScreen(
-            state = AddCollectionUiState(
-              isBusy = false,
-              selectedCategory = CollectionCategory.ILLUSTRATION,
-              editing = AddCollectionUiState.Editing(
-                title = "",
-                filePaths = listOf("/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"),
-                authors = listOf("@jdoe_art"),
-                tags = listOf("Cyberpunk", "Noir"),
-                availableTags = listOf("Architecture", "Design", "Engineering"),
-              ),
-              errorMessage = null,
+    width = 400,
+    height = 1200,
+  ) {
+    setContent {
+      AmenouzumeTheme(darkTheme = false) {
+        AddCollectionScreen(
+          state = AddCollectionUiState(
+            isBusy = false,
+            selectedCategory = CollectionCategory.ILLUSTRATION,
+            editing = AddCollectionUiState.Editing(
+              title = "",
+              filePaths = listOf("/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"),
+              authors = listOf("@jdoe_art"),
+              tags = listOf("Cyberpunk", "Noir"),
+              availableTags = listOf("Architecture", "Design", "Engineering"),
             ),
-            action = AddCollectionUiAction.Noop,
-          )
-        }
+            errorMessage = null,
+          ),
+          action = AddCollectionUiAction.Noop,
+        )
       }
-      onRoot().captureRoboImage("src/jvmTest/snapshots/AddCollectionScreen.png")
     }
+    onRoot().captureRoboImage("src/jvmTest/snapshots/AddCollectionScreen.png")
+  }
 }
