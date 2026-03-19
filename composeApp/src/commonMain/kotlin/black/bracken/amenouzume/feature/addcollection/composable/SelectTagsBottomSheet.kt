@@ -2,7 +2,6 @@ package black.bracken.amenouzume.feature.addcollection.composable
 
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.select_tags_create
-import amenouzume.composeapp.generated.resources.select_tags_done
 import amenouzume.composeapp.generated.resources.select_tags_manage
 import amenouzume.composeapp.generated.resources.select_tags_recommended
 import amenouzume.composeapp.generated.resources.select_tags_search_placeholder
@@ -43,7 +42,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -115,24 +113,11 @@ internal fun ColumnScope.SelectTagsContent(
   }
 
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Text(
-        text = stringResource(Res.string.select_tags_title),
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
-      )
-      TextButton(onClick = onDone) {
-        Text(
-          text = stringResource(Res.string.select_tags_done),
-          color = MaterialTheme.colorScheme.primary,
-          fontWeight = FontWeight.Bold,
-        )
-      }
-    }
+    Text(
+      text = stringResource(Res.string.select_tags_title),
+      style = MaterialTheme.typography.titleLarge,
+      fontWeight = FontWeight.Bold,
+    )
 
     Spacer(modifier = Modifier.height(16.dp))
 
