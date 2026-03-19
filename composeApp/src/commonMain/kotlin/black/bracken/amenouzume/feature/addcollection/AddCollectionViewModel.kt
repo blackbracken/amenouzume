@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
@@ -65,6 +66,9 @@ class AddCollectionViewModel(
       else -> emptyList()
     }
 
+    val sortedTags = remember(tags) { tags.sorted() }
+    val sortedAvailableTags = remember(availableTags) { availableTags.sorted() }
+
     return AddCollectionUiState(
       isBusy = busyScope.isRunning,
       selectedCategory = selectedCategory,
@@ -73,8 +77,8 @@ class AddCollectionViewModel(
           title = title,
           filePaths = filePaths,
           authors = emptyList(),
-          tags = tags,
-          availableTags = availableTags,
+          tags = sortedTags,
+          availableTags = sortedAvailableTags,
           recentTags = recentTags,
         )
       } else {
