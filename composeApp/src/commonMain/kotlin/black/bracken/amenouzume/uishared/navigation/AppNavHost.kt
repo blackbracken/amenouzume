@@ -5,23 +5,38 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import black.bracken.amenouzume.feature.addcollection.AddCollectionCoordinator
 import black.bracken.amenouzume.feature.collectionlist.CollectionListCoordinator
 import black.bracken.amenouzume.feature.opendatabase.OpenDatabaseCoordinator
 
 @Composable
 fun AppNavHost(backStack: List<AppRoute>) {
+  val routeOwners = retain { mutableMapOf<AppRoute, RouteViewModelStoreOwner>() }
+
+  backStack.forEach { route ->
+    routeOwners.getOrPut(route) { RouteViewModelStoreOwner() }
+  }
+
   var previousSize by remember { mutableIntStateOf(backStack.size) }
   val isForward = backStack.size >= previousSize
 
   LaunchedEffect(backStack) {
     previousSize = backStack.size
   }
+
+  val currentBackStack = rememberUpdatedState(backStack)
 
   AnimatedContent(
     targetState = backStack.lastOrNull(),
@@ -33,11 +48,27 @@ fun AppNavHost(backStack: List<AppRoute>) {
       }
     },
   ) { route ->
-    when (route) {
-      is OpenDatabaseRoute -> OpenDatabaseCoordinator()
-      is CollectionListRoute -> CollectionListCoordinator(vaultPath = route.vaultPath)
-      is AddCollectionRoute -> AddCollectionCoordinator(vaultPath = route.vaultPath)
-      null -> Unit
+    val owner = route?.let { routeOwners[it] }
+    if (route != null && owner != null) {
+      CompositionLocalProvider(LocalViewModelStoreOwner provides owner) {
+        DisposableEffect(route) {
+          onDispose {
+            if (route !in currentBackStack.value) {
+              routeOwners.remove(route)?.clear()
+            }
+          }
+        }
+        when (route) {
+          is OpenDatabaseRoute -> OpenDatabaseCoordinator()
+          is CollectionListRoute -> CollectionListCoordinator(vaultPath = route.vaultPath)
+          is AddCollectionRoute -> AddCollectionCoordinator(vaultPath = route.vaultPath)
+        }
+      }
     }
   }
+}
+
+private class RouteViewModelStoreOwner : ViewModelStoreOwner {
+  override val viewModelStore = ViewModelStore()
+  fun clear() = viewModelStore.clear()
 }
