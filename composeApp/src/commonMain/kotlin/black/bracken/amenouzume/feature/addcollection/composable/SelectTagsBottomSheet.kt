@@ -8,6 +8,7 @@ import amenouzume.composeapp.generated.resources.select_tags_search_placeholder
 import amenouzume.composeapp.generated.resources.select_tags_selected
 import amenouzume.composeapp.generated.resources.select_tags_title
 import amenouzume.composeapp.generated.resources.select_tags_update
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,7 +60,6 @@ internal fun SelectTagsBottomSheet(
   selectedTags: List<Tag>,
   searchQuery: String,
   onSearchQueryChange: (String) -> Unit,
-  availableTags: List<Tag>,
   recentTags: List<Tag>,
   onToggleTag: (Tag) -> Unit,
   onAttachTag: (Tag) -> Unit,
@@ -76,9 +76,7 @@ internal fun SelectTagsBottomSheet(
       selectedTags = selectedTags,
       searchQuery = searchQuery,
       onSearchQueryChange = onSearchQueryChange,
-      availableTags = availableTags,
       recentTags = recentTags,
-      onToggleTag = onToggleTag,
       onRemoveTag = onToggleTag,
       onCreateTag = onCreateTag,
       onAttachTag = onAttachTag,
@@ -93,79 +91,74 @@ internal fun ColumnScope.SelectTagsContent(
   selectedTags: List<Tag>,
   searchQuery: String,
   onSearchQueryChange: (String) -> Unit,
-  availableTags: List<Tag>,
   recentTags: List<Tag>,
-  onToggleTag: (Tag) -> Unit,
   onRemoveTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
   onAttachTag: (Tag) -> Unit,
   onDone: () -> Unit,
 ) {
-
-  Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-    Text(
-      text = stringResource(Res.string.select_tags_title),
-      style = MaterialTheme.typography.titleLarge,
-      fontWeight = FontWeight.Bold,
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    OutlinedTextField(
-      value = searchQuery,
-      onValueChange = onSearchQueryChange,
-      placeholder = { Text(stringResource(Res.string.select_tags_search_placeholder)) },
-      modifier = Modifier.fillMaxWidth(),
-      singleLine = true,
-      leadingIcon = {
-        Icon(
-          imageVector = Icons.Default.Numbers,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+  LazyColumn(modifier = Modifier.weight(1f)) {
+    item(key = "header") {
+      Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Text(
+          text = stringResource(Res.string.select_tags_title),
+          style = MaterialTheme.typography.titleLarge,
+          fontWeight = FontWeight.Bold,
         )
-      },
-      shape = MaterialTheme.shapes.small,
-      colors = OutlinedTextFieldDefaults.colors(
-        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-      ),
-    )
 
-    if (selectedTags.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(16.dp))
-      SectionHeader(text = stringResource(Res.string.select_tags_selected))
-      Spacer(modifier = Modifier.height(12.dp))
-      FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-      ) {
-        selectedTags.forEach { tag ->
-          InputChip(
-            selected = true,
-            onClick = { onRemoveTag(tag) },
-            label = { Text(tag.primaryName, fontWeight = FontWeight.Medium) },
-            trailingIcon = {
-              Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-              )
-            },
-            colors = InputChipDefaults.inputChipColors(
-              selectedContainerColor = MaterialTheme.colorScheme.primary,
-              selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-              selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-          )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+          value = searchQuery,
+          onValueChange = onSearchQueryChange,
+          placeholder = { Text(stringResource(Res.string.select_tags_search_placeholder)) },
+          modifier = Modifier.fillMaxWidth(),
+          singleLine = true,
+          leadingIcon = {
+            Icon(
+              imageVector = Icons.Default.Numbers,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+          },
+          shape = MaterialTheme.shapes.small,
+          colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+          ),
+        )
+
+        AnimatedVisibility(selectedTags.isNotEmpty()) {
+          Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            FlowRow(
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              verticalArrangement = Arrangement.spacedBy((-8).dp),
+            ) {
+              selectedTags.forEach { tag ->
+                InputChip(
+                  selected = true,
+                  onClick = { onRemoveTag(tag) },
+                  label = { Text(tag.primaryName, fontWeight = FontWeight.Medium) },
+                  trailingIcon = {
+                    Icon(
+                      imageVector = Icons.Default.Close,
+                      contentDescription = null,
+                      modifier = Modifier.size(16.dp),
+                    )
+                  },
+                  colors = InputChipDefaults.inputChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                  ),
+                )
+              }
+            }
+          }
         }
       }
     }
 
-    Spacer(modifier = Modifier.height(16.dp))
-    HorizontalDivider()
-    Spacer(modifier = Modifier.height(16.dp))
-  }
-
-  LazyColumn(modifier = Modifier.weight(1f)) {
     if (searchQuery.isNotBlank()) {
       val trimmedQuery = searchQuery.trim()
       item(key = "create_tag") {
@@ -189,18 +182,19 @@ internal fun ColumnScope.SelectTagsContent(
             fontWeight = FontWeight.Medium,
           )
         }
-        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
       }
     }
 
     item(key = "section_header") {
       Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Spacer(modifier = Modifier.height(16.dp))
         SectionHeader(text = stringResource(Res.string.select_tags_recommended))
         Spacer(modifier = Modifier.height(12.dp))
       }
     }
 
     items(recentTags, key = { it.id.value }) { tag ->
+      HorizontalDivider(modifier = Modifier.fillMaxWidth())
       Row(
         modifier = Modifier
           .fillMaxWidth()
@@ -219,7 +213,12 @@ internal fun ColumnScope.SelectTagsContent(
           style = MaterialTheme.typography.bodyLarge,
         )
       }
-      HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+    }
+
+    if (recentTags.isNotEmpty()) {
+      item {
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+      }
     }
 
     item {
@@ -277,12 +276,10 @@ private fun SelectTagsContentSearchingPreview() {
     Surface {
       Column {
         SelectTagsContent(
-          selectedTags = listOf(Tag(TagId(1), "Cyberpunk")),
+          selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it") },
           searchQuery = "Vaporw",
           onSearchQueryChange = {},
-          availableTags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir"), Tag(TagId(3), "Photography")),
           recentTags = listOf(Tag(TagId(3), "Photography"), Tag(TagId(2), "Noir")),
-          onToggleTag = {},
           onRemoveTag = {},
           onCreateTag = {},
           onAttachTag = {},

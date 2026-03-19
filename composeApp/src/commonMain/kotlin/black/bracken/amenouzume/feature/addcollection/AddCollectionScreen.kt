@@ -138,7 +138,6 @@ internal fun AddCollectionScreen(
         selectedTags = editing.tags,
         searchQuery = editing.tagSearchQuery,
         onSearchQueryChange = action.onUpdateTagSearchQuery,
-        availableTags = editing.availableTags,
         recentTags = editing.recentTags,
         onToggleTag = action.onToggleTag,
         onAttachTag = action.onAttachTag,
