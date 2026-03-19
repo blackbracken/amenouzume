@@ -20,6 +20,7 @@ class SelectTagsContentScreenshotTest {
         Column {
           SelectTagsContent(
             selectedTags = listOf("Design", "UI/UX", "Mobile"),
+            searchResultTags = emptyList(),
             recentTags = listOf("Photography", "UI/UX", "Marketing"),
             onRemoveTag = {},
             onCreateTag = {},

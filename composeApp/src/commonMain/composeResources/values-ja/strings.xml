@@ -34,5 +34,6 @@
     <string name="select_tags_recommended">最近追加されたタグ</string>
     <string name="select_tags_manage">タグを管理</string>
     <string name="select_tags_create">%1$s のタグを作成する</string>
+    <string name="select_tags_search_results">検索結果</string>
     <string name="select_tags_update">選択を更新</string>
 </resources>

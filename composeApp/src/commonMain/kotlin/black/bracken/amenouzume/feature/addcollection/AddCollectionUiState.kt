@@ -18,6 +18,7 @@ data class AddCollectionUiState(
     val tags: List<Tag>,
     val tagSearchQuery: String,
     val availableTags: List<Tag>,
+    val searchResultTags: List<Tag>,
     val recentTags: List<Tag>,
   )
 }

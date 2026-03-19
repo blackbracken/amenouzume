@@ -60,6 +60,7 @@ internal fun SelectTagsBottomSheet(
   selectedTags: List<Tag>,
   searchQuery: String,
   onSearchQueryChange: (String) -> Unit,
+  searchResultTags: List<Tag>,
   recentTags: List<Tag>,
   onToggleTag: (Tag) -> Unit,
   onAttachTag: (Tag) -> Unit,
@@ -76,6 +77,7 @@ internal fun SelectTagsBottomSheet(
       selectedTags = selectedTags,
       searchQuery = searchQuery,
       onSearchQueryChange = onSearchQueryChange,
+      searchResultTags = searchResultTags,
       recentTags = recentTags,
       onRemoveTag = onToggleTag,
       onCreateTag = onCreateTag,
@@ -91,6 +93,7 @@ internal fun ColumnScope.SelectTagsContent(
   selectedTags: List<Tag>,
   searchQuery: String,
   onSearchQueryChange: (String) -> Unit,
+  searchResultTags: List<Tag>,
   recentTags: List<Tag>,
   onRemoveTag: (Tag) -> Unit,
   onCreateTag: (String) -> Unit,
@@ -182,6 +185,34 @@ internal fun ColumnScope.SelectTagsContent(
             fontWeight = FontWeight.Medium,
           )
         }
+      }
+    }
+
+    if (searchResultTags.isNotEmpty()) {
+      items(searchResultTags, key = { "search_${it.id.value}" }) { tag ->
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onAttachTag(tag) }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Icon(
+            imageVector = Icons.Default.Numbers,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
+          Spacer(modifier = Modifier.width(16.dp))
+          Text(
+            text = tag.primaryName,
+            style = MaterialTheme.typography.bodyLarge,
+          )
+        }
+      }
+
+      item(key = "search_results_divider") {
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
       }
     }
 
@@ -279,6 +310,7 @@ private fun SelectTagsContentSearchingPreview() {
           selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it") },
           searchQuery = "Vaporw",
           onSearchQueryChange = {},
+          searchResultTags = listOf(Tag(TagId(100), "Vaporwave"), Tag(TagId(101), "Vaporwave Art")),
           recentTags = listOf(Tag(TagId(3), "Photography"), Tag(TagId(2), "Noir")),
           onRemoveTag = {},
           onCreateTag = {},

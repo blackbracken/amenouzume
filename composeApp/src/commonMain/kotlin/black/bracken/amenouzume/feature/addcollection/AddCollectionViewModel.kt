@@ -69,6 +69,16 @@ class AddCollectionViewModel(
 
     val sortedTags = remember(tags) { tags.sorted() }
     val sortedAvailableTags = remember(availableTags) { availableTags.sorted() }
+    val searchResultTags = remember(availableTags, tagSearchQuery, tags) {
+      if (tagSearchQuery.isBlank()) {
+        emptyList()
+      } else {
+        val query = tagSearchQuery.trim().lowercase()
+        availableTags
+          .filter { it !in tags && it.primaryName.lowercase().contains(query) }
+          .take(5)
+      }
+    }
 
     return AddCollectionUiState(
       isBusy = busyScope.isRunning,
@@ -81,6 +91,7 @@ class AddCollectionViewModel(
           tags = sortedTags,
           tagSearchQuery = tagSearchQuery,
           availableTags = sortedAvailableTags,
+          searchResultTags = searchResultTags,
           recentTags = recentTags,
         )
       } else {

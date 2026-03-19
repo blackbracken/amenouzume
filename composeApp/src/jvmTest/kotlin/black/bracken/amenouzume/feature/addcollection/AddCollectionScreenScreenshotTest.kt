@@ -27,6 +27,7 @@ class AddCollectionScreenScreenshotTest {
               authors = listOf("@jdoe_art"),
               tags = listOf("Cyberpunk", "Noir"),
               availableTags = listOf("Architecture", "Design", "Engineering"),
+              searchResultTags = emptyList(),
               recentTags = listOf("Engineering", "Design"),
             ),
             errorMessage = null,
