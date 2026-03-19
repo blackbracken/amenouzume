@@ -50,7 +50,6 @@ kotlin {
       implementation(libs.metro.viewmodel)
       implementation(libs.metro.viewmodel.compose)
       implementation(libs.kotlinx.coroutines.core)
-      implementation(libs.kotlinx.datetime)
       implementation(libs.kotlinx.serialization.core)
       implementation(libs.material3.adaptive)
       implementation(libs.molecule.runtime)
