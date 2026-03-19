@@ -1,5 +1,6 @@
 CREATE TABLE Tag (
-    tag_id INTEGER NOT NULL PRIMARY KEY
+    tag_id INTEGER NOT NULL PRIMARY KEY,
+    primary_name TEXT NOT NULL UNIQUE
 );
 
 selectAll:
@@ -8,11 +9,17 @@ SELECT * FROM Tag;
 selectById:
 SELECT * FROM Tag WHERE tag_id = ?;
 
+selectByName:
+SELECT * FROM Tag WHERE primary_name = ?;
+
 insert:
-INSERT INTO Tag(tag_id) VALUES (NULL);
+INSERT INTO Tag(tag_id, primary_name) VALUES (NULL, ?);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
+
+updatePrimaryName:
+UPDATE Tag SET primary_name = ? WHERE tag_id = ?;
 
 deleteById:
 DELETE FROM Tag WHERE tag_id = ?;

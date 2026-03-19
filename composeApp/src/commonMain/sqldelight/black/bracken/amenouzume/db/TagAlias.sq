@@ -1,0 +1,17 @@
+CREATE TABLE TagAlias (
+    tag_alias_id INTEGER NOT NULL PRIMARY KEY,
+    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id),
+    name TEXT NOT NULL UNIQUE
+);
+
+selectByTagId:/
+SELECT * FROM TagAlias WHERE tag_id = ?;
+
+selectByName:
+SELECT * FROM TagAlias WHERE name = ?;
+
+insert:
+INSERT INTO TagAlias(tag_id, name) VALUES (?, ?);
+
+deleteById:
+DELETE FROM TagAlias WHERE tag_alias_id = ?;

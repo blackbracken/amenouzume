@@ -11,10 +11,9 @@ import kotlinx.coroutines.withContext
 
 @Inject
 class TagRepository(
-  database: AppDatabase,
+  private val database: AppDatabase,
 ) {
   private val tagQueries = database.tagQueries
-  private val tagNameQueries = database.tagNameQueries
 
   private val _allPrimaryNames = MutableStateFlow<Loadable<List<String>>>(Loadable.Loading)
 
@@ -23,26 +22,20 @@ class TagRepository(
   suspend fun refreshAllPrimaryNames() {
     _allPrimaryNames.value = Loadable.from {
       withContext(Dispatchers.IO) {
-        tagNameQueries.selectAllPrimary().executeAsList().map { it.name }
+        tagQueries.selectAll().executeAsList().map { it.primary_name }
       }
     }
   }
 
   suspend fun addTag(name: String): Long {
     return withContext(Dispatchers.IO) {
-      val existing = tagNameQueries.selectByName(name).executeAsOneOrNull()
+      val existing = tagQueries.selectByName(name).executeAsOneOrNull()
       if (existing != null) return@withContext existing.tag_id
 
-      tagQueries.insert()
-      val tagId = tagQueries.lastInsertRowId().executeAsOne()
-
-      tagNameQueries.insert(
-        tag_id = tagId,
-        name = name,
-        is_primary = 1,
-      )
-
-      tagId
+      database.transactionWithResult {
+        tagQueries.insert(name)
+        tagQueries.lastInsertRowId().executeAsOne()
+      }
     }
   }
 }

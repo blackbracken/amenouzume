@@ -1,12 +1,22 @@
 CREATE TABLE Author (
-    author_id INTEGER NOT NULL PRIMARY KEY
+    author_id INTEGER NOT NULL PRIMARY KEY,
+    primary_name TEXT NOT NULL UNIQUE
 );
 
 selectById:
 SELECT * FROM Author WHERE author_id = ?;
 
+selectByName:
+SELECT * FROM Author WHERE primary_name = ?;
+
 insert:
-INSERT INTO Author(author_id) VALUES (NULL);
+INSERT INTO Author(author_id, primary_name) VALUES (NULL, ?);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+updatePrimaryName:
+UPDATE Author SET primary_name = ? WHERE author_id = ?;
 
 deleteById:
 DELETE FROM Author WHERE author_id = ?;

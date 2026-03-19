@@ -1,0 +1,17 @@
+CREATE TABLE AuthorAlias (
+    author_alias_id INTEGER NOT NULL PRIMARY KEY,
+    author_id INTEGER NOT NULL REFERENCES Author(author_id),
+    name TEXT NOT NULL UNIQUE
+);
+
+selectByAuthorId:
+SELECT * FROM AuthorAlias WHERE author_id = ?;
+
+selectByName:
+SELECT * FROM AuthorAlias WHERE name = ?;
+
+insert:
+INSERT INTO AuthorAlias(author_id, name) VALUES (?, ?);
+
+deleteById:
+DELETE FROM AuthorAlias WHERE author_alias_id = ?;
