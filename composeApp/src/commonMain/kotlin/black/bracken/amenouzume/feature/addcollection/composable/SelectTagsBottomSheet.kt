@@ -162,7 +162,7 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    if (searchQuery.isNotBlank()) {
+    if (searchQuery.isNotBlank() && searchResultTags.none { it.primaryName.equals(searchQuery.trim(), ignoreCase = true) }) {
       val trimmedQuery = searchQuery.trim()
       item(key = "create_tag") {
         Row(
