@@ -30,8 +30,6 @@ import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -46,7 +44,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,36 +57,27 @@ import org.jetbrains.compose.resources.stringResource
 internal fun SelectTagsBottomSheet(
   selectedTags: List<String>,
   availableTags: List<String>,
-  onUpdateTags: (List<String>) -> Unit,
+  recentTags: List<String>,
+  onToggleTag: (String) -> Unit,
+  onAttachTag: (String) -> Unit,
   onAddTag: (String) -> Unit,
   onDismiss: () -> Unit,
 ) {
   val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-  var localSelectedTags by remember { mutableStateOf(selectedTags) }
 
   ModalBottomSheet(
     onDismissRequest = onDismiss,
     sheetState = sheetState,
   ) {
     SelectTagsContent(
-      selectedTags = localSelectedTags,
+      selectedTags = selectedTags,
       availableTags = availableTags,
-      onToggleTag = { tag ->
-        localSelectedTags = if (tag in localSelectedTags) {
-          localSelectedTags - tag
-        } else {
-          localSelectedTags + tag
-        }
-      },
-      onRemoveTag = { tag -> localSelectedTags = localSelectedTags - tag },
-      onAddTag = { tag ->
-        onAddTag(tag)
-        localSelectedTags = (localSelectedTags + tag.trim()).distinct()
-      },
-      onDone = {
-        onUpdateTags(localSelectedTags)
-        onDismiss()
-      },
+      recentTags = recentTags,
+      onToggleTag = onToggleTag,
+      onRemoveTag = onToggleTag,
+      onAddTag = onAddTag,
+      onAttachTag = onAttachTag,
+      onDone = onDismiss,
     )
   }
 }
@@ -99,18 +87,14 @@ internal fun SelectTagsBottomSheet(
 internal fun ColumnScope.SelectTagsContent(
   selectedTags: List<String>,
   availableTags: List<String>,
+  recentTags: List<String>,
   onToggleTag: (String) -> Unit,
   onRemoveTag: (String) -> Unit,
   onAddTag: (String) -> Unit,
+  onAttachTag: (String) -> Unit,
   onDone: () -> Unit,
 ) {
   var searchQuery by rememberSaveable { mutableStateOf("") }
-
-  val filteredTags = if (searchQuery.isBlank()) {
-    availableTags
-  } else {
-    availableTags.filter { it.contains(searchQuery, ignoreCase = true) }
-  }
 
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     Text(
@@ -173,8 +157,6 @@ internal fun ColumnScope.SelectTagsContent(
     Spacer(modifier = Modifier.height(16.dp))
     HorizontalDivider()
     Spacer(modifier = Modifier.height(16.dp))
-    SectionHeader(text = stringResource(Res.string.select_tags_recommended))
-    Spacer(modifier = Modifier.height(12.dp))
   }
 
   LazyColumn(modifier = Modifier.weight(1f)) {
@@ -208,34 +190,30 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    items(filteredTags) { tag ->
-      val isSelected = tag in selectedTags
+    item(key = "section_header") {
+      Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        SectionHeader(text = stringResource(Res.string.select_tags_recommended))
+        Spacer(modifier = Modifier.height(12.dp))
+      }
+    }
+
+    items(recentTags) { tag ->
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { onToggleTag(tag) }
+          .clickable { onAttachTag(tag) }
           .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
           imageVector = Icons.Default.Numbers,
           contentDescription = null,
-          tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
           text = tag,
           style = MaterialTheme.typography.bodyLarge,
-          color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-          fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-          modifier = Modifier.weight(1f),
-        )
-        Checkbox(
-          checked = isSelected,
-          onCheckedChange = { onToggleTag(tag) },
-          colors = CheckboxDefaults.colors(
-            checkedColor = MaterialTheme.colorScheme.primary,
-          ),
         )
       }
       HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))

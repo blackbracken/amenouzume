@@ -16,5 +16,6 @@ data class AddCollectionUiState(
     val authors: List<String>,
     val tags: List<String>,
     val availableTags: List<String>,
+    val recentTags: List<String>,
   )
 }

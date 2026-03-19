@@ -31,7 +31,7 @@
     <string name="select_tags_done">完了</string>
     <string name="select_tags_search_placeholder">付与したいタグ</string>
     <string name="select_tags_selected">選択中のタグ</string>
-    <string name="select_tags_recommended">おすすめタグ</string>
+    <string name="select_tags_recommended">最近追加されたタグ</string>
     <string name="select_tags_manage">タグを管理</string>
     <string name="select_tags_create">%1$s のタグを作成する</string>
     <string name="select_tags_update">選択を更新</string>

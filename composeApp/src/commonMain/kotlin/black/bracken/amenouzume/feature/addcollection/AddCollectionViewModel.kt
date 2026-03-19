@@ -49,12 +49,19 @@ class AddCollectionViewModel(
 
   private fun refreshAvailableTags() = launchWithCatching({ errorMessage = it.messageRes }) {
     tagRepository.refreshAllPrimaryNames()
+    tagRepository.refreshRecentlyAddedNames()
   }
 
   @Composable
   private fun presenter(): AddCollectionUiState {
     val availableTagsLoadable by tagRepository.getAllPrimaryNames().collectAsState(Loadable.Loading)
     val availableTags = when (val l = availableTagsLoadable) {
+      is Loadable.Loaded -> l.value
+      else -> emptyList()
+    }
+
+    val recentTagsLoadable by tagRepository.getRecentlyAddedNames().collectAsState(Loadable.Loading)
+    val recentTags = when (val l = recentTagsLoadable) {
       is Loadable.Loaded -> l.value
       else -> emptyList()
     }
@@ -69,6 +76,7 @@ class AddCollectionViewModel(
           authors = emptyList(),
           tags = tags,
           availableTags = availableTags,
+          recentTags = recentTags,
         )
       } else {
         null
@@ -96,8 +104,12 @@ class AddCollectionViewModel(
     title = value
   }
 
-  fun onUpdateTags(value: List<String>) {
-    tags = value
+  fun onToggleTag(name: String) {
+    tags = if (name in tags) tags - name else tags + name
+  }
+
+  fun onAttachTag(name: String) {
+    if (name !in tags) tags = tags + name
   }
 
   fun onAddTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {

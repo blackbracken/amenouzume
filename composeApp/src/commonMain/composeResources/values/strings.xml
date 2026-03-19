@@ -37,7 +37,7 @@
     <string name="select_tags_done">Done</string>
     <string name="select_tags_search_placeholder">Tag to add</string>
     <string name="select_tags_selected">SELECTED TAGS</string>
-    <string name="select_tags_recommended">RECOMMENDED TAGS</string>
+    <string name="select_tags_recommended">RECENTLY ADDED</string>
     <string name="select_tags_manage">Manage Tags</string>
     <string name="select_tags_create">Create tag %1$s</string>
     <string name="select_tags_update">UPDATE SELECTION</string>

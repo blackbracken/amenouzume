@@ -21,9 +21,11 @@ class SelectTagsContentScreenshotTest {
           SelectTagsContent(
             selectedTags = listOf("Design", "UI/UX", "Mobile"),
             availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
+            recentTags = listOf("Photography", "UI/UX", "Marketing"),
             onToggleTag = {},
             onRemoveTag = {},
             onAddTag = {},
+            onAttachTag = {},
             onDone = {},
           )
         }

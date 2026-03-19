@@ -107,7 +107,8 @@ fun AddCollectionCoordinator(
     onSelectCategory = viewModel::onSelectCategory,
     onAddFiles = filePickerLauncher,
     onUpdateTitle = viewModel::onUpdateTitle,
-    onUpdateTags = viewModel::onUpdateTags,
+    onToggleTag = viewModel::onToggleTag,
+    onAttachTag = viewModel::onAttachTag,
     onAddTag = viewModel::onAddTag,
     onSubmit = viewModel::onAddCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
@@ -133,7 +134,9 @@ internal fun AddCollectionScreen(
       SelectTagsBottomSheet(
         selectedTags = editing.tags,
         availableTags = editing.availableTags,
-        onUpdateTags = action.onUpdateTags,
+        recentTags = editing.recentTags,
+        onToggleTag = action.onToggleTag,
+        onAttachTag = action.onAttachTag,
         onAddTag = action.onAddTag,
         onDismiss = { showTagsSheet = false },
       )
@@ -515,6 +518,7 @@ private fun AddCollectionScreenPreview() {
           authors = listOf("@jdoe_art"),
           tags = listOf("Cyberpunk", "Noir"),
           availableTags = listOf("Architecture", "Design", "Engineering", "Marketing", "Photography", "UI/UX"),
+          recentTags = listOf("Photography", "UI/UX", "Marketing"),
         ),
         errorMessage = null,
       ),
