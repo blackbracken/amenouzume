@@ -20,13 +20,24 @@ class TagRepository(
   private val tagQueries = database.tagQueries
 
   private val _allPrimaryNames = MutableStateFlow<Loadable<List<String>>>(Loadable.Loading)
+  private val _recentlyAddedNames = MutableStateFlow<Loadable<List<String>>>(Loadable.Loading)
 
   fun getAllPrimaryNames(): Flow<Loadable<List<String>>> = _allPrimaryNames.asStateFlow()
+
+  fun getRecentlyAddedNames(): Flow<Loadable<List<String>>> = _recentlyAddedNames.asStateFlow()
 
   suspend fun refreshAllPrimaryNames() {
     _allPrimaryNames.value = Loadable.from {
       withContext(Dispatchers.IO) {
         tagQueries.selectAll().executeAsList().map { it.primary_name }
+      }
+    }
+  }
+
+  suspend fun refreshRecentlyAddedNames() {
+    _recentlyAddedNames.value = Loadable.from {
+      withContext(Dispatchers.IO) {
+        tagQueries.selectRecentlyAdded().executeAsList().map { it.primary_name }
       }
     }
   }
@@ -37,9 +48,12 @@ class TagRepository(
       if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
       database.transactionWithResult {
-        tagQueries.insert(name)
+        tagQueries.insert(name, System.currentTimeMillis())
         TagId(tagQueries.lastInsertRowId().executeAsOne())
-      }.also { refreshAllPrimaryNames() }
+      }.also {
+        refreshAllPrimaryNames()
+        refreshRecentlyAddedNames()
+      }
     }
   }
 }
