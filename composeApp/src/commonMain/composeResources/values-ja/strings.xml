@@ -9,6 +9,7 @@
     <string name="error_vault_already_exists">選択したディレクトリには既にヴォールトが存在します</string>
     <string name="error_vault_not_readable">ファイルを開けません</string>
     <string name="error_vault_not_sqlite">SQLiteデータベースファイルではありません</string>
+    <string name="error_tag_already_exists">タグは既に存在します</string>
     <string name="error_unexpected">予期しないエラーが発生しました</string>
     <string name="collection_list_filter">フィルター</string>
     <string name="collection_list_tab_add">Add</string>

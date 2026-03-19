@@ -21,5 +21,8 @@ insert:
 INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at, content_type)
 VALUES (?, ?, ?, ?, ?, ?);
 
+lastInsertRowId:
+SELECT last_insert_rowid();
+
 deleteById:
 DELETE FROM Collection WHERE collection_id = ?;

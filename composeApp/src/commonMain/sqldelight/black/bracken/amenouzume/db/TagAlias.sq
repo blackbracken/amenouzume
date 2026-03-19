@@ -4,7 +4,7 @@ CREATE TABLE TagAlias (
     name TEXT NOT NULL UNIQUE
 );
 
-selectByTagId:/
+selectByTagId:
 SELECT * FROM TagAlias WHERE tag_id = ?;
 
 selectByName:

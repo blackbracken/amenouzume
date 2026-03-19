@@ -95,7 +95,6 @@ class AddCollectionViewModel(
     if (trimmed.isEmpty()) return@launchWithCatching
 
     tagRepository.addTag(trimmed)
-    tagRepository.refreshAllPrimaryNames()
 
     if (trimmed !in tags) {
       tags = tags + trimmed
