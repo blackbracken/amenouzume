@@ -27,8 +27,6 @@ class CollectionListViewModel(
       collections = Loadable.Loaded(mockCollections),
     )
 
-  fun onBack() = navigator.back()
-
   fun onNavigateToAdd(vaultPath: String) = navigator.navigateSingleTop(AddCollectionRoute(vaultPath))
 }
 

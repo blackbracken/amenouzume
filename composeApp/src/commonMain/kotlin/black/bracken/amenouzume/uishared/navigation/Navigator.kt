@@ -20,6 +20,8 @@ class Navigator {
 
   fun navigate(route: AppRoute) = _backStack.update { it + route }
 
+  fun navigateReplace(route: AppRoute) = _backStack.update { listOf(route) }
+
   fun navigateSingleTop(route: AppRoute) = _backStack.update { stack ->
     val existingIndex = stack.indexOfLast { it::class == route::class }
     if (existingIndex >= 0) stack.subList(0, existingIndex + 1) else stack + route
