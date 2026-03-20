@@ -12,10 +12,13 @@ import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
 import java.io.File
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 private val SQLITE_MAGIC = "SQLite format 3\u0000".toByteArray(Charsets.UTF_8)
@@ -28,10 +31,13 @@ class VaultRepository(
   private val vaultStorage: VaultStorage,
   private val vaultHistoryStorage: VaultHistoryStorage,
   private val driverFactory: DatabaseDriverFactory,
+  scope: CoroutineScope,
 ) {
   private val _vaultHistories = MutableStateFlow<Loadable<List<VaultHistory>>>(Loadable.Loading)
 
-  fun getVaultHistories(): Flow<Loadable<List<VaultHistory>>> = _vaultHistories.asStateFlow()
+  val vaultHistories: StateFlow<Loadable<List<VaultHistory>>> = _vaultHistories
+    .onStart { refreshVaultHistories() }
+    .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
   suspend fun refreshVaultHistories() {
     _vaultHistories.value = Loadable.from {

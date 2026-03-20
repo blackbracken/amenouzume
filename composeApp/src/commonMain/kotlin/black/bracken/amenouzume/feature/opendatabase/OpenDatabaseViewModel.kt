@@ -31,17 +31,11 @@ class OpenDatabaseViewModel(
   private val busyScope = TrackedScope()
   private var errorMessage by mutableStateOf<StringResource?>(null)
 
-  init {
-    launchWithCatching({ errorMessage = it.messageRes }) {
-      vaultRepository.refreshVaultHistories()
-    }
-  }
-
   val uiState: StateFlow<OpenDatabaseUiState> = moleculeState { presenter() }
 
   @Composable
   private fun presenter(): OpenDatabaseUiState {
-    val databases by vaultRepository.getVaultHistories().collectAsState(Loadable.Loading)
+    val databases by vaultRepository.vaultHistories.collectAsState()
 
     return OpenDatabaseUiState(
       isBusy = busyScope.isRunning,
