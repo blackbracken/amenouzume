@@ -7,12 +7,11 @@ import amenouzume.composeapp.generated.resources.open_database_import_title
 import amenouzume.composeapp.generated.resources.open_database_retry
 import amenouzume.composeapp.generated.resources.open_database_section_local_databases
 import amenouzume.composeapp.generated.resources.open_database_title
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,6 +35,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -144,27 +145,51 @@ private fun DatabaseListContent(
 ) {
   LazyColumn(
     modifier = modifier.fillMaxSize(),
-    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    item { ImportLocalDatabaseCard(enabled = !isBusy, onBrowseFiles = onBrowseFiles) }
-    item {
+    item(key = "import_card") {
+      Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        ImportLocalDatabaseCard(enabled = !isBusy, onBrowseFiles = onBrowseFiles)
+      }
+    }
+
+    item(key = "section_header") {
       Text(
         text = stringResource(Res.string.open_database_section_local_databases),
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
       )
     }
+
     when (databases) {
       is Loadable.Loading -> {
-        items(3) { DatabaseEntryItemSkeleton() }
-      }
-      is Loadable.Loaded -> {
-        items(databases.value.take(5)) { entry ->
-          DatabaseEntryItem(entry = entry, onClick = { onOpenEntry(entry) }, onDelete = { onDeleteEntry(entry) })
+        items(3) {
+          HorizontalDivider()
+          DatabaseEntryRowSkeleton()
+        }
+        item(key = "skeleton_bottom_divider") {
+          HorizontalDivider()
         }
       }
+
+      is Loadable.Loaded -> {
+        items(databases.value.take(5)) { entry ->
+          HorizontalDivider()
+          DatabaseEntryRow(
+            entry = entry,
+            onClick = { onOpenEntry(entry) },
+            onDelete = { onDeleteEntry(entry) },
+          )
+        }
+
+        if (databases.value.isNotEmpty()) {
+          item(key = "bottom_divider") {
+            HorizontalDivider()
+          }
+        }
+      }
+
       is Loadable.Failed -> {
         item {
           DatabaseLoadFailedItem(
@@ -236,109 +261,86 @@ private fun ImportLocalDatabaseCard(
 }
 
 @Composable
-private fun DatabaseEntryItem(
+private fun DatabaseEntryRow(
   entry: OpenDatabaseEntry,
   onClick: () -> Unit,
   onDelete: () -> Unit,
 ) {
   val haptic = rememberHapticFeedback()
-  Card(
-    onClick = {
-      haptic(AppHapticFeedbackType.LightTap)
-      onClick()
-    },
-    modifier = Modifier.fillMaxWidth(),
-    shape = MaterialTheme.shapes.medium,
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable {
+        haptic(AppHapticFeedbackType.LightTap)
+        onClick()
+      }
+      .padding(horizontal = 16.dp, vertical = 12.dp),
+    verticalAlignment = Alignment.CenterVertically,
   ) {
-    Row(
-      modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 4.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-      Box(
-        modifier =
-        Modifier
-          .size(40.dp)
-          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          imageVector = Icons.Default.Storage,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-      Column(modifier = Modifier.weight(1f)) {
-        Text(
-          text = entry.name,
-          style = MaterialTheme.typography.bodySmall,
-          fontWeight = FontWeight.Medium,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-        )
-        Text(
-          text = entry.path,
-          style = MaterialTheme.typography.labelSmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-        )
-      }
-      IconButton(onClick = {
+    Icon(
+      imageVector = Icons.Default.Storage,
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(modifier = Modifier.width(16.dp))
+    Column(modifier = Modifier.weight(1f)) {
+      Text(
+        text = entry.name,
+        style = MaterialTheme.typography.bodyLarge,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+      Text(
+        text = entry.path,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+    }
+    IconButton(
+      onClick = {
         haptic(AppHapticFeedbackType.LightTap)
         onDelete()
-      }) {
-        Icon(
-          imageVector = Icons.Default.Delete,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.onSurfaceVariant,
-          modifier = Modifier.size(18.dp),
-        )
-      }
+      },
+    ) {
+      Icon(
+        imageVector = Icons.Default.Delete,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
     }
   }
 }
 
 @Composable
-private fun DatabaseEntryItemSkeleton() {
-  Card(
-    modifier = Modifier.fillMaxWidth(),
-    shape = MaterialTheme.shapes.medium,
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+private fun DatabaseEntryRowSkeleton() {
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 12.dp),
+    verticalAlignment = Alignment.CenterVertically,
   ) {
-    Row(
-      modifier = Modifier.padding(16.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
+    Box(
+      modifier = Modifier
+        .size(24.dp)
+        .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
+    )
+    Spacer(modifier = Modifier.width(16.dp))
+    Column(modifier = Modifier.weight(1f)) {
       Box(
-        modifier =
-        Modifier
-          .size(40.dp)
-          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+        modifier = Modifier
+          .fillMaxWidth(0.4f)
+          .height(16.dp)
+          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
       )
-      Column(
-        modifier = Modifier.weight(1f),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-      ) {
-        Box(
-          modifier =
-          Modifier
-            .fillMaxWidth(0.4f)
-            .height(12.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
-        )
-        Box(
-          modifier =
-          Modifier
-            .fillMaxWidth(0.7f)
-            .height(10.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
-        )
-      }
+      Spacer(modifier = Modifier.height(4.dp))
+      Box(
+        modifier = Modifier
+          .fillMaxWidth(0.7f)
+          .height(12.dp)
+          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.extraSmall),
+      )
     }
   }
 }
