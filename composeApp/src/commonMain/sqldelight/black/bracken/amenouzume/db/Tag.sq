@@ -25,7 +25,7 @@ ORDER BY
     WHEN primary_name LIKE (:query || '%') THEN 1
     ELSE 2
   END
-LIMIT 5;
+LIMIT :limit;
 
 insert:
 INSERT INTO Tag(tag_id, primary_name, created_at) VALUES (NULL, ?, ?);

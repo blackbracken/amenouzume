@@ -15,3 +15,6 @@ INSERT INTO TagAlias(tag_id, name) VALUES (?, ?);
 
 deleteById:
 DELETE FROM TagAlias WHERE tag_alias_id = ?;
+
+deleteByTagId:
+DELETE FROM TagAlias WHERE tag_id = ?;

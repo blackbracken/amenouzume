@@ -56,11 +56,11 @@ class ManageTagViewModel(
 
   fun onUpdateSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     searchQuery = value
-    searchResults = tagRepository.searchTags(value)
+    searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT)
   }
 
-  fun onDeleteTag(tag: Tag) {
-    // TODO
+  fun onDeleteTag(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {
+    tagRepository.deleteTag(tag)
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
@@ -73,5 +73,9 @@ class ManageTagViewModel(
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
     navigator.back()
+  }
+
+  companion object {
+    private const val SEARCH_LIMIT = 10
   }
 }

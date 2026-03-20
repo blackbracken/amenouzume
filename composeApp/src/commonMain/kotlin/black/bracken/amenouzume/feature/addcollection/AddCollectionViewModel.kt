@@ -28,6 +28,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.toLocalDateTime
@@ -121,7 +122,7 @@ class AddCollectionViewModel(
 
   fun onUpdateTagSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     tagSearchQuery = value
-    tagSearchResults = tagRepository.searchTags(value)
+    tagSearchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT)
   }
 
   fun onToggleTag(tag: Tag) {
@@ -169,12 +170,14 @@ class AddCollectionViewModel(
   }
 
   companion object {
-    private val DefaultTitleFormat = kotlinx.datetime.LocalDateTime.Format {
-      year(); monthNumber(); day(); hour(); minute(); second()
-    }
+    private const val SEARCH_LIMIT = 5
 
     private fun defaultTitle(): String = Clock.System.now()
       .toLocalDateTime(TimeZone.currentSystemDefault())
-      .format(DefaultTitleFormat)
+      .format(
+          LocalDateTime.Format {
+              year(); monthNumber(); day(); hour(); minute(); second()
+          },
+      )
   }
 }

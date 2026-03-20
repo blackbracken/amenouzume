@@ -20,6 +20,8 @@ class TagRepository(
   private val database: AppDatabase,
 ) {
   private val tagQueries = database.tagQueries
+  private val tagAliasQueries = database.tagAliasQueries
+  private val collectionTagQueries = database.collectionTagQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
@@ -44,12 +46,24 @@ class TagRepository(
     }
   }
 
-  suspend fun searchTags(query: String): List<Tag> {
+  suspend fun searchTags(query: String, limit: Int): List<Tag> {
     if (query.isBlank()) return emptyList()
 
     return withContext(Dispatchers.IO) {
-      tagQueries.searchByName(query.trim()).executeAsList().map { Tag.from(it) }
+      tagQueries.searchByName(query.trim(), limit.toLong()).executeAsList().map { Tag.from(it) }
     }
+  }
+
+  suspend fun deleteTag(tag: Tag) {
+    withContext(Dispatchers.IO) {
+      database.transaction {
+        collectionTagQueries.deleteByTagId(tag.id.value)
+        tagAliasQueries.deleteByTagId(tag.id.value)
+        tagQueries.deleteById(tag.id.value)
+      }
+    }
+    refreshAllTags()
+    refreshRecentlyAddedTags()
   }
 
   suspend fun createTag(name: String): Tag {

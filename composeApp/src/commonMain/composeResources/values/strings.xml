@@ -46,5 +46,4 @@
     <string name="manage_tags_section_all">ALL TAGS</string>
     <string name="manage_tags_total">%1$d TOTAL</string>
     <string name="manage_tags_create">Create tag %1$s</string>
-    <string name="manage_tags_search_results">SEARCH RESULTS</string>
 </resources>

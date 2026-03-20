@@ -12,3 +12,6 @@ INSERT INTO CollectionTag(collection_id, tag_id) VALUES (?, ?);
 
 deleteByCollectionIdAndTagId:
 DELETE FROM CollectionTag WHERE collection_id = ? AND tag_id = ?;
+
+deleteByTagId:
+DELETE FROM CollectionTag WHERE tag_id = ?;

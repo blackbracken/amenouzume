@@ -3,13 +3,11 @@ package black.bracken.amenouzume.feature.managetag
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.manage_tags_create
 import amenouzume.composeapp.generated.resources.manage_tags_search_placeholder
-import amenouzume.composeapp.generated.resources.manage_tags_search_results
 import amenouzume.composeapp.generated.resources.manage_tags_section_all
 import amenouzume.composeapp.generated.resources.manage_tags_title
 import amenouzume.composeapp.generated.resources.manage_tags_total
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -85,31 +83,26 @@ internal fun ManageTagScreen(
       )
     },
   ) { innerPadding ->
-    Column(
+    val showCreateTag = state.searchQuery.isNotBlank()
+      && state.searchResultTags.none { it.primaryName.equals(state.searchQuery.trim(), ignoreCase = true) }
+    val showSearchResults = state.searchResultTags.isNotEmpty()
+    val showSearchSection = showCreateTag || showSearchResults
+
+    LazyColumn(
       modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding),
     ) {
-      SearchField(
-        query = state.searchQuery,
-        onQueryChange = action.onUpdateSearchQuery,
-        modifier = Modifier.padding(horizontal = 16.dp),
-      )
+      item(key = "search_field") {
+        SearchField(
+          query = state.searchQuery,
+          onQueryChange = action.onUpdateSearchQuery,
+          modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+      }
 
-      Spacer(modifier = Modifier.height(16.dp))
-
-      val searchResults = state.searchResultTags.take(MAX_SEARCH_RESULTS)
-      val showCreateTag = state.searchQuery.isNotBlank()
-        && state.searchResultTags.none { it.primaryName.equals(state.searchQuery.trim(), ignoreCase = true) }
-      val showSearchResults = searchResults.isNotEmpty()
-      val showSearchSection = showCreateTag || showSearchResults
-
-      LazyColumn(modifier = Modifier.weight(1f)) {
-        if (showSearchSection) {
-          item(key = "search_header") {
-            SectionHeader(text = stringResource(Res.string.manage_tags_search_results))
-          }
-
+      if (showSearchSection) {
           if (showCreateTag) {
             val trimmedQuery = state.searchQuery.trim()
 
@@ -139,7 +132,7 @@ internal fun ManageTagScreen(
           }
 
           if (showSearchResults) {
-            items(searchResults, key = { "search_${it.id.value}" }) { tag ->
+            items(state.searchResultTags, key = { "search_${it.id.value}" }) { tag ->
               HorizontalDivider()
               TagRow(
                 tag = tag,
@@ -184,7 +177,6 @@ internal fun ManageTagScreen(
           else -> {}
         }
       }
-    }
   }
 }
 
@@ -279,19 +271,6 @@ private fun TagRow(
     }
   }
 }
-
-@Composable
-private fun SectionHeader(text: String) {
-  Text(
-    text = text,
-    style = MaterialTheme.typography.labelMedium,
-    color = MaterialTheme.colorScheme.primary,
-    fontWeight = FontWeight.Bold,
-    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-  )
-}
-
-private const val MAX_SEARCH_RESULTS = 10
 
 @Preview
 @Composable
