@@ -68,6 +68,8 @@ kotlin {
       implementation(libs.sqldelight.driver.jvm)
     }
     jvmTest.dependencies {
+      implementation(libs.kotlinx.coroutines.test)
+      implementation(libs.sqldelight.driver.jvm)
       implementation(libs.roborazzi.compose.desktop)
       @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
       implementation(compose.uiTest)
