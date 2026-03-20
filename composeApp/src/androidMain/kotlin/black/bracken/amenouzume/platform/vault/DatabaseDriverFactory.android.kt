@@ -12,6 +12,15 @@ actual class DatabaseDriverFactory(
 
   actual fun createDriver(): SqlDriver {
     val path = selectedPath ?: throw IllegalStateException("Database path is not selected")
-    return AndroidSqliteDriver(AppDatabase.Schema, context, path)
+    return AndroidSqliteDriver(
+      schema = AppDatabase.Schema,
+      context = context,
+      name = path,
+      callback = object : AndroidSqliteDriver.Callback(AppDatabase.Schema) {
+        override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+          db.execSQL("PRAGMA foreign_keys = ON;")
+        }
+      },
+    )
   }
 }

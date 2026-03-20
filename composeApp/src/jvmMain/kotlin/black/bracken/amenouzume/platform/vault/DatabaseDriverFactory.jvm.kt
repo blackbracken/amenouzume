@@ -14,6 +14,7 @@ actual class DatabaseDriverFactory {
     val databaseExists = databasePath.exists()
     return JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}").also {
       if (!databaseExists) AppDatabase.Schema.create(it)
+      it.execute(null, "PRAGMA foreign_keys = ON;", 0)
     }
   }
 }

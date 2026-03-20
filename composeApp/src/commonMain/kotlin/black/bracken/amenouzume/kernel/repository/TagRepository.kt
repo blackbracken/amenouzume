@@ -20,8 +20,6 @@ class TagRepository(
   private val database: AppDatabase,
 ) {
   private val tagQueries = database.tagQueries
-  private val tagAliasQueries = database.tagAliasQueries
-  private val collectionTagQueries = database.collectionTagQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
@@ -56,11 +54,7 @@ class TagRepository(
 
   suspend fun deleteTag(tag: Tag) {
     withContext(Dispatchers.IO) {
-      database.transaction {
-        collectionTagQueries.deleteByTagId(tag.id.value)
-        tagAliasQueries.deleteByTagId(tag.id.value)
-        tagQueries.deleteById(tag.id.value)
-      }
+      tagQueries.deleteById(tag.id.value)
     }
     refreshAllTags()
     refreshRecentlyAddedTags()

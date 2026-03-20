@@ -1,6 +1,6 @@
 CREATE TABLE CollectionTag (
-    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id),
-    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id),
+    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id) ON DELETE CASCADE,
+    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id) ON DELETE CASCADE,
     PRIMARY KEY (collection_id, tag_id)
 );
 
@@ -13,5 +13,3 @@ INSERT INTO CollectionTag(collection_id, tag_id) VALUES (?, ?);
 deleteByCollectionIdAndTagId:
 DELETE FROM CollectionTag WHERE collection_id = ? AND tag_id = ?;
 
-deleteByTagId:
-DELETE FROM CollectionTag WHERE tag_id = ?;

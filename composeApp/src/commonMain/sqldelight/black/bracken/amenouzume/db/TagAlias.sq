@@ -1,6 +1,6 @@
 CREATE TABLE TagAlias (
     tag_alias_id INTEGER NOT NULL PRIMARY KEY,
-    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id),
+    tag_id INTEGER NOT NULL REFERENCES Tag(tag_id) ON DELETE CASCADE,
     name TEXT NOT NULL UNIQUE
 );
 
@@ -16,5 +16,3 @@ INSERT INTO TagAlias(tag_id, name) VALUES (?, ?);
 deleteById:
 DELETE FROM TagAlias WHERE tag_alias_id = ?;
 
-deleteByTagId:
-DELETE FROM TagAlias WHERE tag_id = ?;

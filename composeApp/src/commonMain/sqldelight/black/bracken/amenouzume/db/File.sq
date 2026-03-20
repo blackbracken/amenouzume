@@ -1,6 +1,6 @@
 CREATE TABLE File (
     file_id INTEGER NOT NULL PRIMARY KEY,
-    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id),
+    collection_id INTEGER NOT NULL REFERENCES Collection(collection_id) ON DELETE CASCADE,
     file_path TEXT NOT NULL,
     file_type TEXT NOT NULL,
     display_order INTEGER NOT NULL,
