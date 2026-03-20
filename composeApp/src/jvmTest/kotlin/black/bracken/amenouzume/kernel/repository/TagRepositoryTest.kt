@@ -5,11 +5,11 @@ import app.cash.turbine.test
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.util.Loadable
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
 
 class TagRepositoryTest {
 
@@ -135,5 +135,4 @@ class TagRepositoryTest {
     }
     return AppDatabase(driver)
   }
-
 }

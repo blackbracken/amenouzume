@@ -8,9 +8,9 @@ import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlin.time.Clock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -68,19 +68,17 @@ class TagRepository(
     refreshRecentlyAddedTags()
   }
 
-  suspend fun createTag(name: String): Tag {
-    return withContext(Dispatchers.IO) {
-      val existing = tagQueries.selectByName(name).executeAsOneOrNull()
-      if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
+  suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
+    val existing = tagQueries.selectByName(name).executeAsOneOrNull()
+    if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
-      database.transactionWithResult {
-        tagQueries.insert(name, Clock.System.now().toString())
-        val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
-        Tag(id = id, primaryName = name)
-      }.also {
-        refreshAllTags()
-        refreshRecentlyAddedTags()
-      }
+    database.transactionWithResult {
+      tagQueries.insert(name, Clock.System.now().toString())
+      val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
+      Tag(id = id, primaryName = name)
+    }.also {
+      refreshAllTags()
+      refreshRecentlyAddedTags()
     }
   }
 }

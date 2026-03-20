@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
-import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.map

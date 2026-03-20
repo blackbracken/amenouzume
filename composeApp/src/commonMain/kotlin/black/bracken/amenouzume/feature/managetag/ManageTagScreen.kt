@@ -83,8 +83,8 @@ internal fun ManageTagScreen(
       )
     },
   ) { innerPadding ->
-    val showCreateTag = state.searchQuery.isNotBlank()
-      && state.searchResultTags.none { it.primaryName.equals(state.searchQuery.trim(), ignoreCase = true) }
+    val showCreateTag = state.searchQuery.isNotBlank() &&
+      state.searchResultTags.none { it.primaryName.equals(state.searchQuery.trim(), ignoreCase = true) }
     val showSearchResults = state.searchResultTags.isNotEmpty()
     val showSearchSection = showCreateTag || showSearchResults
 
@@ -103,80 +103,80 @@ internal fun ManageTagScreen(
       }
 
       if (showSearchSection) {
-          if (showCreateTag) {
-            val trimmedQuery = state.searchQuery.trim()
+        if (showCreateTag) {
+          val trimmedQuery = state.searchQuery.trim()
 
-            item(key = "create_tag") {
-              HorizontalDivider()
-              Row(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .clickable { action.onCreateTag(trimmedQuery) }
-                  .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-              ) {
-                Icon(
-                  imageVector = Icons.Default.Numbers,
-                  contentDescription = null,
-                  tint = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                  text = stringResource(Res.string.manage_tags_create, trimmedQuery),
-                  style = MaterialTheme.typography.bodyLarge,
-                  color = MaterialTheme.colorScheme.primary,
-                  fontWeight = FontWeight.Medium,
-                )
-              }
-            }
-          }
-
-          if (showSearchResults) {
-            items(state.searchResultTags, key = { "search_${it.id.value}" }) { tag ->
-              HorizontalDivider()
-              TagRow(
-                tag = tag,
-                onDelete = { action.onDeleteTag(tag) },
-              )
-            }
-          }
-
-          item(key = "search_divider") {
+          item(key = "create_tag") {
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(8.dp))
-          }
-        }
-
-        item(key = "all_tags_header") {
-          val allTags = state.tags
-          AllTagsSectionHeader(
-            totalCount = when (allTags) {
-              is Loadable.Loaded -> allTags.value.size
-              else -> null
-            },
-          )
-        }
-
-        when (val allTags = state.tags) {
-          is Loadable.Loaded -> {
-            items(allTags.value, key = { it.id.value }) { tag ->
-              HorizontalDivider()
-              TagRow(
-                tag = tag,
-                onDelete = { action.onDeleteTag(tag) },
+            Row(
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable { action.onCreateTag(trimmedQuery) }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+              verticalAlignment = Alignment.CenterVertically,
+            ) {
+              Icon(
+                imageVector = Icons.Default.Numbers,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+              )
+              Spacer(modifier = Modifier.width(16.dp))
+              Text(
+                text = stringResource(Res.string.manage_tags_create, trimmedQuery),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Medium,
               )
             }
-
-            if (allTags.value.isNotEmpty()) {
-              item(key = "bottom_divider") {
-                HorizontalDivider()
-              }
-            }
           }
+        }
 
-          else -> {}
+        if (showSearchResults) {
+          items(state.searchResultTags, key = { "search_${it.id.value}" }) { tag ->
+            HorizontalDivider()
+            TagRow(
+              tag = tag,
+              onDelete = { action.onDeleteTag(tag) },
+            )
+          }
+        }
+
+        item(key = "search_divider") {
+          HorizontalDivider()
+          Spacer(modifier = Modifier.height(8.dp))
         }
       }
+
+      item(key = "all_tags_header") {
+        val allTags = state.tags
+        AllTagsSectionHeader(
+          totalCount = when (allTags) {
+            is Loadable.Loaded -> allTags.value.size
+            else -> null
+          },
+        )
+      }
+
+      when (val allTags = state.tags) {
+        is Loadable.Loaded -> {
+          items(allTags.value, key = { it.id.value }) { tag ->
+            HorizontalDivider()
+            TagRow(
+              tag = tag,
+              onDelete = { action.onDeleteTag(tag) },
+            )
+          }
+
+          if (allTags.value.isNotEmpty()) {
+            item(key = "bottom_divider") {
+              HorizontalDivider()
+            }
+          }
+        }
+
+        else -> {}
+      }
+    }
   }
 }
 

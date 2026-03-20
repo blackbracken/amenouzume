@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.Navigator
-import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState

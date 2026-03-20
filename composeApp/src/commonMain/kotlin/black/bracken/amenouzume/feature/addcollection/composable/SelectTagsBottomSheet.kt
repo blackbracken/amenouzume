@@ -43,10 +43,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
@@ -164,8 +164,8 @@ internal fun ColumnScope.SelectTagsContent(
       }
     }
 
-    val showCreateTag = searchQuery.isNotBlank()
-      && searchResultTags.none { it.primaryName.equals(searchQuery.trim(), ignoreCase = true) }
+    val showCreateTag = searchQuery.isNotBlank() &&
+      searchResultTags.none { it.primaryName.equals(searchQuery.trim(), ignoreCase = true) }
     val showSearchSuggestions = searchResultTags.isNotEmpty()
     val showSuggestionsAnything = showCreateTag || showSearchSuggestions
 

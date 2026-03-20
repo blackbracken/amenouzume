@@ -178,9 +178,14 @@ class AddCollectionViewModel(
     private fun defaultTitle(): String = Clock.System.now()
       .toLocalDateTime(TimeZone.currentSystemDefault())
       .format(
-          LocalDateTime.Format {
-              year(); monthNumber(); day(); hour(); minute(); second()
-          },
+        LocalDateTime.Format {
+          year()
+          monthNumber()
+          day()
+          hour()
+          minute()
+          second()
+        },
       )
   }
 }

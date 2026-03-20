@@ -520,7 +520,14 @@ private fun AddCollectionScreenPreview() {
           authors = listOf("@jdoe_art"),
           tags = listOf(Tag(TagId(1), "Cyberpunk"), Tag(TagId(2), "Noir")),
           tagSearchQuery = "",
-          availableTags = listOf(Tag(TagId(3), "Architecture"), Tag(TagId(4), "Design"), Tag(TagId(5), "Engineering"), Tag(TagId(6), "Marketing"), Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX")),
+          availableTags = listOf(
+            Tag(TagId(3), "Architecture"),
+            Tag(TagId(4), "Design"),
+            Tag(TagId(5), "Engineering"),
+            Tag(TagId(6), "Marketing"),
+            Tag(TagId(7), "Photography"),
+            Tag(TagId(8), "UI/UX"),
+          ),
           searchResultTags = emptyList(),
           recentTags = listOf(Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX"), Tag(TagId(6), "Marketing")),
         ),
@@ -531,5 +538,3 @@ private fun AddCollectionScreenPreview() {
     )
   }
 }
-
-
