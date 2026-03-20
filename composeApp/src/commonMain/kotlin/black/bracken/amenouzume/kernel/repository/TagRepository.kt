@@ -8,27 +8,35 @@ import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.time.Clock
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
 @Inject
 class TagRepository(
   private val database: AppDatabase,
+  scope: CoroutineScope,
 ) {
   private val tagQueries = database.tagQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
 
-  fun getAllTags(): Flow<Loadable<List<Tag>>> = _allTags.asStateFlow()
+  val allTags: StateFlow<Loadable<List<Tag>>> = _allTags
+    .onStart { refreshAllTags() }
+    .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
-  fun getRecentlyAddedTags(): Flow<Loadable<List<Tag>>> = _recentlyAddedTags.asStateFlow()
+  val recentlyAddedTags: StateFlow<Loadable<List<Tag>>> = _recentlyAddedTags
+    .onStart { refreshRecentlyAddedTags() }
+    .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
-  suspend fun refreshAllTags() {
+  private suspend fun refreshAllTags() {
     _allTags.value = Loadable.from {
       withContext(Dispatchers.IO) {
         tagQueries.selectAll().executeAsList().map { Tag.from(it) }
@@ -36,7 +44,7 @@ class TagRepository(
     }
   }
 
-  suspend fun refreshRecentlyAddedTags() {
+  private suspend fun refreshRecentlyAddedTags() {
     _recentlyAddedTags.value = Loadable.from {
       withContext(Dispatchers.IO) {
         tagQueries.selectRecentlyAdded().executeAsList().map { Tag.from(it) }

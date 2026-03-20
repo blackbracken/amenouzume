@@ -35,15 +35,9 @@ class ManageTagViewModel(
 
   val uiState: StateFlow<ManageTagUiState> = moleculeState { presenter() }
 
-  init {
-    launchWithCatching({ errorMessage = it.messageRes }) {
-      tagRepository.refreshAllTags()
-    }
-  }
-
   @Composable
   private fun presenter(): ManageTagUiState {
-    val allTagsLoadable by tagRepository.getAllTags().collectAsState(Loadable.Loading)
+    val allTagsLoadable by tagRepository.allTags.collectAsState()
 
     return ManageTagUiState(
       isBusy = busyScope.isRunning,

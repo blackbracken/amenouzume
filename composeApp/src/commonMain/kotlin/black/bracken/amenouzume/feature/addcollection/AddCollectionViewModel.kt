@@ -53,22 +53,15 @@ class AddCollectionViewModel(
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
-  init {
-    launchWithCatching({ errorMessage = it.messageRes }) {
-      tagRepository.refreshAllTags()
-      tagRepository.refreshRecentlyAddedTags()
-    }
-  }
-
   @Composable
   private fun presenter(): AddCollectionUiState {
-    val availableTagsLoadable by tagRepository.getAllTags().collectAsState(Loadable.Loading)
+    val availableTagsLoadable by tagRepository.allTags.collectAsState()
     val availableTags = when (val l = availableTagsLoadable) {
       is Loadable.Loaded -> l.value
       else -> emptyList()
     }
 
-    val recentTagsLoadable by tagRepository.getRecentlyAddedTags().collectAsState(Loadable.Loading)
+    val recentTagsLoadable by tagRepository.recentlyAddedTags.collectAsState()
     val recentTags = when (val l = recentTagsLoadable) {
       is Loadable.Loaded -> l.value
       else -> emptyList()
