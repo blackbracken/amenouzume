@@ -61,9 +61,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -112,6 +109,8 @@ fun AddCollectionCoordinator(
     onToggleTag = viewModel::onToggleTag,
     onAttachTag = viewModel::onAttachTag,
     onCreateTag = viewModel::onCreateTag,
+    onShowTagsSheet = viewModel::onShowTagsSheet,
+    onDismissTagsSheet = viewModel::onDismissTagsSheet,
     onSubmit = viewModel::onCreateCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
     onNavigateToEditOrder = {},
@@ -129,9 +128,7 @@ internal fun AddCollectionScreen(
   state: AddCollectionUiState,
   action: AddCollectionUiAction,
 ) {
-  var showTagsSheet by rememberSaveable { mutableStateOf(false) }
-
-  if (showTagsSheet) {
+  if (state.showTagsSheet) {
     val editing = state.editing
     if (editing != null) {
       SelectTagsBottomSheet(
@@ -143,11 +140,8 @@ internal fun AddCollectionScreen(
         onToggleTag = action.onToggleTag,
         onAttachTag = action.onAttachTag,
         onCreateTag = action.onCreateTag,
-        onNavigateToManageTags = {
-          showTagsSheet = false
-          action.onNavigateToManageTags()
-        },
-        onDismiss = { showTagsSheet = false },
+        onNavigateToManageTags = action.onNavigateToManageTags,
+        onDismiss = action.onDismissTagsSheet,
       )
     }
   }
@@ -203,7 +197,7 @@ internal fun AddCollectionScreen(
                 onUpdateTitle = action.onUpdateTitle,
                 authors = editing.authors,
                 tags = editing.tags,
-                onTagsClick = { showTagsSheet = true },
+                onTagsClick = action.onShowTagsSheet,
               )
 
               Spacer(modifier = Modifier.weight(1f))
@@ -531,6 +525,7 @@ private fun AddCollectionScreenPreview() {
           recentTags = listOf(Tag(TagId(7), "Photography"), Tag(TagId(8), "UI/UX"), Tag(TagId(6), "Marketing")),
         ),
         errorMessage = null,
+        showTagsSheet = false,
       ),
       action = AddCollectionUiAction.Noop,
     )

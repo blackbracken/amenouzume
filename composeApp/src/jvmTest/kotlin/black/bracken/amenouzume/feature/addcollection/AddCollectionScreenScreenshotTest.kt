@@ -34,6 +34,7 @@ class AddCollectionScreenScreenshotTest {
               recentTags = listOf(Tag(TagId(5), "Engineering"), Tag(TagId(4), "Design")),
             ),
             errorMessage = null,
+            showTagsSheet = false,
           ),
           action = AddCollectionUiAction.Noop,
         )

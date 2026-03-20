@@ -50,6 +50,7 @@ class AddCollectionViewModel(
   private var tags by mutableStateOf<List<Tag>>(emptyList())
   private var tagSearchQuery by mutableStateOf("")
   private var tagSearchResults by mutableStateOf<List<Tag>>(emptyList())
+  private var showTagsSheet by mutableStateOf(false)
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
@@ -91,6 +92,7 @@ class AddCollectionViewModel(
         null
       },
       errorMessage = errorMessage,
+      showTagsSheet = showTagsSheet,
     )
   }
 
@@ -136,6 +138,14 @@ class AddCollectionViewModel(
       tags = tags + tag
     }
     tagSearchQuery = ""
+  }
+
+  fun onShowTagsSheet() {
+    showTagsSheet = true
+  }
+
+  fun onDismissTagsSheet() {
+    showTagsSheet = false
   }
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {

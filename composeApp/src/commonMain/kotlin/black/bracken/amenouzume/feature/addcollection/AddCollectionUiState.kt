@@ -10,6 +10,7 @@ data class AddCollectionUiState(
   val selectedCategory: CollectionCategory?,
   val editing: Editing?,
   val errorMessage: StringResource?,
+  val showTagsSheet: Boolean,
 ) : ScreenUiState {
   data class Editing(
     val title: String,
