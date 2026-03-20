@@ -3,6 +3,7 @@ package black.bracken.amenouzume.feature.managetag
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.manage_tags_create
 import amenouzume.composeapp.generated.resources.manage_tags_search_placeholder
+import amenouzume.composeapp.generated.resources.manage_tags_search_results
 import amenouzume.composeapp.generated.resources.manage_tags_section_all
 import amenouzume.composeapp.generated.resources.manage_tags_title
 import amenouzume.composeapp.generated.resources.manage_tags_total
@@ -97,13 +98,18 @@ internal fun ManageTagScreen(
 
       Spacer(modifier = Modifier.height(16.dp))
 
+      val searchResults = state.searchResultTags.take(MAX_SEARCH_RESULTS)
       val showCreateTag = state.searchQuery.isNotBlank()
         && state.searchResultTags.none { it.primaryName.equals(state.searchQuery.trim(), ignoreCase = true) }
-      val showSearchResults = state.searchResultTags.isNotEmpty()
+      val showSearchResults = searchResults.isNotEmpty()
       val showSearchSection = showCreateTag || showSearchResults
 
       LazyColumn(modifier = Modifier.weight(1f)) {
         if (showSearchSection) {
+          item(key = "search_header") {
+            SectionHeader(text = stringResource(Res.string.manage_tags_search_results))
+          }
+
           if (showCreateTag) {
             val trimmedQuery = state.searchQuery.trim()
 
@@ -133,7 +139,7 @@ internal fun ManageTagScreen(
           }
 
           if (showSearchResults) {
-            items(state.searchResultTags, key = { "search_${it.id.value}" }) { tag ->
+            items(searchResults, key = { "search_${it.id.value}" }) { tag ->
               HorizontalDivider()
               TagRow(
                 tag = tag,
@@ -273,6 +279,19 @@ private fun TagRow(
     }
   }
 }
+
+@Composable
+private fun SectionHeader(text: String) {
+  Text(
+    text = text,
+    style = MaterialTheme.typography.labelMedium,
+    color = MaterialTheme.colorScheme.primary,
+    fontWeight = FontWeight.Bold,
+    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+  )
+}
+
+private const val MAX_SEARCH_RESULTS = 10
 
 @Preview
 @Composable

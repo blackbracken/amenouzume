@@ -40,4 +40,5 @@
     <string name="manage_tags_section_all">すべてのタグ</string>
     <string name="manage_tags_total">%1$d 件</string>
     <string name="manage_tags_create">%1$s のタグを作成する</string>
+    <string name="manage_tags_search_results">検索結果</string>
 </resources>

@@ -41,4 +41,34 @@ class ManageTagScreenScreenshotTest {
     }
     onRoot().captureRoboImage("src/jvmTest/snapshots/ManageTagScreen.png")
   }
+
+  @Test
+  fun manageTagScreenSearching() = runDesktopComposeUiTest(
+    width = 400,
+    height = 800,
+  ) {
+    val allTags = listOf(
+      Tag(TagId(1), "Cyberpunk"),
+      Tag(TagId(2), "Noir"),
+      Tag(TagId(3), "Photography"),
+      Tag(TagId(4), "Architecture"),
+      Tag(TagId(5), "UI/UX"),
+      Tag(TagId(6), "Marketing"),
+      Tag(TagId(7), "Design"),
+    )
+
+    setContent {
+      AmenouzumeTheme(darkTheme = false) {
+        ManageTagScreen(
+          state = ManageTagUiState(
+            tags = Loadable.Loaded(allTags),
+            searchQuery = "Cyber",
+            searchResultTags = listOf(Tag(TagId(1), "Cyberpunk")),
+          ),
+          action = ManageTagUiAction.Noop,
+        )
+      }
+    }
+    onRoot().captureRoboImage("src/jvmTest/snapshots/ManageTagScreenSearching.png")
+  }
 }
