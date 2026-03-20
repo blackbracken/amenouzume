@@ -1,6 +1,8 @@
 package black.bracken.amenouzume.uishared.navigation
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -22,6 +24,11 @@ import black.bracken.amenouzume.feature.collectionlist.CollectionListCoordinator
 import black.bracken.amenouzume.feature.managetag.ManageTagCoordinator
 import black.bracken.amenouzume.feature.opendatabase.OpenDatabaseCoordinator
 
+@Suppress("MoveLambdaOutsideParentheses")
+private val noTransitionAnimations: List<(AppRoute?, AppRoute?) -> Boolean> = listOf(
+  { from, to -> from is AddCollectionRoute && to is ManageTagRoute },
+)
+
 @Composable
 fun AppNavHost(backStack: List<AppRoute>) {
   val routeOwners = retain { mutableMapOf<AppRoute, RouteViewModelStoreOwner>() }
@@ -42,10 +49,20 @@ fun AppNavHost(backStack: List<AppRoute>) {
   AnimatedContent(
     targetState = backStack.lastOrNull(),
     transitionSpec = {
-      if (isForward) {
-        slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
-      } else {
-        slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+      val noAnimation = noTransitionAnimations.any { matches -> matches(initialState, targetState) }
+
+      when {
+        noAnimation -> {
+          EnterTransition.None togetherWith ExitTransition.None
+        }
+
+        isForward -> {
+          slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+        }
+
+        else -> {
+          slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+        }
       }
     },
   ) { route ->
