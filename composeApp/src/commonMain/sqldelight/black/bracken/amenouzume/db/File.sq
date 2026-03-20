@@ -9,14 +9,14 @@ CREATE TABLE File (
 );
 
 selectByCollectionId:
-SELECT * FROM File WHERE collection_id = ? ORDER BY display_order;
+SELECT * FROM File WHERE collection_id = :collection_id ORDER BY display_order;
 
 selectById:
-SELECT * FROM File WHERE file_id = ?;
+SELECT * FROM File WHERE file_id = :file_id;
 
 insert:
 INSERT INTO File(collection_id, file_path, file_type, display_order, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?);
+VALUES (:collection_id, :file_path, :file_type, :display_order, :created_at, :updated_at);
 
 deleteById:
-DELETE FROM File WHERE file_id = ?;
+DELETE FROM File WHERE file_id = :file_id;

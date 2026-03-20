@@ -5,14 +5,14 @@ CREATE TABLE TagAlias (
 );
 
 selectByTagId:
-SELECT * FROM TagAlias WHERE tag_id = ?;
+SELECT * FROM TagAlias WHERE tag_id = :tag_id;
 
 selectByName:
-SELECT * FROM TagAlias WHERE name = ?;
+SELECT * FROM TagAlias WHERE name = :name;
 
 insert:
-INSERT INTO TagAlias(tag_id, name) VALUES (?, ?);
+INSERT INTO TagAlias(tag_id, name) VALUES (:tag_id, :name);
 
 deleteById:
-DELETE FROM TagAlias WHERE tag_alias_id = ?;
+DELETE FROM TagAlias WHERE tag_alias_id = :tag_alias_id;
 

@@ -5,13 +5,13 @@ CREATE TABLE AuthorAlias (
 );
 
 selectByAuthorId:
-SELECT * FROM AuthorAlias WHERE author_id = ?;
+SELECT * FROM AuthorAlias WHERE author_id = :author_id;
 
 selectByName:
-SELECT * FROM AuthorAlias WHERE name = ?;
+SELECT * FROM AuthorAlias WHERE name = :name;
 
 insert:
-INSERT INTO AuthorAlias(author_id, name) VALUES (?, ?);
+INSERT INTO AuthorAlias(author_id, name) VALUES (:author_id, :name);
 
 deleteById:
-DELETE FROM AuthorAlias WHERE author_alias_id = ?;
+DELETE FROM AuthorAlias WHERE author_alias_id = :author_alias_id;

@@ -8,10 +8,10 @@ selectAll:
 SELECT * FROM Tag;
 
 selectById:
-SELECT * FROM Tag WHERE tag_id = ?;
+SELECT * FROM Tag WHERE tag_id = :tag_id;
 
 selectByName:
-SELECT * FROM Tag WHERE primary_name = ?;
+SELECT * FROM Tag WHERE primary_name = :primary_name;
 
 selectRecentlyAdded:
 SELECT * FROM Tag ORDER BY created_at DESC LIMIT 3;
@@ -28,13 +28,13 @@ ORDER BY
 LIMIT :limit;
 
 insert:
-INSERT INTO Tag(tag_id, primary_name, created_at) VALUES (NULL, ?, ?);
+INSERT INTO Tag(tag_id, primary_name, created_at) VALUES (NULL, :primary_name, :created_at);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
 
 updatePrimaryName:
-UPDATE Tag SET primary_name = ? WHERE tag_id = ?;
+UPDATE Tag SET primary_name = :primary_name WHERE tag_id = :tag_id;
 
 deleteById:
-DELETE FROM Tag WHERE tag_id = ?;
+DELETE FROM Tag WHERE tag_id = :tag_id;

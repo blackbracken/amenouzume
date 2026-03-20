@@ -12,17 +12,17 @@ selectAll:
 SELECT * FROM Collection;
 
 selectById:
-SELECT * FROM Collection WHERE collection_id = ?;
+SELECT * FROM Collection WHERE collection_id = :collection_id;
 
 selectByCategory:
-SELECT * FROM Collection WHERE category = ?;
+SELECT * FROM Collection WHERE category = :category;
 
 insert:
 INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at, content_type)
-VALUES (?, ?, ?, ?, ?, ?);
+VALUES (:title, :thumbnail_path, :category, :created_at, :updated_at, :content_type);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
 
 deleteById:
-DELETE FROM Collection WHERE collection_id = ?;
+DELETE FROM Collection WHERE collection_id = :collection_id;
