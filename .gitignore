@@ -19,3 +19,6 @@ captures
 node_modules/
 tmp/
 **/snapshots
+
+docs/
+.claude
