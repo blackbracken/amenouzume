@@ -199,9 +199,10 @@ class TagRepositoryTest {
     val tag = repository.createTag("tag-1")
     repository.addAliases(tag.id, setOf("tag-1-alias-1", "tag-1-alias-2"))
 
-    val aliases = repository.getAliasesOnce(tag.id)
+    val result = repository.getAliasesOnce(tag.id)
 
-    assertEquals(2, aliases.size)
+    assertTrue(result is Loadable.Loaded)
+    assertEquals(2, result.value.size)
   }
 
   @Test
