@@ -235,6 +235,25 @@ class TagRepositoryTest {
   }
 
   @Test
+  fun `updatePrimaryName should allTagsが更新される`() = runTest {
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag = repository.createTag("tag-1")
+
+    repository.allTags.test {
+      skipItems(1)
+      val before = awaitItem()
+      assertTrue(before is Loadable.Loaded)
+      assertEquals("tag-1", before.value[0].primaryName)
+
+      repository.updatePrimaryName(tag.id, "tag-1-renamed")
+
+      val after = awaitItem()
+      assertTrue(after is Loadable.Loaded)
+      assertEquals("tag-1-renamed", after.value[0].primaryName)
+    }
+  }
+
+  @Test
   fun `addAliases should 他のタグのエイリアスと同名では追加できない`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     val tag1 = repository.createTag("tag-1")
