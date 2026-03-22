@@ -67,7 +67,7 @@ class ManageTagViewModel(
   }
 
   fun onShowEditTagSheet(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {
-    val aliases = tagRepository.getAliases(tag.id)
+    val aliases = tagRepository.getAliasesOnce(tag.id)
     val pendingAliases = aliases.map { it.name }
 
     editingTag = ManageTagUiState.EditingTag(
@@ -101,7 +101,7 @@ class ManageTagViewModel(
       .map { it.id }
       .toSet()
     if (removedAliasIds.isNotEmpty()) {
-      tagRepository.removeAliases(removedAliasIds)
+      tagRepository.removeAliases(current.tagId, removedAliasIds)
     }
   }
 

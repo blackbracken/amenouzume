@@ -13,6 +13,7 @@ import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,13 +24,15 @@ import kotlinx.coroutines.withContext
 @Inject
 class TagRepository(
   private val database: AppDatabase,
-  scope: CoroutineScope,
+  private val scope: CoroutineScope,
 ) {
   private val tagQueries = database.tagQueries
   private val tagAliasQueries = database.tagAliasQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
+  private val _aliasesByTagId = mutableMapOf<TagId, MutableStateFlow<Loadable<List<TagAlias>>>>()
+  private val aliasFlowCache = mutableMapOf<TagId, StateFlow<Loadable<List<TagAlias>>>>()
 
   val allTags: StateFlow<Loadable<List<Tag>>> = _allTags
     .onStart { refreshAllTags() }
@@ -67,12 +70,34 @@ class TagRepository(
     withContext(Dispatchers.IO) {
       tagQueries.deleteById(tag.id.value)
     }
+    _aliasesByTagId.remove(tag.id)
+    aliasFlowCache.remove(tag.id)
     refreshAllTags()
     refreshRecentlyAddedTags()
   }
 
-  suspend fun getAliases(tagId: TagId): List<TagAlias> = withContext(Dispatchers.IO) {
-    tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
+  fun getAliases(tagId: TagId): Flow<Loadable<List<TagAlias>>> = aliasFlowCache.getOrPut(tagId) {
+    val backing = _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }
+    backing
+      .onStart { refreshAliases(tagId) }
+      .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
+  }
+
+  suspend fun getAliasesOnce(tagId: TagId): List<TagAlias> {
+    val aliases = withContext(Dispatchers.IO) {
+      tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
+    }
+    _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }.value = Loadable.Loaded(aliases)
+    return aliases
+  }
+
+  private suspend fun refreshAliases(tagId: TagId) {
+    val flow = _aliasesByTagId[tagId] ?: return
+    flow.value = Loadable.from {
+      withContext(Dispatchers.IO) {
+        tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
+      }
+    }
   }
 
   suspend fun updatePrimaryName(tagId: TagId, name: String) {
@@ -86,19 +111,21 @@ class TagRepository(
   suspend fun addAliases(tagId: TagId, names: Set<String>) {
     withContext(Dispatchers.IO) {
       database.transaction {
-        for (name in names) {
+        names.forEach { name ->
           tagAliasQueries.insert(tag_id = tagId.value, name = name)
         }
       }
     }
+    refreshAliases(tagId)
   }
 
-  suspend fun removeAliases(aliasIds: Set<TagAliasId>) {
+  suspend fun removeAliases(tagId: TagId, aliasIds: Set<TagAliasId>) {
     if (aliasIds.isEmpty()) return
 
     withContext(Dispatchers.IO) {
       tagAliasQueries.deleteByIds(aliasIds.map { it.value })
     }
+    refreshAliases(tagId)
   }
 
   suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
