@@ -59,10 +59,10 @@ class ManageTagViewModel(
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    val trimmed = name.trim()
-    if (trimmed.isEmpty()) return@launchWithCatching
+    val trimmedName = name.trim()
+    if (trimmedName.isEmpty()) return@launchWithCatching
 
-    tagRepository.createTag(trimmed)
+    tagRepository.createTag(trimmedName)
     searchQuery = ""
   }
 
@@ -115,11 +115,11 @@ class ManageTagViewModel(
 
   fun onAddAlias() {
     val current = editingTag ?: return
-    val trimmed = current.newAliasInput.trim()
-    if (trimmed.isBlank() || trimmed in current.pendingAliasNames) return
+    val trimmedAlias = current.newAliasInput.trim()
+    if (trimmedAlias.isBlank() || trimmedAlias in current.pendingAliasNames) return
 
     editingTag = current.copy(
-      pendingAliasNames = current.pendingAliasNames + trimmed,
+      pendingAliasNames = current.pendingAliasNames + trimmedAlias,
       newAliasInput = "",
     )
   }

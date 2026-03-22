@@ -129,10 +129,10 @@ class AddCollectionViewModel(
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    val trimmed = name.trim()
-    if (trimmed.isEmpty()) return@launchWithCatching
+    val trimmedName = name.trim()
+    if (trimmedName.isEmpty()) return@launchWithCatching
 
-    val tag = tagRepository.createTag(trimmed)
+    val tag = tagRepository.createTag(trimmedName)
 
     if (tag !in tags) {
       tags = tags + tag
