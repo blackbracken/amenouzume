@@ -5,7 +5,7 @@ CREATE TABLE Tag (
 );
 
 selectAll:
-SELECT * FROM Tag;
+SELECT * FROM Tag ORDER BY tag_id DESC;
 
 selectById:
 SELECT * FROM Tag WHERE tag_id = :tag_id;

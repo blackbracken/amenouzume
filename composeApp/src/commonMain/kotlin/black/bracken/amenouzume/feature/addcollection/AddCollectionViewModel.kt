@@ -72,7 +72,6 @@ class AddCollectionViewModel(
       searchResultTagIds.mapNotNull { tagById[it] }
     }
 
-    val sortedAvailableTags = remember(availableTags) { availableTags.sorted() }
     val searchResultTags = remember(resolvedSearchResults, selectedTagIds) {
       resolvedSearchResults.filter { it.id !in selectedTagIds }
     }
@@ -87,7 +86,7 @@ class AddCollectionViewModel(
           authors = emptyList(),
           tags = resolvedTags,
           tagSearchQuery = tagSearchQuery,
-          availableTags = sortedAvailableTags,
+          availableTags = availableTags,
           searchResultTags = searchResultTags,
           recentTags = recentTags,
         )
