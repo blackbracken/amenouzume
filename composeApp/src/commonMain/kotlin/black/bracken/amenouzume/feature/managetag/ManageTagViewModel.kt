@@ -66,21 +66,47 @@ class ManageTagViewModel(
     searchQuery = ""
   }
 
-  fun onShowEditTagSheet(tag: Tag) {
+  fun onShowEditTagSheet(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {
+    val aliases = tagRepository.getAliases(tag.id)
+    val pendingAliases = aliases.map { it.name }
+
     editingTag = ManageTagUiState.EditingTag(
       tagId = tag.id,
-      primaryName = tag.primaryName,
-      aliases = emptyList(),
+      initialPrimaryName = tag.primaryName,
+      initialAliases = aliases,
+      pendingPrimaryName = tag.primaryName,
+      pendingAliasNames = pendingAliases,
       newAliasInput = "",
     )
   }
 
-  fun onDismissEditTagSheet() {
+  fun onDismissEditTagSheet() = launchWithCatching({ errorMessage = it.messageRes }) {
+    val current = editingTag ?: return@launchWithCatching
     editingTag = null
+
+    if (current.pendingPrimaryName.trim() != current.initialPrimaryName) {
+      tagRepository.updatePrimaryName(current.tagId, current.pendingPrimaryName.trim())
+    }
+
+    val initialNames = current.initialAliases.map { it.name }.toSet()
+    val currentNames = current.pendingAliasNames.toSet()
+
+    val addedAliasNames = currentNames - initialNames
+    if (addedAliasNames.isNotEmpty()) {
+      tagRepository.addAliases(current.tagId, addedAliasNames)
+    }
+
+    val removedAliasIds = current.initialAliases
+      .filter { it.name !in currentNames }
+      .map { it.id }
+      .toSet()
+    if (removedAliasIds.isNotEmpty()) {
+      tagRepository.removeAliases(removedAliasIds)
+    }
   }
 
   fun onUpdateEditingPrimaryName(value: String) {
-    editingTag = editingTag?.copy(primaryName = value)
+    editingTag = editingTag?.copy(pendingPrimaryName = value)
   }
 
   fun onUpdateEditingNewAliasInput(value: String) {
@@ -90,16 +116,17 @@ class ManageTagViewModel(
   fun onAddAlias() {
     val current = editingTag ?: return
     val trimmed = current.newAliasInput.trim()
-    if (trimmed.isBlank() || trimmed in current.aliases) return
+    if (trimmed.isBlank() || trimmed in current.pendingAliasNames) return
 
     editingTag = current.copy(
-      aliases = current.aliases + trimmed,
+      pendingAliasNames = current.pendingAliasNames + trimmed,
       newAliasInput = "",
     )
   }
 
   fun onRemoveAlias(alias: String) {
-    editingTag = editingTag?.copy(aliases = editingTag?.aliases.orEmpty() - alias)
+    val current = editingTag ?: return
+    editingTag = current.copy(pendingAliasNames = current.pendingAliasNames - alias)
   }
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {

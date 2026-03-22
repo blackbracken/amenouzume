@@ -1,6 +1,7 @@
 package black.bracken.amenouzume.feature.managetag
 
 import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagAlias
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.uishared.ScreenUiState
 import black.bracken.amenouzume.util.Loadable
@@ -16,8 +17,10 @@ data class ManageTagUiState(
 ) : ScreenUiState {
   data class EditingTag(
     val tagId: TagId,
-    val primaryName: String,
-    val aliases: List<String>,
+    val initialPrimaryName: String,
+    val initialAliases: List<TagAlias>,
+    val pendingPrimaryName: String,
+    val pendingAliasNames: List<String>,
     val newAliasInput: String,
   )
 }

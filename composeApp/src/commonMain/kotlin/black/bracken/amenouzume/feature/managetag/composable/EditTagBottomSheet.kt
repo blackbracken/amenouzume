@@ -118,7 +118,7 @@ internal fun ColumnScope.EditTagContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-          value = editingTag.primaryName,
+          value = editingTag.pendingPrimaryName,
           onValueChange = onUpdatePrimaryName,
           modifier = Modifier.fillMaxWidth(),
           singleLine = true,
@@ -154,12 +154,12 @@ internal fun ColumnScope.EditTagContent(
 
     item(key = "aliases_chips") {
       Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        if (editingTag.aliases.isNotEmpty()) {
+        if (editingTag.pendingAliasNames.isNotEmpty()) {
           FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy((-8).dp),
           ) {
-            editingTag.aliases.forEach { alias ->
+            editingTag.pendingAliasNames.forEach { alias ->
               InputChip(
                 selected = false,
                 onClick = { onRemoveAlias(alias) },
@@ -247,8 +247,10 @@ private fun EditTagContentPreview() {
         EditTagContent(
           editingTag = ManageTagUiState.EditingTag(
             tagId = TagId(1),
-            primaryName = "Cyberpunk",
-            aliases = listOf("サイバーパンク", "CP"),
+            initialPrimaryName = "Cyberpunk",
+            initialAliases = emptyList(),
+            pendingPrimaryName = "Cyberpunk",
+            pendingAliasNames = listOf("サイバーパンク", "CP"),
             newAliasInput = "",
           ),
           onUpdatePrimaryName = {},

@@ -5,6 +5,8 @@ import amenouzume.composeapp.generated.resources.error_tag_already_exists
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagAlias
+import black.bracken.amenouzume.kernel.model.TagAliasId
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import dev.zacsweers.metro.Inject
@@ -24,6 +26,7 @@ class TagRepository(
   scope: CoroutineScope,
 ) {
   private val tagQueries = database.tagQueries
+  private val tagAliasQueries = database.tagAliasQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
@@ -66,6 +69,36 @@ class TagRepository(
     }
     refreshAllTags()
     refreshRecentlyAddedTags()
+  }
+
+  suspend fun getAliases(tagId: TagId): List<TagAlias> = withContext(Dispatchers.IO) {
+    tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
+  }
+
+  suspend fun updatePrimaryName(tagId: TagId, name: String) {
+    withContext(Dispatchers.IO) {
+      tagQueries.updatePrimaryName(primary_name = name, tag_id = tagId.value)
+    }
+    refreshAllTags()
+    refreshRecentlyAddedTags()
+  }
+
+  suspend fun addAliases(tagId: TagId, names: Set<String>) {
+    withContext(Dispatchers.IO) {
+      database.transaction {
+        for (name in names) {
+          tagAliasQueries.insert(tag_id = tagId.value, name = name)
+        }
+      }
+    }
+  }
+
+  suspend fun removeAliases(aliasIds: Set<TagAliasId>) {
+    if (aliasIds.isEmpty()) return
+
+    withContext(Dispatchers.IO) {
+      tagAliasQueries.deleteByIds(aliasIds.map { it.value })
+    }
   }
 
   suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
