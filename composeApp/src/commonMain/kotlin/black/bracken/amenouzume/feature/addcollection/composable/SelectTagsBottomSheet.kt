@@ -328,11 +328,11 @@ private fun SelectTagsContentSearchingPreview() {
     Surface {
       Column {
         SelectTagsContent(
-          selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it") },
+          selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it", "") },
           searchQuery = "Vaporw",
           onSearchQueryChange = {},
-          searchResultTags = listOf(Tag(TagId(100), "Vaporwave"), Tag(TagId(101), "Vaporwave Art")),
-          recentTags = listOf(Tag(TagId(3), "Photography"), Tag(TagId(2), "Noir")),
+          searchResultTags = listOf(Tag(TagId(100), "Vaporwave", ""), Tag(TagId(101), "Vaporwave Art", "")),
+          recentTags = listOf(Tag(TagId(3), "Photography", ""), Tag(TagId(2), "Noir", "")),
           onRemoveTag = {},
           onCreateTag = {},
           onAttachTag = {},

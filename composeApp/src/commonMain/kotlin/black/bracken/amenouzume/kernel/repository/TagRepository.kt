@@ -99,31 +99,48 @@ class TagRepository(
   }
 
   suspend fun updatePrimaryName(tagId: TagId, name: String) {
+    val now = Clock.System.now().toString()
+
     withContext(Dispatchers.IO) {
-      tagQueries.updatePrimaryName(primary_name = name, tag_id = tagId.value)
+      tagQueries.updatePrimaryName(primary_name = name, updated_at = now, tag_id = tagId.value)
     }
+
     refreshAllTags()
     refreshRecentlyAddedTags()
   }
 
   suspend fun addAliases(tagId: TagId, names: Set<String>) {
+    val now = Clock.System.now().toString()
+
     withContext(Dispatchers.IO) {
       database.transaction {
         names.forEach { name ->
           tagAliasQueries.insert(tag_id = tagId.value, name = name)
         }
+        tagQueries.touchUpdatedAt(updated_at = now, tag_id = tagId.value)
       }
     }
+
     refreshAliases(tagId)
+    refreshAllTags()
+    refreshRecentlyAddedTags()
   }
 
   suspend fun removeAliases(tagId: TagId, aliasIds: Set<TagAliasId>) {
     if (aliasIds.isEmpty()) return
 
+    val now = Clock.System.now().toString()
+
     withContext(Dispatchers.IO) {
-      tagAliasQueries.deleteByIds(aliasIds.map { it.value })
+      database.transaction {
+        tagAliasQueries.deleteByIds(aliasIds.map { it.value })
+        tagQueries.touchUpdatedAt(updated_at = now, tag_id = tagId.value)
+      }
     }
+
     refreshAliases(tagId)
+    refreshAllTags()
+    refreshRecentlyAddedTags()
   }
 
   suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
@@ -133,10 +150,11 @@ class TagRepository(
     val existingAlias = tagAliasQueries.selectByName(name).executeAsOneOrNull()
     if (existingAlias != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
+    val now = Clock.System.now().toString()
     database.transactionWithResult {
-      tagQueries.insert(name, Clock.System.now().toString())
+      tagQueries.insert(name, now, now)
       val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
-      Tag(id = id, primaryName = name)
+      Tag(id = id, primaryName = name, updatedAt = now)
     }.also {
       refreshAllTags()
       refreshRecentlyAddedTags()

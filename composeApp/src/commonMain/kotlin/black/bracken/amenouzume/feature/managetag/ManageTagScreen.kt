@@ -314,11 +314,11 @@ private fun ManageTagScreenPreview() {
       state = ManageTagUiState(
         tags = Loadable.Loaded(
           listOf(
-            Tag(TagId(1), "Cyberpunk"),
-            Tag(TagId(2), "Noir"),
-            Tag(TagId(3), "Photography"),
-            Tag(TagId(4), "Architecture"),
-            Tag(TagId(5), "UI/UX"),
+            Tag(TagId(1), "Cyberpunk", ""),
+            Tag(TagId(2), "Noir", ""),
+            Tag(TagId(3), "Photography", ""),
+            Tag(TagId(4), "Architecture", ""),
+            Tag(TagId(5), "UI/UX", ""),
           ),
         ),
         searchQuery = "",

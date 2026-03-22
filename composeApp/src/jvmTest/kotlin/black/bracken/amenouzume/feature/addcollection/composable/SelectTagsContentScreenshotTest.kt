@@ -21,11 +21,11 @@ class SelectTagsContentScreenshotTest {
       AmenouzumeTheme(darkTheme = false) {
         Column {
           SelectTagsContent(
-            selectedTags = listOf(Tag(TagId(1), "Design"), Tag(TagId(2), "UI/UX"), Tag(TagId(3), "Mobile")),
+            selectedTags = listOf(Tag(TagId(1), "Design", ""), Tag(TagId(2), "UI/UX", ""), Tag(TagId(3), "Mobile", "")),
             searchQuery = "",
             onSearchQueryChange = {},
             searchResultTags = emptyList(),
-            recentTags = listOf(Tag(TagId(4), "Photography"), Tag(TagId(2), "UI/UX"), Tag(TagId(5), "Marketing")),
+            recentTags = listOf(Tag(TagId(4), "Photography", ""), Tag(TagId(2), "UI/UX", ""), Tag(TagId(5), "Marketing", "")),
             onRemoveTag = {},
             onCreateTag = {},
             onAttachTag = {},
