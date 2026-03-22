@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
@@ -47,9 +48,9 @@ class AddCollectionViewModel(
   private var selectedCategory by mutableStateOf<CollectionCategory?>(null)
   private var title by mutableStateOf(defaultTitle())
   private var filePaths by mutableStateOf<List<String>>(emptyList())
-  private var tags by mutableStateOf<List<Tag>>(emptyList())
+  private var selectedTagIds by mutableStateOf<Set<TagId>>(emptySet())
   private var tagSearchQuery by mutableStateOf("")
-  private var tagSearchResults by mutableStateOf<List<Tag>>(emptyList())
+  private var searchResultTagIds by mutableStateOf<List<TagId>>(emptyList())
   private var showTagsSheet by mutableStateOf(false)
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
@@ -68,10 +69,18 @@ class AddCollectionViewModel(
       else -> emptyList()
     }
 
-    val sortedTags = remember(tags) { tags.sorted() }
+    val tagById = remember(availableTags) { availableTags.associateBy { it.id } }
+    val resolvedTags = remember(selectedTagIds, tagById) {
+      selectedTagIds.mapNotNull { tagById[it] }.sorted()
+    }
+
+    val resolvedSearchResults = remember(searchResultTagIds, tagById) {
+      searchResultTagIds.mapNotNull { tagById[it] }
+    }
+
     val sortedAvailableTags = remember(availableTags) { availableTags.sorted() }
-    val searchResultTags = remember(tagSearchResults, tags) {
-      tagSearchResults.filter { it !in tags }
+    val searchResultTags = remember(resolvedSearchResults, selectedTagIds) {
+      resolvedSearchResults.filter { it.id !in selectedTagIds }
     }
 
     return AddCollectionUiState(
@@ -82,7 +91,7 @@ class AddCollectionViewModel(
           title = title,
           filePaths = filePaths,
           authors = emptyList(),
-          tags = sortedTags,
+          tags = resolvedTags,
           tagSearchQuery = tagSearchQuery,
           availableTags = sortedAvailableTags,
           searchResultTags = searchResultTags,
@@ -117,15 +126,19 @@ class AddCollectionViewModel(
 
   fun onUpdateTagSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     tagSearchQuery = value
-    tagSearchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT)
+    searchResultTagIds = tagRepository.searchTags(value, limit = SEARCH_LIMIT).map { it.id }
   }
 
   fun onToggleTag(tag: Tag) {
-    tags = if (tag in tags) tags - tag else tags + tag
+    selectedTagIds = if (tag.id in selectedTagIds) {
+      selectedTagIds - tag.id
+    } else {
+      selectedTagIds + tag.id
+    }
   }
 
   fun onAttachTag(tag: Tag) {
-    if (tag !in tags) tags = tags + tag
+    selectedTagIds = selectedTagIds + tag.id
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
@@ -133,10 +146,7 @@ class AddCollectionViewModel(
     if (trimmedName.isEmpty()) return@launchWithCatching
 
     val tag = tagRepository.createTag(trimmedName)
-
-    if (tag !in tags) {
-      tags = tags + tag
-    }
+    selectedTagIds = selectedTagIds + tag.id
     tagSearchQuery = ""
   }
 

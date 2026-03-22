@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.Navigator
+import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.getOrThrow
 import black.bracken.amenouzume.util.launchWithCatching
@@ -40,11 +42,22 @@ class ManageTagViewModel(
   private fun presenter(): ManageTagUiState {
     val allTagsLoadable by tagRepository.allTags.collectAsState()
 
+    val tagById = remember(allTagsLoadable) {
+      when (val l = allTagsLoadable) {
+        is Loadable.Loaded -> l.value.associateBy { it.id }
+        else -> emptyMap()
+      }
+    }
+
+    val resolvedSearchResults = remember(searchResults, tagById) {
+      searchResults.mapNotNull { tagById[it.id] }
+    }
+
     return ManageTagUiState(
       isBusy = busyScope.isRunning,
       tags = allTagsLoadable,
       searchQuery = searchQuery,
-      searchResultTags = searchResults,
+      searchResultTags = resolvedSearchResults,
       errorMessage = errorMessage,
       editingTag = editingTag,
     )
