@@ -27,7 +27,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import kotlin.time.Clock
+import black.bracken.amenouzume.util.TimeProvider
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -60,8 +60,7 @@ class AddCollectionViewModel(
     val availableTagsLoadable by tagRepository.allTags.collectAsState()
     val availableTags = availableTagsLoadable.getOrNull().orEmpty()
 
-    val recentTagsLoadable by tagRepository.recentlyAddedTags.collectAsState()
-    val recentTags = recentTagsLoadable.getOrNull().orEmpty()
+    val recentTags = remember(availableTags) { availableTags.take(3) }
 
     val tagById = remember(availableTags) { availableTags.associateBy { it.id } }
     val resolvedTags = remember(selectedTagIds, tagById) {
@@ -178,7 +177,7 @@ class AddCollectionViewModel(
   companion object {
     private const val SEARCH_LIMIT = 5
 
-    private fun defaultTitle(): String = Clock.System.now()
+    private fun defaultTitle(): String = TimeProvider.now()
       .toLocalDateTime(TimeZone.currentSystemDefault())
       .format(
         LocalDateTime.Format {

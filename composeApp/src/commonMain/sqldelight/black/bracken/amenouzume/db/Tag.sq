@@ -6,16 +6,13 @@ CREATE TABLE Tag (
 );
 
 selectAll:
-SELECT * FROM Tag ORDER BY tag_id DESC;
+SELECT * FROM Tag ORDER BY updated_at DESC, tag_id ASC;
 
 selectById:
 SELECT * FROM Tag WHERE tag_id = :tag_id;
 
 selectByName:
 SELECT * FROM Tag WHERE primary_name = :primary_name;
-
-selectRecentlyAdded:
-SELECT * FROM Tag ORDER BY created_at DESC LIMIT 3;
 
 searchByName:
 SELECT Tag.* FROM Tag

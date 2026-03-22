@@ -2,8 +2,8 @@ package black.bracken.amenouzume.kernel.repository
 
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.model.CollectionId
+import black.bracken.amenouzume.util.TimeProvider
 import dev.zacsweers.metro.Inject
-import kotlin.time.Clock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +19,7 @@ class CollectionRepository(
     contentType: String,
   ): CollectionId = withContext(Dispatchers.IO) {
     database.transactionWithResult {
-      val now = Clock.System.now().toString()
+      val now = TimeProvider.now().toString()
       queries.insert(
         title = title,
         thumbnail_path = null,

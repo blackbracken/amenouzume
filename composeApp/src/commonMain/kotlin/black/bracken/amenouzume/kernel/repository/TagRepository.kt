@@ -9,8 +9,8 @@ import black.bracken.amenouzume.kernel.model.TagAlias
 import black.bracken.amenouzume.kernel.model.TagAliasId
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
+import black.bracken.amenouzume.util.TimeProvider
 import dev.zacsweers.metro.Inject
-import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +30,6 @@ class TagRepository(
   private val tagAliasQueries = database.tagAliasQueries
 
   private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
-  private val _recentlyAddedTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
   private val _aliasesByTagId = mutableMapOf<TagId, MutableStateFlow<Loadable<List<TagAlias>>>>()
   private val aliasFlowCache = mutableMapOf<TagId, StateFlow<Loadable<List<TagAlias>>>>()
 
@@ -38,22 +37,10 @@ class TagRepository(
     .onStart { refreshAllTags() }
     .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
-  val recentlyAddedTags: StateFlow<Loadable<List<Tag>>> = _recentlyAddedTags
-    .onStart { refreshRecentlyAddedTags() }
-    .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
-
   private suspend fun refreshAllTags() {
     _allTags.value = Loadable.from {
       withContext(Dispatchers.IO) {
         tagQueries.selectAll().executeAsList().map { Tag.from(it) }
-      }
-    }
-  }
-
-  private suspend fun refreshRecentlyAddedTags() {
-    _recentlyAddedTags.value = Loadable.from {
-      withContext(Dispatchers.IO) {
-        tagQueries.selectRecentlyAdded().executeAsList().map { Tag.from(it) }
       }
     }
   }
@@ -73,7 +60,6 @@ class TagRepository(
     _aliasesByTagId.remove(tag.id)
     aliasFlowCache.remove(tag.id)
     refreshAllTags()
-    refreshRecentlyAddedTags()
   }
 
   fun getAliases(tagId: TagId): Flow<Loadable<List<TagAlias>>> = aliasFlowCache.getOrPut(tagId) {
@@ -99,18 +85,17 @@ class TagRepository(
   }
 
   suspend fun updatePrimaryName(tagId: TagId, name: String) {
-    val now = Clock.System.now().toString()
+    val now = TimeProvider.now().toString()
 
     withContext(Dispatchers.IO) {
       tagQueries.updatePrimaryName(primary_name = name, updated_at = now, tag_id = tagId.value)
     }
 
     refreshAllTags()
-    refreshRecentlyAddedTags()
   }
 
   suspend fun addAliases(tagId: TagId, names: Set<String>) {
-    val now = Clock.System.now().toString()
+    val now = TimeProvider.now().toString()
 
     withContext(Dispatchers.IO) {
       database.transaction {
@@ -123,13 +108,12 @@ class TagRepository(
 
     refreshAliases(tagId)
     refreshAllTags()
-    refreshRecentlyAddedTags()
   }
 
   suspend fun removeAliases(tagId: TagId, aliasIds: Set<TagAliasId>) {
     if (aliasIds.isEmpty()) return
 
-    val now = Clock.System.now().toString()
+    val now = TimeProvider.now().toString()
 
     withContext(Dispatchers.IO) {
       database.transaction {
@@ -140,7 +124,6 @@ class TagRepository(
 
     refreshAliases(tagId)
     refreshAllTags()
-    refreshRecentlyAddedTags()
   }
 
   suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
@@ -150,14 +133,13 @@ class TagRepository(
     val existingAlias = tagAliasQueries.selectByName(name).executeAsOneOrNull()
     if (existingAlias != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
-    val now = Clock.System.now()
+    val now = TimeProvider.now()
     database.transactionWithResult {
       tagQueries.insert(name, now.toString(), now.toString())
       val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
       Tag(id = id, primaryName = name, updatedAt = now)
     }.also {
       refreshAllTags()
-      refreshRecentlyAddedTags()
     }
   }
 }

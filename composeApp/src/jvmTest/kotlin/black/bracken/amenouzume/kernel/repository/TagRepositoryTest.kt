@@ -5,6 +5,9 @@ import app.cash.turbine.test
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.util.Loadable
+import black.bracken.amenouzume.util.TimeProvider
+import kotlin.time.Instant
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -13,6 +16,11 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
 class TagRepositoryTest {
+
+  @AfterTest
+  fun tearDown() {
+    TimeProvider.reset()
+  }
 
   @Test
   fun `allTags should タグを返す`() = runTest {
@@ -29,18 +37,25 @@ class TagRepositoryTest {
   }
 
   @Test
-  fun `recentlyAddedTags should 4件以上なら最新3件のみ返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
-    repository.createTag("tag-1")
-    repository.createTag("tag-2")
-    repository.createTag("tag-3")
-    repository.createTag("tag-4")
+  fun `allTags should updatedAtの降順、idの昇順 の順序の強さで返される`() = runTest {
+    val t1 = Instant.parse("2025-01-01T00:00:00Z")
+    val t2 = Instant.parse("2025-01-02T00:00:00Z")
 
-    repository.recentlyAddedTags.test {
+    TimeProvider.override { t1 }
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag1 = repository.createTag("tag-1")
+    val tag2 = repository.createTag("tag-2")
+    val tag3 = repository.createTag("tag-3")
+
+    TimeProvider.override { t2 }
+    repository.updatePrimaryName(tag2.id, "tag-2-updated")
+
+    repository.allTags.test {
       skipItems(1)
       val item = awaitItem()
       assertTrue(item is Loadable.Loaded)
-      assertEquals(3, item.value.size)
+      val names = item.value.map { it.primaryName }
+      assertEquals(listOf("tag-2-updated", "tag-1", "tag-3"), names)
     }
   }
 
@@ -79,13 +94,6 @@ class TagRepositoryTest {
       val after = awaitItem()
       assertTrue(after is Loadable.Loaded)
       assertTrue(after.value.isEmpty())
-    }
-
-    repository.recentlyAddedTags.test {
-      skipItems(1)
-      val item = awaitItem()
-      assertTrue(item is Loadable.Loaded)
-      assertTrue(item.value.isEmpty())
     }
   }
 
