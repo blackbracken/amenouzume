@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
+import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlin.test.Test
@@ -21,11 +22,11 @@ class SelectTagsContentScreenshotTest {
       AmenouzumeTheme(darkTheme = false) {
         Column {
           SelectTagsContent(
-            selectedTags = listOf(Tag(TagId(1), "Design", ""), Tag(TagId(2), "UI/UX", ""), Tag(TagId(3), "Mobile", "")),
+            selectedTags = listOf(Tag(TagId(1), "Design", Instant.DISTANT_PAST), Tag(TagId(2), "UI/UX", Instant.DISTANT_PAST), Tag(TagId(3), "Mobile", Instant.DISTANT_PAST)),
             searchQuery = "",
             onSearchQueryChange = {},
             searchResultTags = emptyList(),
-            recentTags = listOf(Tag(TagId(4), "Photography", ""), Tag(TagId(2), "UI/UX", ""), Tag(TagId(5), "Marketing", "")),
+            recentTags = listOf(Tag(TagId(4), "Photography", Instant.DISTANT_PAST), Tag(TagId(2), "UI/UX", Instant.DISTANT_PAST), Tag(TagId(5), "Marketing", Instant.DISTANT_PAST)),
             onRemoveTag = {},
             onCreateTag = {},
             onAttachTag = {},

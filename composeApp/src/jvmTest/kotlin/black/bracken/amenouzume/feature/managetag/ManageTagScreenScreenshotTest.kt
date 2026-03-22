@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
+import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
 import io.github.takahirom.roborazzi.captureRoboImage
@@ -24,13 +25,13 @@ class ManageTagScreenScreenshotTest {
           state = ManageTagUiState(
             tags = Loadable.Loaded(
               listOf(
-                Tag(TagId(1), "Cyberpunk", ""),
-                Tag(TagId(2), "Noir", ""),
-                Tag(TagId(3), "Photography", ""),
-                Tag(TagId(4), "Architecture", ""),
-                Tag(TagId(5), "UI/UX", ""),
-                Tag(TagId(6), "Marketing", ""),
-                Tag(TagId(7), "Design", ""),
+                Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST),
+                Tag(TagId(2), "Noir", Instant.DISTANT_PAST),
+                Tag(TagId(3), "Photography", Instant.DISTANT_PAST),
+                Tag(TagId(4), "Architecture", Instant.DISTANT_PAST),
+                Tag(TagId(5), "UI/UX", Instant.DISTANT_PAST),
+                Tag(TagId(6), "Marketing", Instant.DISTANT_PAST),
+                Tag(TagId(7), "Design", Instant.DISTANT_PAST),
               ),
             ),
             searchQuery = "",
@@ -48,13 +49,13 @@ class ManageTagScreenScreenshotTest {
     height = 800,
   ) {
     val allTags = listOf(
-      Tag(TagId(1), "Cyberpunk", ""),
-      Tag(TagId(2), "Noir", ""),
-      Tag(TagId(3), "Photography", ""),
-      Tag(TagId(4), "Architecture", ""),
-      Tag(TagId(5), "UI/UX", ""),
-      Tag(TagId(6), "Marketing", ""),
-      Tag(TagId(7), "Design", ""),
+      Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST),
+      Tag(TagId(2), "Noir", Instant.DISTANT_PAST),
+      Tag(TagId(3), "Photography", Instant.DISTANT_PAST),
+      Tag(TagId(4), "Architecture", Instant.DISTANT_PAST),
+      Tag(TagId(5), "UI/UX", Instant.DISTANT_PAST),
+      Tag(TagId(6), "Marketing", Instant.DISTANT_PAST),
+      Tag(TagId(7), "Design", Instant.DISTANT_PAST),
     )
 
     setContent {
@@ -63,7 +64,7 @@ class ManageTagScreenScreenshotTest {
           state = ManageTagUiState(
             tags = Loadable.Loaded(allTags),
             searchQuery = "Cyber",
-            searchResultTags = listOf(Tag(TagId(1), "Cyberpunk", "")),
+            searchResultTags = listOf(Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST)),
           ),
           action = ManageTagUiAction.Noop,
         )

@@ -47,6 +47,7 @@ import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
+import kotlin.time.Instant
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -314,11 +315,11 @@ private fun ManageTagScreenPreview() {
       state = ManageTagUiState(
         tags = Loadable.Loaded(
           listOf(
-            Tag(TagId(1), "Cyberpunk", ""),
-            Tag(TagId(2), "Noir", ""),
-            Tag(TagId(3), "Photography", ""),
-            Tag(TagId(4), "Architecture", ""),
-            Tag(TagId(5), "UI/UX", ""),
+            Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST),
+            Tag(TagId(2), "Noir", Instant.DISTANT_PAST),
+            Tag(TagId(3), "Photography", Instant.DISTANT_PAST),
+            Tag(TagId(4), "Architecture", Instant.DISTANT_PAST),
+            Tag(TagId(5), "UI/UX", Instant.DISTANT_PAST),
           ),
         ),
         searchQuery = "",

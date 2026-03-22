@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
+import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import org.jetbrains.compose.resources.stringResource
 
@@ -328,11 +329,11 @@ private fun SelectTagsContentSearchingPreview() {
     Surface {
       Column {
         SelectTagsContent(
-          selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it", "") },
+          selectedTags = (0L until 10L).map { Tag(TagId(it), "Tag-$it", Instant.DISTANT_PAST) },
           searchQuery = "Vaporw",
           onSearchQueryChange = {},
-          searchResultTags = listOf(Tag(TagId(100), "Vaporwave", ""), Tag(TagId(101), "Vaporwave Art", "")),
-          recentTags = listOf(Tag(TagId(3), "Photography", ""), Tag(TagId(2), "Noir", "")),
+          searchResultTags = listOf(Tag(TagId(100), "Vaporwave", Instant.DISTANT_PAST), Tag(TagId(101), "Vaporwave Art", Instant.DISTANT_PAST)),
+          recentTags = listOf(Tag(TagId(3), "Photography", Instant.DISTANT_PAST), Tag(TagId(2), "Noir", Instant.DISTANT_PAST)),
           onRemoveTag = {},
           onCreateTag = {},
           onAttachTag = {},

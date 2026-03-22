@@ -73,6 +73,7 @@ import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBotto
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
+import kotlin.time.Instant
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import black.bracken.amenouzume.platform.image.pathToCoilModel
@@ -518,18 +519,18 @@ private fun AddCollectionScreenPreview() {
           title = "",
           filePaths = listOf("/path/to/image1.png", "/path/to/image2.png"),
           authors = listOf("@jdoe_art"),
-          tags = listOf(Tag(TagId(1), "Cyberpunk", ""), Tag(TagId(2), "Noir", "")),
+          tags = listOf(Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST), Tag(TagId(2), "Noir", Instant.DISTANT_PAST)),
           tagSearchQuery = "",
           availableTags = listOf(
-            Tag(TagId(3), "Architecture", ""),
-            Tag(TagId(4), "Design", ""),
-            Tag(TagId(5), "Engineering", ""),
-            Tag(TagId(6), "Marketing", ""),
-            Tag(TagId(7), "Photography", ""),
-            Tag(TagId(8), "UI/UX", ""),
+            Tag(TagId(3), "Architecture", Instant.DISTANT_PAST),
+            Tag(TagId(4), "Design", Instant.DISTANT_PAST),
+            Tag(TagId(5), "Engineering", Instant.DISTANT_PAST),
+            Tag(TagId(6), "Marketing", Instant.DISTANT_PAST),
+            Tag(TagId(7), "Photography", Instant.DISTANT_PAST),
+            Tag(TagId(8), "UI/UX", Instant.DISTANT_PAST),
           ),
           searchResultTags = emptyList(),
-          recentTags = listOf(Tag(TagId(7), "Photography", ""), Tag(TagId(8), "UI/UX", ""), Tag(TagId(6), "Marketing", "")),
+          recentTags = listOf(Tag(TagId(7), "Photography", Instant.DISTANT_PAST), Tag(TagId(8), "UI/UX", Instant.DISTANT_PAST), Tag(TagId(6), "Marketing", Instant.DISTANT_PAST)),
         ),
         errorMessage = null,
         showTagsSheet = false,
