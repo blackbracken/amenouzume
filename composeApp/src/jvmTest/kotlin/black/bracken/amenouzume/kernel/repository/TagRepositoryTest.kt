@@ -115,18 +115,27 @@ class TagRepositoryTest {
   }
 
   @Test
-  fun `searchTags should 完全一致、前方一致、部分一致の優先順で返される`() = runTest {
+  fun `searchTags should primary nameとエイリアスの完全一致、前方一致、部分一致の優先順で返される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     repository.createTag("my-kotlin")
     repository.createTag("kotlin")
     repository.createTag("kotlin-coroutines")
+    val tagA = repository.createTag("tag-a")
+    repository.addAliases(tagA.id, setOf("kotlin-ext"))
+    val tagB = repository.createTag("tag-b")
+    repository.addAliases(tagB.id, setOf("has-kotlin"))
+    val tagC = repository.createTag("tag-c")
+    repository.addAliases(tagC.id, setOf("kotlin"))
 
     val results = repository.searchTags("kotlin", limit = 10)
 
-    assertEquals(3, results.size)
+    assertEquals(6, results.size)
     assertEquals("kotlin", results[0].primaryName)
-    assertEquals("kotlin-coroutines", results[1].primaryName)
-    assertEquals("my-kotlin", results[2].primaryName)
+    assertEquals("tag-c", results[1].primaryName)
+    assertEquals("kotlin-coroutines", results[2].primaryName)
+    assertEquals("tag-a", results[3].primaryName)
+    assertEquals("my-kotlin", results[4].primaryName)
+    assertEquals("tag-b", results[5].primaryName)
   }
 
   @Test
