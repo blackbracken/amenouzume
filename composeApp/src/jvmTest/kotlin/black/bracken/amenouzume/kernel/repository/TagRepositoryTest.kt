@@ -8,6 +8,7 @@ import black.bracken.amenouzume.util.Loadable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFails
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
@@ -126,6 +127,29 @@ class TagRepositoryTest {
     assertEquals("kotlin", results[0].primaryName)
     assertEquals("kotlin-coroutines", results[1].primaryName)
     assertEquals("my-kotlin", results[2].primaryName)
+  }
+
+  @Test
+  fun `addAliases should 他のタグのエイリアスと同名では追加できない`() = runTest {
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag1 = repository.createTag("tag1")
+    val tag2 = repository.createTag("tag2")
+    repository.addAliases(tag1.id, setOf("shared-alias"))
+
+    assertFails {
+      repository.addAliases(tag2.id, setOf("shared-alias"))
+    }
+  }
+
+  @Test
+  fun `createTag should 既存エイリアスと同名のprimary nameでは作成できない`() = runTest {
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag = repository.createTag("tag")
+    repository.addAliases(tag.id, setOf("alias-name"))
+
+    assertFailsWith<CommonFailure> {
+      repository.createTag("alias-name")
+    }
   }
 
   private fun createTestDatabase(): AppDatabase {

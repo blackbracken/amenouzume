@@ -105,6 +105,9 @@ class TagRepository(
     val existing = tagQueries.selectByName(name).executeAsOneOrNull()
     if (existing != null) throw CommonFailure(Res.string.error_tag_already_exists)
 
+    val existingAlias = tagAliasQueries.selectByName(name).executeAsOneOrNull()
+    if (existingAlias != null) throw CommonFailure(Res.string.error_tag_already_exists)
+
     database.transactionWithResult {
       tagQueries.insert(name, Clock.System.now().toString())
       val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
