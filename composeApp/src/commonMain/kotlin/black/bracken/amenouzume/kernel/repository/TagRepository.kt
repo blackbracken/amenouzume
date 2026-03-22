@@ -83,12 +83,10 @@ class TagRepository(
       .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
   }
 
-  suspend fun getAliasesOnce(tagId: TagId): List<TagAlias> {
-    val aliases = withContext(Dispatchers.IO) {
-      tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
-    }
-    _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }.value = Loadable.Loaded(aliases)
-    return aliases
+  suspend fun getAliasesOnce(tagId: TagId): Loadable<List<TagAlias>> {
+    _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }
+    refreshAliases(tagId)
+    return _aliasesByTagId.getValue(tagId).value
   }
 
   private suspend fun refreshAliases(tagId: TagId) {

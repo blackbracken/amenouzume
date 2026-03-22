@@ -1,6 +1,7 @@
 package black.bracken.amenouzume.util
 
 import black.bracken.amenouzume.kernel.error.AppFailure
+import black.bracken.amenouzume.kernel.error.CommonFailure
 import kotlinx.coroutines.CancellationException
 import org.jetbrains.compose.resources.StringResource
 
@@ -26,6 +27,13 @@ sealed interface Loadable<out T> {
       }
   }
 }
+
+fun <T> Loadable<T>.getOrThrow(): T =
+  when (this) {
+    is Loadable.Loaded -> value
+    is Loadable.Failed -> throw CommonFailure(messageRes)
+    is Loadable.Loading -> error("unreachable: Loading state must be resolved before calling getOrThrow")
+  }
 
 inline fun <T, R> Loadable<T>.map(transform: (T) -> R): Loadable<R> =
   when (this) {

@@ -10,6 +10,7 @@ import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.TrackedScope
+import black.bracken.amenouzume.util.getOrThrow
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
@@ -67,7 +68,7 @@ class ManageTagViewModel(
   }
 
   fun onShowEditTagSheet(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {
-    val aliases = tagRepository.getAliasesOnce(tag.id)
+    val aliases = tagRepository.getAliasesOnce(tag.id).getOrThrow()
     val pendingAliases = aliases.map { it.name }
 
     editingTag = ManageTagUiState.EditingTag(
