@@ -18,8 +18,8 @@ import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.ManageTagRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
-import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
+import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
@@ -58,16 +58,10 @@ class AddCollectionViewModel(
   @Composable
   private fun presenter(): AddCollectionUiState {
     val availableTagsLoadable by tagRepository.allTags.collectAsState()
-    val availableTags = when (val l = availableTagsLoadable) {
-      is Loadable.Loaded -> l.value
-      else -> emptyList()
-    }
+    val availableTags = availableTagsLoadable.getOrNull().orEmpty()
 
     val recentTagsLoadable by tagRepository.recentlyAddedTags.collectAsState()
-    val recentTags = when (val l = recentTagsLoadable) {
-      is Loadable.Loaded -> l.value
-      else -> emptyList()
-    }
+    val recentTags = recentTagsLoadable.getOrNull().orEmpty()
 
     val tagById = remember(availableTags) { availableTags.associateBy { it.id } }
     val resolvedTags = remember(selectedTagIds, tagById) {

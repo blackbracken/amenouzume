@@ -28,6 +28,12 @@ sealed interface Loadable<out T> {
   }
 }
 
+fun <T> Loadable<T>.getOrNull(): T? =
+  when (this) {
+    is Loadable.Loaded -> value
+    else -> null
+  }
+
 fun <T> Loadable<T>.getOrThrow(): T =
   when (this) {
     is Loadable.Loaded -> value

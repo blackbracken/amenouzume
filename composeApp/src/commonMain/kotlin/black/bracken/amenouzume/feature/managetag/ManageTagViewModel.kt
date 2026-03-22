@@ -12,6 +12,7 @@ import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
+import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.getOrThrow
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
@@ -43,10 +44,7 @@ class ManageTagViewModel(
     val allTagsLoadable by tagRepository.allTags.collectAsState()
 
     val tagById = remember(allTagsLoadable) {
-      when (val l = allTagsLoadable) {
-        is Loadable.Loaded -> l.value.associateBy { it.id }
-        else -> emptyMap()
-      }
+      allTagsLoadable.getOrNull()?.associateBy { it.id }.orEmpty()
     }
 
     val resolvedSearchResults = remember(searchResults, tagById) {
