@@ -46,4 +46,10 @@
     <string name="manage_tags_section_all">ALL TAGS</string>
     <string name="manage_tags_total">%1$d TOTAL</string>
     <string name="manage_tags_create">Create tag %1$s</string>
+    <string name="edit_tag_title">Edit Tag</string>
+    <string name="edit_tag_primary_name">PRIMARY NAME</string>
+    <string name="edit_tag_aliases">ALIASES</string>
+    <string name="edit_tag_new_alias_placeholder">New alias</string>
+    <string name="edit_tag_add_alias">Add alias</string>
+    <string name="edit_tag_done">DONE</string>
 </resources>

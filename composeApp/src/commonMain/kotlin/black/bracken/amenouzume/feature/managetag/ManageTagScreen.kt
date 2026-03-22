@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import black.bracken.amenouzume.feature.managetag.composable.EditTagBottomSheet
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
@@ -58,6 +60,12 @@ fun ManageTagCoordinator(
     onUpdateSearchQuery = viewModel::onUpdateSearchQuery,
     onDeleteTag = viewModel::onDeleteTag,
     onCreateTag = viewModel::onCreateTag,
+    onShowEditTagSheet = viewModel::onShowEditTagSheet,
+    onDismissEditTagSheet = viewModel::onDismissEditTagSheet,
+    onUpdateEditingPrimaryName = viewModel::onUpdateEditingPrimaryName,
+    onUpdateEditingNewAliasInput = viewModel::onUpdateEditingNewAliasInput,
+    onAddAlias = viewModel::onAddAlias,
+    onRemoveAlias = viewModel::onRemoveAlias,
   )
   ManageTagScreen(
     state = state.value,
@@ -71,6 +79,17 @@ internal fun ManageTagScreen(
   state: ManageTagUiState,
   action: ManageTagUiAction,
 ) {
+  if (state.editingTag != null) {
+    EditTagBottomSheet(
+      editingTag = state.editingTag,
+      onUpdatePrimaryName = action.onUpdateEditingPrimaryName,
+      onUpdateNewAliasInput = action.onUpdateEditingNewAliasInput,
+      onAddAlias = action.onAddAlias,
+      onRemoveAlias = action.onRemoveAlias,
+      onDismiss = action.onDismissEditTagSheet,
+    )
+  }
+
   Scaffold(
     topBar = {
       TopAppBar(
@@ -136,6 +155,7 @@ internal fun ManageTagScreen(
             HorizontalDivider()
             TagRow(
               tag = tag,
+              onEdit = { action.onShowEditTagSheet(tag) },
               onDelete = { action.onDeleteTag(tag) },
             )
           }
@@ -163,6 +183,7 @@ internal fun ManageTagScreen(
             HorizontalDivider()
             TagRow(
               tag = tag,
+              onEdit = { action.onShowEditTagSheet(tag) },
               onDelete = { action.onDeleteTag(tag) },
             )
           }
@@ -236,6 +257,7 @@ private fun AllTagsSectionHeader(totalCount: Int?) {
 @Composable
 private fun TagRow(
   tag: Tag,
+  onEdit: () -> Unit,
   onDelete: () -> Unit,
 ) {
   val haptic = rememberHapticFeedback()
@@ -257,6 +279,18 @@ private fun TagRow(
       style = MaterialTheme.typography.bodyLarge,
       modifier = Modifier.weight(1f),
     )
+    IconButton(
+      onClick = {
+        haptic(AppHapticFeedbackType.LightTap)
+        onEdit()
+      },
+    ) {
+      Icon(
+        imageVector = Icons.Default.Edit,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
+    }
     IconButton(
       onClick = {
         haptic(AppHapticFeedbackType.LightTap)

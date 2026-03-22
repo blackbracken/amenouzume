@@ -7,6 +7,12 @@ data class ManageTagUiAction(
   val onUpdateSearchQuery: (String) -> Unit,
   val onDeleteTag: (Tag) -> Unit,
   val onCreateTag: (String) -> Unit,
+  val onShowEditTagSheet: (Tag) -> Unit,
+  val onDismissEditTagSheet: () -> Unit,
+  val onUpdateEditingPrimaryName: (String) -> Unit,
+  val onUpdateEditingNewAliasInput: (String) -> Unit,
+  val onAddAlias: () -> Unit,
+  val onRemoveAlias: (String) -> Unit,
 ) {
   companion object {
     val Noop = ManageTagUiAction(
@@ -14,6 +20,12 @@ data class ManageTagUiAction(
       onUpdateSearchQuery = {},
       onDeleteTag = {},
       onCreateTag = {},
+      onShowEditTagSheet = {},
+      onDismissEditTagSheet = {},
+      onUpdateEditingPrimaryName = {},
+      onUpdateEditingNewAliasInput = {},
+      onAddAlias = {},
+      onRemoveAlias = {},
     )
   }
 }

@@ -31,6 +31,7 @@ class ManageTagViewModel(
   private var errorMessage by mutableStateOf<StringResource?>(null)
   private var searchQuery by mutableStateOf("")
   private var searchResults by mutableStateOf<List<Tag>>(emptyList())
+  private var editingTag by mutableStateOf<ManageTagUiState.EditingTag?>(null)
 
   val uiState: StateFlow<ManageTagUiState> = moleculeState { presenter() }
 
@@ -44,6 +45,7 @@ class ManageTagViewModel(
       searchQuery = searchQuery,
       searchResultTags = searchResults,
       errorMessage = errorMessage,
+      editingTag = editingTag,
     )
   }
 
@@ -62,6 +64,42 @@ class ManageTagViewModel(
 
     tagRepository.createTag(trimmed)
     searchQuery = ""
+  }
+
+  fun onShowEditTagSheet(tag: Tag) {
+    editingTag = ManageTagUiState.EditingTag(
+      tagId = tag.id,
+      primaryName = tag.primaryName,
+      aliases = emptyList(),
+      newAliasInput = "",
+    )
+  }
+
+  fun onDismissEditTagSheet() {
+    editingTag = null
+  }
+
+  fun onUpdateEditingPrimaryName(value: String) {
+    editingTag = editingTag?.copy(primaryName = value)
+  }
+
+  fun onUpdateEditingNewAliasInput(value: String) {
+    editingTag = editingTag?.copy(newAliasInput = value)
+  }
+
+  fun onAddAlias() {
+    val current = editingTag ?: return
+    val trimmed = current.newAliasInput.trim()
+    if (trimmed.isBlank() || trimmed in current.aliases) return
+
+    editingTag = current.copy(
+      aliases = current.aliases + trimmed,
+      newAliasInput = "",
+    )
+  }
+
+  fun onRemoveAlias(alias: String) {
+    editingTag = editingTag?.copy(aliases = editingTag?.aliases.orEmpty() - alias)
   }
 
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
