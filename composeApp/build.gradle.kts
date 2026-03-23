@@ -56,6 +56,7 @@ kotlin {
       implementation(libs.molecule.runtime)
       implementation(libs.navigation3.runtime)
       implementation(libs.sqldelight.coroutines)
+      implementation(libs.store5)
     }
     commonTest.dependencies {
       implementation(libs.kotlin.test)

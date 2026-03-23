@@ -2,6 +2,8 @@ package black.bracken.amenouzume.kernel.repository
 
 import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.error_tag_already_exists
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.Tag
@@ -10,16 +12,18 @@ import black.bracken.amenouzume.kernel.model.TagAliasId
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
+import black.bracken.amenouzume.util.from
+import black.bracken.amenouzume.util.toLoadable
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.StoreBuilder
+import org.mobilenativefoundation.store.store5.StoreReadRequest
+import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 
 @Inject
 class TagRepository(
@@ -29,21 +33,34 @@ class TagRepository(
   private val tagQueries = database.tagQueries
   private val tagAliasQueries = database.tagAliasQueries
 
-  private val _allTags = MutableStateFlow<Loadable<List<Tag>>>(Loadable.Loading)
-  private val _aliasesByTagId = mutableMapOf<TagId, MutableStateFlow<Loadable<List<TagAlias>>>>()
-  private val aliasFlowCache = mutableMapOf<TagId, StateFlow<Loadable<List<TagAlias>>>>()
+  private val allTagsStore = StoreBuilder.from(
+    fetcher = { _: Unit ->
+      tagQueries.selectAll().executeAsList()
+        .map { Tag.from(it) }
+    },
+    reader = { _: Unit ->
+      tagQueries.selectAll().asFlow()
+        .mapToList(Dispatchers.IO)
+        .map { rows -> rows.map { Tag.from(it) } }
+    },
+  ).scope(scope).build()
 
-  val allTags: StateFlow<Loadable<List<Tag>>> = _allTags
-    .onStart { refreshAllTags() }
-    .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
+  private val aliasesStore = StoreBuilder.from(
+    fetcher = { tagId: TagId ->
+      tagAliasQueries.selectByTagId(tagId.value).executeAsList()
+        .map { TagAlias.from(it) }
+    },
+    reader = { tagId: TagId ->
+      tagAliasQueries.selectByTagId(tagId.value).asFlow()
+        .mapToList(Dispatchers.IO)
+        .map { rows -> rows.map { TagAlias.from(it) } }
+    },
+  ).scope(scope).build()
 
-  private suspend fun refreshAllTags() {
-    _allTags.value = Loadable.from {
-      withContext(Dispatchers.IO) {
-        tagQueries.selectAll().executeAsList().map { Tag.from(it) }
-      }
-    }
-  }
+  fun getAllTags(): Flow<Loadable<List<Tag>>> =
+    allTagsStore.stream(StoreReadRequest.cached(Unit, refresh = false))
+      .toLoadable()
+      .onStart { emit(Loadable.Loading) }
 
   suspend fun searchTags(query: String, limit: Int): List<Tag> {
     if (query.isBlank()) return emptyList()
@@ -57,31 +74,16 @@ class TagRepository(
     withContext(Dispatchers.IO) {
       tagQueries.deleteById(tag.id.value)
     }
-    _aliasesByTagId.remove(tag.id)
-    aliasFlowCache.remove(tag.id)
-    refreshAllTags()
+    aliasesStore.clear(tag.id)
   }
 
-  fun getAliases(tagId: TagId): Flow<Loadable<List<TagAlias>>> = aliasFlowCache.getOrPut(tagId) {
-    val backing = _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }
-    backing
-      .onStart { refreshAliases(tagId) }
-      .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
-  }
+  fun getAliases(tagId: TagId): Flow<Loadable<List<TagAlias>>> =
+    aliasesStore.stream(StoreReadRequest.cached(tagId, refresh = false))
+      .toLoadable()
+      .onStart { emit(Loadable.Loading) }
 
-  suspend fun getAliasesOnce(tagId: TagId): Loadable<List<TagAlias>> {
-    _aliasesByTagId.getOrPut(tagId) { MutableStateFlow(Loadable.Loading) }
-    refreshAliases(tagId)
-    return _aliasesByTagId.getValue(tagId).value
-  }
-
-  private suspend fun refreshAliases(tagId: TagId) {
-    val flow = _aliasesByTagId[tagId] ?: return
-    flow.value = Loadable.from {
-      withContext(Dispatchers.IO) {
-        tagAliasQueries.selectByTagId(tagId.value).executeAsList().map { TagAlias.from(it) }
-      }
-    }
+  suspend fun getAliasesOnce(tagId: TagId): Loadable<List<TagAlias>> = Loadable.from {
+    aliasesStore.fresh(tagId)
   }
 
   suspend fun updatePrimaryName(tagId: TagId, name: String) {
@@ -90,8 +92,6 @@ class TagRepository(
     withContext(Dispatchers.IO) {
       tagQueries.updatePrimaryName(primary_name = name, updated_at = now, tag_id = tagId.value)
     }
-
-    refreshAllTags()
   }
 
   suspend fun addAliases(tagId: TagId, names: Set<String>) {
@@ -105,9 +105,6 @@ class TagRepository(
         tagQueries.touchUpdatedAt(updated_at = now, tag_id = tagId.value)
       }
     }
-
-    refreshAliases(tagId)
-    refreshAllTags()
   }
 
   suspend fun removeAliases(tagId: TagId, aliasIds: Set<TagAliasId>) {
@@ -121,9 +118,6 @@ class TagRepository(
         tagQueries.touchUpdatedAt(updated_at = now, tag_id = tagId.value)
       }
     }
-
-    refreshAliases(tagId)
-    refreshAllTags()
   }
 
   suspend fun createTag(name: String): Tag = withContext(Dispatchers.IO) {
@@ -138,8 +132,6 @@ class TagRepository(
       tagQueries.insert(name, now.toString(), now.toString())
       val id = TagId(tagQueries.lastInsertRowId().executeAsOne())
       Tag(id = id, primaryName = name, updatedAt = now)
-    }.also {
-      refreshAllTags()
     }
   }
 }

@@ -28,7 +28,7 @@ class TagRepositoryTest {
     repository.createTag("tag-1")
     repository.createTag("tag-2")
 
-    repository.allTags.test {
+    repository.getAllTags().test {
       skipItems(1)
       val item = awaitItem()
       assertTrue(item is Loadable.Loaded)
@@ -50,7 +50,7 @@ class TagRepositoryTest {
     TimeProvider.override { t2 }
     repository.updatePrimaryName(tag2.id, "tag-2-updated")
 
-    repository.allTags.test {
+    repository.getAllTags().test {
       skipItems(1)
       val item = awaitItem()
       assertTrue(item is Loadable.Loaded)
@@ -83,7 +83,7 @@ class TagRepositoryTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     val tag = repository.createTag("tag-1")
 
-    repository.allTags.test {
+    repository.getAllTags().test {
       skipItems(1)
       val before = awaitItem()
       assertTrue(before is Loadable.Loaded)
@@ -247,7 +247,7 @@ class TagRepositoryTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     val tag = repository.createTag("tag-1")
 
-    repository.allTags.test {
+    repository.getAllTags().test {
       skipItems(1)
       val before = awaitItem()
       assertTrue(before is Loadable.Loaded)
