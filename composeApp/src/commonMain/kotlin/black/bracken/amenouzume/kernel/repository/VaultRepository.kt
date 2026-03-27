@@ -10,6 +10,8 @@ import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.util.Loadable
+import black.bracken.amenouzume.util.runCatchingSafely
+import black.bracken.amenouzume.util.toLoadable
 import dev.zacsweers.metro.Inject
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
@@ -40,17 +42,17 @@ class VaultRepository(
     .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
   suspend fun refreshVaultHistories() {
-    _vaultHistories.value = Loadable.from {
+    _vaultHistories.value = runCatchingSafely {
       withContext(Dispatchers.IO) {
         vaultHistoryStorage
           .loadPaths()
           .filter { File(it).exists() }
           .map { VaultHistory.from(File(it)) }
       }
-    }
+    }.toLoadable()
   }
 
-  suspend fun createVault(path: String): String {
+  suspend fun createVault(path: String): Result<String> = runCatchingSafely {
     val vaultPath = withContext(Dispatchers.IO) {
       val targetFile = File(path, "amenouzume.db")
       if (targetFile.exists()) throw CommonFailure(Res.string.error_vault_already_exists)
@@ -60,17 +62,17 @@ class VaultRepository(
       targetFile.absolutePath
     }
     refreshVaultHistories()
-    return vaultPath
+    vaultPath
   }
 
-  suspend fun removeVaultHistory(path: String) {
+  suspend fun removeVaultHistory(path: String): Result<Unit> = runCatchingSafely {
     withContext(Dispatchers.IO) {
       vaultHistoryStorage.removePath(path)
     }
     refreshVaultHistories()
   }
 
-  suspend fun openVault(filePath: String) {
+  suspend fun openVault(filePath: String): Result<Unit> = runCatchingSafely {
     withContext(Dispatchers.IO) {
       val file = File(filePath)
       if (!file.canRead()) throw CommonFailure(Res.string.error_vault_not_readable)

@@ -13,7 +13,6 @@ import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TrackedScope
 import black.bracken.amenouzume.util.getOrNull
-import black.bracken.amenouzume.util.getOrThrow
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
@@ -63,18 +62,18 @@ class ManageTagViewModel(
 
   fun onUpdateSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     searchQuery = value
-    searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT)
+    searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow()
   }
 
   fun onDeleteTag(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {
-    tagRepository.deleteTag(tag)
+    tagRepository.deleteTag(tag).getOrThrow()
   }
 
   fun onCreateTag(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     val trimmedName = name.trim()
     if (trimmedName.isEmpty()) return@launchWithCatching
 
-    tagRepository.createTag(trimmedName)
+    tagRepository.createTag(trimmedName).getOrThrow()
     searchQuery = ""
   }
 
@@ -97,7 +96,7 @@ class ManageTagViewModel(
     editingTag = null
 
     if (current.pendingPrimaryName.trim() != current.initialPrimaryName) {
-      tagRepository.updatePrimaryName(current.tagId, current.pendingPrimaryName.trim())
+      tagRepository.updatePrimaryName(current.tagId, current.pendingPrimaryName.trim()).getOrThrow()
     }
 
     val initialNames = current.initialAliases.map { it.name }.toSet()
@@ -105,7 +104,7 @@ class ManageTagViewModel(
 
     val addedAliasNames = currentNames - initialNames
     if (addedAliasNames.isNotEmpty()) {
-      tagRepository.addAliases(current.tagId, addedAliasNames)
+      tagRepository.addAliases(current.tagId, addedAliasNames).getOrThrow()
     }
 
     val removedAliasIds = current.initialAliases
@@ -113,7 +112,7 @@ class ManageTagViewModel(
       .map { it.id }
       .toSet()
     if (removedAliasIds.isNotEmpty()) {
-      tagRepository.removeAliases(current.tagId, removedAliasIds)
+      tagRepository.removeAliases(current.tagId, removedAliasIds).getOrThrow()
     }
   }
 

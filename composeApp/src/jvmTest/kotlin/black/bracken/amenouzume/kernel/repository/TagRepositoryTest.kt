@@ -11,7 +11,6 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFails
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
@@ -43,9 +42,9 @@ class TagRepositoryTest {
 
     TimeProvider.override { t1 }
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag1 = repository.createTag("tag-1")
-    val tag2 = repository.createTag("tag-2")
-    val tag3 = repository.createTag("tag-3")
+    val tag1 = repository.createTag("tag-1").getOrThrow()
+    val tag2 = repository.createTag("tag-2").getOrThrow()
+    repository.createTag("tag-3")
 
     TimeProvider.override { t2 }
     repository.updatePrimaryName(tag2.id, "tag-2-updated")
@@ -63,7 +62,7 @@ class TagRepositoryTest {
   fun `createTag should 作成したタグが返される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
 
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
 
     assertEquals("tag-1", tag.primaryName)
   }
@@ -74,14 +73,14 @@ class TagRepositoryTest {
     repository.createTag("tag-1")
 
     assertFailsWith<CommonFailure> {
-      repository.createTag("tag-1")
+      repository.createTag("tag-1").getOrThrow()
     }
   }
 
   @Test
   fun `deleteTag should allTagsから除去される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAllTags().test {
       skipItems(1)
@@ -104,11 +103,11 @@ class TagRepositoryTest {
     repository.createTag("tag-2")
     repository.createTag("tag-1-sub")
 
-    val results = repository.searchTags("tag-1", limit = 10)
+    val results = repository.searchTags("tag-1", limit = 10).getOrThrow()
     assertEquals(2, results.size)
     assertTrue(results.all { "tag-1" in it.primaryName })
 
-    val noMatch = repository.searchTags("tag-3", limit = 10)
+    val noMatch = repository.searchTags("tag-3", limit = 10).getOrThrow()
     assertTrue(noMatch.isEmpty())
   }
 
@@ -117,7 +116,7 @@ class TagRepositoryTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     repository.createTag("tag-1")
 
-    val results = repository.searchTags("  ", limit = 10)
+    val results = repository.searchTags("  ", limit = 10).getOrThrow()
 
     assertTrue(results.isEmpty())
   }
@@ -128,14 +127,14 @@ class TagRepositoryTest {
     repository.createTag("pre-tag-1")
     repository.createTag("tag-1")
     repository.createTag("tag-1-ext")
-    val tag2 = repository.createTag("tag-2")
+    val tag2 = repository.createTag("tag-2").getOrThrow()
     repository.addAliases(tag2.id, setOf("tag-1-alias"))
-    val tag3 = repository.createTag("tag-3")
+    val tag3 = repository.createTag("tag-3").getOrThrow()
     repository.addAliases(tag3.id, setOf("pre-tag-1-alias"))
-    val tag4 = repository.createTag("tag-4")
+    val tag4 = repository.createTag("tag-4").getOrThrow()
     repository.addAliases(tag4.id, setOf("tag-1"))
 
-    val results = repository.searchTags("tag-1", limit = 10)
+    val results = repository.searchTags("tag-1", limit = 10).getOrThrow()
 
     assertEquals(6, results.size)
     assertEquals("tag-1", results[0].primaryName)
@@ -149,7 +148,7 @@ class TagRepositoryTest {
   @Test
   fun `getAliases should エイリアスをFlowで返す`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias-1", "tag-1-alias-2"))
 
     repository.getAliases(tag.id).test {
@@ -163,7 +162,7 @@ class TagRepositoryTest {
   @Test
   fun `getAliases should addAliasesの後にFlowが更新される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAliases(tag.id).test {
       skipItems(1)
@@ -183,7 +182,7 @@ class TagRepositoryTest {
   @Test
   fun `getAliases should removeAliasesの後にFlowが更新される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias"))
 
     repository.getAliases(tag.id).test {
@@ -204,19 +203,19 @@ class TagRepositoryTest {
   @Test
   fun `getAliasesOnce should エイリアスを返す`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias-1", "tag-1-alias-2"))
 
     val result = repository.getAliasesOnce(tag.id)
 
-    assertTrue(result is Loadable.Loaded)
-    assertEquals(2, result.value.size)
+    assertTrue(result.isSuccess)
+    assertEquals(2, result.getOrThrow().size)
   }
 
   @Test
   fun `getAliasesOnce should 結果がgetAliasesのFlowにも反映される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias"))
 
     repository.getAliasesOnce(tag.id)
@@ -227,17 +226,18 @@ class TagRepositoryTest {
       assertTrue(item is Loadable.Loaded)
       assertEquals(1, item.value.size)
       assertEquals("tag-1-alias", item.value[0].name)
+      cancelAndConsumeRemainingEvents()
     }
   }
 
   @Test
   fun `updatePrimaryName should primary nameが更新される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.updatePrimaryName(tag.id, "tag-1-renamed")
 
-    val results = repository.searchTags("tag-1-renamed", limit = 10)
+    val results = repository.searchTags("tag-1-renamed", limit = 10).getOrThrow()
     assertEquals(1, results.size)
     assertEquals("tag-1-renamed", results[0].primaryName)
   }
@@ -245,7 +245,7 @@ class TagRepositoryTest {
   @Test
   fun `updatePrimaryName should allTagsが更新される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag = repository.createTag("tag-1")
+    val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAllTags().test {
       skipItems(1)
@@ -264,23 +264,22 @@ class TagRepositoryTest {
   @Test
   fun `addAliases should 他のタグのエイリアスと同名では追加できない`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag1 = repository.createTag("tag-1")
-    val tag2 = repository.createTag("tag-2")
+    val tag1 = repository.createTag("tag-1").getOrThrow()
+    val tag2 = repository.createTag("tag-2").getOrThrow()
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
 
-    assertFails {
-      repository.addAliases(tag2.id, setOf("tag-1-alias"))
-    }
+    val result = repository.addAliases(tag2.id, setOf("tag-1-alias"))
+    assertTrue(result.isFailure)
   }
 
   @Test
   fun `createTag should 既存エイリアスと同名のprimary nameでは作成できない`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    val tag1 = repository.createTag("tag-1")
+    val tag1 = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
 
     assertFailsWith<CommonFailure> {
-      repository.createTag("tag-1-alias")
+      repository.createTag("tag-1-alias").getOrThrow()
     }
   }
 

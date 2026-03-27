@@ -46,13 +46,13 @@ class OpenDatabaseViewModel(
   fun onOpenEntry(entry: OpenDatabaseEntry) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     busyScope.track {
-      vaultRepository.openVault(entry.path)
+      vaultRepository.openVault(entry.path).getOrThrow()
     }
     navigator.navigateReplace(CollectionListRoute(vaultPath = entry.path))
   }
 
   fun onDeleteEntry(entry: OpenDatabaseEntry) = launchWithCatching({ errorMessage = it.messageRes }) {
-    vaultRepository.removeVaultHistory(entry.path)
+    vaultRepository.removeVaultHistory(entry.path).getOrThrow()
   }
 
   fun onRetry() = launchWithCatching({ errorMessage = it.messageRes }) {
@@ -62,7 +62,7 @@ class OpenDatabaseViewModel(
   fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     val vaultPath = busyScope.track {
-      vaultRepository.createVault(path).also { vaultRepository.openVault(it) }
+      vaultRepository.createVault(path).getOrThrow().also { vaultRepository.openVault(it).getOrThrow() }
     }
     navigator.navigateReplace(CollectionListRoute(vaultPath = vaultPath))
   }
@@ -70,7 +70,7 @@ class OpenDatabaseViewModel(
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     errorMessage = null
     busyScope.track {
-      vaultRepository.openVault(filePath)
+      vaultRepository.openVault(filePath).getOrThrow()
     }
     navigator.navigateReplace(CollectionListRoute(vaultPath = filePath))
   }

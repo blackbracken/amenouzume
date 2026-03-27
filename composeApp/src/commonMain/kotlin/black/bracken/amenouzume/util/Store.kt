@@ -11,9 +11,12 @@ fun <T> Flow<StoreReadResponse<T>>.toLoadable(): Flow<Loadable<T>> = mapNotNull 
   when (response) {
     is StoreReadResponse.Loading -> Loadable.Loading
     is StoreReadResponse.Data -> Loadable.Loaded(response.value)
-    is StoreReadResponse.Error.Exception -> throw response.error
-    is StoreReadResponse.Error.Message -> error(response.message)
-    is StoreReadResponse.Error.Custom<*> -> error(response.error.toString())
+    is StoreReadResponse.Error.Exception -> {
+      val e = response.error
+      Loadable.Failed(if (e is Exception) e else RuntimeException(e))
+    }
+    is StoreReadResponse.Error.Message -> Loadable.Failed(Exception(response.message))
+    is StoreReadResponse.Error.Custom<*> -> Loadable.Failed(Exception(response.error.toString()))
     is StoreReadResponse.Initial, is StoreReadResponse.NoNewData -> null
   }
 }
@@ -28,4 +31,3 @@ fun <Key : Any, Input : Any, Output : Any> StoreBuilder.Companion.from(
     writer = { _: Key, _: Input -> },
   ),
 )
-

@@ -119,7 +119,7 @@ class AddCollectionViewModel(
 
   fun onUpdateTagSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     tagSearchQuery = value
-    searchResultTagIds = tagRepository.searchTags(value, limit = SEARCH_LIMIT).map { it.id }
+    searchResultTagIds = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
   }
 
   fun onToggleTag(tag: Tag) {
@@ -138,7 +138,7 @@ class AddCollectionViewModel(
     val trimmedName = name.trim()
     if (trimmedName.isEmpty()) return@launchWithCatching
 
-    val tag = tagRepository.createTag(trimmedName)
+    val tag = tagRepository.createTag(trimmedName).getOrThrow()
     selectedTagIds = selectedTagIds + tag.id
     tagSearchQuery = ""
   }
@@ -170,7 +170,7 @@ class AddCollectionViewModel(
         title = title,
         category = selectedCategory?.name.orEmpty(),
         contentType = selectedCategory?.name.orEmpty(),
-      )
+      ).getOrThrow()
     }
     navigator.back()
   }
