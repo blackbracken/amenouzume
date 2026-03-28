@@ -58,7 +58,8 @@ class AddCollectionViewModel(
 
   @Composable
   private fun presenter(): AddCollectionUiState {
-    val availableTagsLoadable by tagRepository.getAllTags().collectAsState(Loadable.Loading)
+    val tagsFlow = remember { tagRepository.getAllTags() }
+    val availableTagsLoadable by tagsFlow.collectAsState(Loadable.Loading)
     val availableTags = availableTagsLoadable.getOrNull().orEmpty()
 
     val recentTags = remember(availableTags) { availableTags.take(3) }

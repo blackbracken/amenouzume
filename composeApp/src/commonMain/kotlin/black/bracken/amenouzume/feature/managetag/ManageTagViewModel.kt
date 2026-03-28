@@ -40,7 +40,8 @@ class ManageTagViewModel(
 
   @Composable
   private fun presenter(): ManageTagUiState {
-    val allTagsLoadable by tagRepository.getAllTags().collectAsState(Loadable.Loading)
+    val tagsFlow = remember { tagRepository.getAllTags() }
+    val allTagsLoadable by tagsFlow.collectAsState(Loadable.Loading)
 
     val tagById = remember(allTagsLoadable) {
       allTagsLoadable.getOrNull()?.associateBy { it.id }.orEmpty()
