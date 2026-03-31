@@ -24,7 +24,7 @@ fun main() {
       title = "amenouzume",
       state = rememberWindowState(size = DpSize(400.dp, 860.dp)),
     ) {
-      App(graph.metroViewModelFactory, graph.navigator)
+      App(graph)
     }
   }
 }

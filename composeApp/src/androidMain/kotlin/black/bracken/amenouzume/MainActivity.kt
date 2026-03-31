@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
       BackHandler(enabled = backStack.size > 1) { graph.navigator.back() }
 
-      App(graph.metroViewModelFactory, graph.navigator)
+      App(graph)
     }
   }
 }

@@ -77,7 +77,7 @@ import kotlin.time.Instant
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
 import black.bracken.amenouzume.platform.image.pathToCoilModel
-import black.bracken.amenouzume.platform.launcher.rememberMultipleFilePickerLauncher
+import black.bracken.amenouzume.platform.launcher.LocalMultipleFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import coil3.compose.AsyncImage
@@ -97,10 +97,8 @@ fun AddCollectionCoordinator(
   val mimeTypes = state.value.selectedCategory
     ?.acceptableMimeTypes
     .orEmpty()
-  val filePickerLauncher = rememberMultipleFilePickerLauncher(
-    mimeTypes = mimeTypes,
-    onResult = viewModel::onAddFiles,
-  )
+  val rememberFilePicker = LocalMultipleFilePickerLauncher.current
+  val filePickerLauncher = rememberFilePicker(mimeTypes, viewModel::onAddFiles)
   val action = AddCollectionUiAction(
     onClose = viewModel::onClose,
     onSelectCategory = viewModel::onSelectCategory,
