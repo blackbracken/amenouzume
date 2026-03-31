@@ -44,7 +44,7 @@ import black.bracken.amenouzume.feature.managetag.composable.EditTagBottomSheet
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
-import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
+import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
 import kotlin.time.Instant
@@ -261,7 +261,7 @@ private fun TagRow(
   onEdit: () -> Unit,
   onDelete: () -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
 
   Row(
     modifier = Modifier

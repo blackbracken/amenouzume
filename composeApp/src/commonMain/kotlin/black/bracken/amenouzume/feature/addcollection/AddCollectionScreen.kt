@@ -75,7 +75,7 @@ import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import kotlin.time.Instant
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
-import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
+import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.platform.image.pathToCoilModel
 import black.bracken.amenouzume.platform.launcher.LocalMultipleFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
@@ -259,7 +259,7 @@ private fun CategoryChip(
   selectedCategory: CollectionCategory?,
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   FilterChip(
     selected = selectedCategory == category,
     onClick = {
@@ -286,7 +286,7 @@ private fun AddFilesSection(
   onAddFiles: () -> Unit,
   onNavigateToEditOrder: () -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   Column {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
       DashedBorderArea {
@@ -463,7 +463,7 @@ private fun DetailRow(
   onClick: (() -> Unit)? = null,
   trailing: @Composable () -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   Row(
     modifier = Modifier
       .fillMaxWidth()

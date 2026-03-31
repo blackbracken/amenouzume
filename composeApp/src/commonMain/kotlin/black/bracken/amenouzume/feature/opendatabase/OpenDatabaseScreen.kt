@@ -56,9 +56,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
-import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
-import black.bracken.amenouzume.platform.launcher.rememberDirectoryPickerLauncher
-import black.bracken.amenouzume.platform.launcher.rememberFilePickerLauncher
+import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
+import black.bracken.amenouzume.platform.launcher.LocalDirectoryPickerLauncher
+import black.bracken.amenouzume.platform.launcher.LocalFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
@@ -68,10 +68,10 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel()) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
-  val directoryLauncher = rememberDirectoryPickerLauncher { path ->
+  val directoryLauncher = LocalDirectoryPickerLauncher.current { path ->
     path?.let { viewModel.onCreateVault(it) }
   }
-  val fileLauncher = rememberFilePickerLauncher { path ->
+  val fileLauncher = LocalFilePickerLauncher.current { path ->
     path?.let { viewModel.onOpenVault(it) }
   }
   val action = OpenDatabaseUiAction(
@@ -108,7 +108,7 @@ internal fun OpenDatabaseScreen(
       )
     },
     floatingActionButton = {
-      val haptic = rememberHapticFeedback()
+      val haptic = LocalHapticFeedback.current()
       FloatingActionButton(
         onClick = {
           if (!state.isBusy) {
@@ -207,7 +207,7 @@ private fun ImportLocalDatabaseCard(
   enabled: Boolean,
   onBrowseFiles: () -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   val primary = MaterialTheme.colorScheme.primary
   DashedBorderArea {
     Column(
@@ -266,7 +266,7 @@ private fun DatabaseEntryRow(
   onClick: () -> Unit,
   onDelete: () -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   Row(
     modifier = Modifier
       .fillMaxWidth()

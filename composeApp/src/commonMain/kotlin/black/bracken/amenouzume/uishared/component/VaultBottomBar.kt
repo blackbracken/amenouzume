@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
-import black.bracken.amenouzume.platform.haptic.rememberHapticFeedback
+import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import org.jetbrains.compose.resources.stringResource
 
 enum class VaultTab { COLLECTIONS, ADD }
@@ -26,7 +26,7 @@ fun VaultBottomBar(
   selectedTab: VaultTab,
   onSelectTab: (VaultTab) -> Unit,
 ) {
-  val haptic = rememberHapticFeedback()
+  val haptic = LocalHapticFeedback.current()
   NavigationBar {
     NavigationBarItem(
       selected = selectedTab == VaultTab.COLLECTIONS,
