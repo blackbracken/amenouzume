@@ -103,6 +103,9 @@ class TagRepository(
     withContext(Dispatchers.IO) {
       database.transaction {
         names.forEach { name ->
+          val existingTag = tagQueries.selectByName(name).executeAsOneOrNull()
+          if (existingTag != null) throw CommonFailure(Res.string.error_tag_already_exists)
+
           tagAliasQueries.insert(tag_id = tagId.value, name = name)
         }
         tagQueries.touchUpdatedAt(updated_at = now, tag_id = tagId.value)

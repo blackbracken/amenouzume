@@ -124,25 +124,25 @@ class TagRepositoryTest {
   @Test
   fun `searchTags should primary nameとエイリアスの完全一致、前方一致、部分一致の優先順で返される`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
-    repository.createTag("pre-tag-1")
-    repository.createTag("tag-1")
-    repository.createTag("tag-1-ext")
+    repository.createTag("pre-xyz")                                     // primary部分一致 (rank 4)
+    repository.createTag("xyz")                                         // primary完全一致 (rank 0)
+    repository.createTag("xyz-ext")                                     // primary前方一致 (rank 2)
     val tag2 = repository.createTag("tag-2").getOrThrow()
-    repository.addAliases(tag2.id, setOf("tag-1-alias"))
+    repository.addAliases(tag2.id, setOf("xyz-alias"))                  // alias前方一致 (rank 3)
     val tag3 = repository.createTag("tag-3").getOrThrow()
-    repository.addAliases(tag3.id, setOf("pre-tag-1-alias"))
+    repository.addAliases(tag3.id, setOf("pre-xyz-alias"))              // alias部分一致 (rank 5)
     val tag4 = repository.createTag("tag-4").getOrThrow()
-    repository.addAliases(tag4.id, setOf("tag-1"))
+    repository.addAliases(tag4.id, setOf("has-xyz-inside"))             // alias部分一致 (rank 5)
 
-    val results = repository.searchTags("tag-1", limit = 10).getOrThrow()
+    val results = repository.searchTags("xyz", limit = 10).getOrThrow()
 
     assertEquals(6, results.size)
-    assertEquals("tag-1", results[0].primaryName)
-    assertEquals("tag-4", results[1].primaryName)
-    assertEquals("tag-1-ext", results[2].primaryName)
-    assertEquals("tag-2", results[3].primaryName)
-    assertEquals("pre-tag-1", results[4].primaryName)
-    assertEquals("tag-3", results[5].primaryName)
+    assertEquals("xyz", results[0].primaryName)         // primary完全一致
+    assertEquals("xyz-ext", results[1].primaryName)     // primary前方一致
+    assertEquals("tag-2", results[2].primaryName)       // alias前方一致
+    assertEquals("pre-xyz", results[3].primaryName)     // primary部分一致
+    assertEquals("tag-3", results[4].primaryName)       // alias部分一致
+    assertEquals("tag-4", results[5].primaryName)       // alias部分一致
   }
 
   @Test
@@ -269,6 +269,16 @@ class TagRepositoryTest {
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
 
     val result = repository.addAliases(tag2.id, setOf("tag-1-alias"))
+    assertTrue(result.isFailure)
+  }
+
+  @Test
+  fun `addAliases should 既存タグのprimary nameと同名のエイリアスは追加できない`() = runTest {
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag1 = repository.createTag("tag-1").getOrThrow()
+    val tag2 = repository.createTag("tag-2").getOrThrow()
+
+    val result = repository.addAliases(tag2.id, setOf("tag-1"))
     assertTrue(result.isFailure)
   }
 
