@@ -152,6 +152,7 @@ internal fun AddCollectionScreen(
         onCreateTag = action.onCreateTag,
         onNavigateToManageTags = action.onNavigateToManageTags,
         onDismiss = action.onDismissTagsSheet,
+        snackbarHostState = snackbarHostState,
       )
     }
   }

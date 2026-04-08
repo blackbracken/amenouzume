@@ -39,6 +39,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -67,6 +69,7 @@ internal fun SelectTagsBottomSheet(
   onCreateTag: (String) -> Unit,
   onNavigateToManageTags: () -> Unit,
   onDismiss: () -> Unit,
+  snackbarHostState: SnackbarHostState,
 ) {
   val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -86,6 +89,7 @@ internal fun SelectTagsBottomSheet(
       onNavigateToManageTags = onNavigateToManageTags,
       onDone = onDismiss,
     )
+    SnackbarHost(snackbarHostState)
   }
 }
 
