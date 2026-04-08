@@ -118,6 +118,7 @@ fun AddCollectionCoordinator(
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
     onNavigateToEditOrder = {},
     onNavigateToManageTags = viewModel::onNavigateToManageTags,
+    onConsumeError = viewModel::onConsumeError,
   )
   AddCollectionScreen(
     state = state.value,
@@ -135,7 +136,10 @@ internal fun AddCollectionScreen(
   val errorText = state.errorMessage?.let { stringResource(it) }
 
   LaunchedEffect(errorText) {
-    errorText?.let { snackbarHostState.showSnackbar(it) }
+    errorText?.let {
+      snackbarHostState.showSnackbar(it)
+      action.onConsumeError()
+    }
   }
 
   if (state.showTagsSheet) {

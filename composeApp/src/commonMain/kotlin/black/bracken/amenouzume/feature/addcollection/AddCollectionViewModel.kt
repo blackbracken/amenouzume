@@ -152,6 +152,10 @@ class AddCollectionViewModel(
     showTagsSheet = false
   }
 
+  fun onConsumeError() {
+    errorMessage = null
+  }
+
   fun onClose() = runWithCatching({ errorMessage = it.messageRes }) {
     navigator.back()
   }
@@ -165,7 +169,6 @@ class AddCollectionViewModel(
   }
 
   fun onCreateCollection() = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
     busyScope.track {
       collectionRepository.createCollection(
         title = title,

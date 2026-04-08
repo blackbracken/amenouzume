@@ -6,6 +6,7 @@ data class OpenDatabaseUiAction(
   val onRetry: () -> Unit,
   val onOpenEntry: (OpenDatabaseEntry) -> Unit,
   val onDeleteEntry: (OpenDatabaseEntry) -> Unit,
+  val onConsumeError: () -> Unit,
 ) {
   companion object {
     val Noop = OpenDatabaseUiAction(
@@ -14,6 +15,7 @@ data class OpenDatabaseUiAction(
       onRetry = {},
       onOpenEntry = {},
       onDeleteEntry = {},
+      onConsumeError = {},
     )
   }
 }

@@ -18,6 +18,7 @@ data class AddCollectionUiAction(
   val onNavigateToCollections: () -> Unit,
   val onNavigateToEditOrder: () -> Unit,
   val onNavigateToManageTags: () -> Unit,
+  val onConsumeError: () -> Unit,
 ) {
   companion object {
     val Noop = AddCollectionUiAction(
@@ -35,6 +36,7 @@ data class AddCollectionUiAction(
       onNavigateToCollections = {},
       onNavigateToEditOrder = {},
       onNavigateToManageTags = {},
+      onConsumeError = {},
     )
   }
 }

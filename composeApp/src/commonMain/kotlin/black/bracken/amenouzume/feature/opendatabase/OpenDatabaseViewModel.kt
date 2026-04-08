@@ -43,8 +43,11 @@ class OpenDatabaseViewModel(
     )
   }
 
-  fun onOpenEntry(entry: OpenDatabaseEntry) = launchWithCatching({ errorMessage = it.messageRes }) {
+  fun onConsumeError() {
     errorMessage = null
+  }
+
+  fun onOpenEntry(entry: OpenDatabaseEntry) = launchWithCatching({ errorMessage = it.messageRes }) {
     busyScope.track {
       vaultRepository.openVault(entry.path).getOrThrow()
     }
@@ -60,7 +63,6 @@ class OpenDatabaseViewModel(
   }
 
   fun onCreateVault(path: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
     val vaultPath = busyScope.track {
       vaultRepository.createVault(path).getOrThrow().also { vaultRepository.openVault(it).getOrThrow() }
     }
@@ -68,7 +70,6 @@ class OpenDatabaseViewModel(
   }
 
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
-    errorMessage = null
     busyScope.track {
       vaultRepository.openVault(filePath).getOrThrow()
     }

@@ -61,6 +61,10 @@ class ManageTagViewModel(
     )
   }
 
+  fun onConsumeError() {
+    errorMessage = null
+  }
+
   fun onUpdateSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     searchQuery = value
     searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow()

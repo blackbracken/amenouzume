@@ -71,6 +71,7 @@ fun ManageTagCoordinator(
     onUpdateEditingNewAliasInput = viewModel::onUpdateEditingNewAliasInput,
     onAddAlias = viewModel::onAddAlias,
     onRemoveAlias = viewModel::onRemoveAlias,
+    onConsumeError = viewModel::onConsumeError,
   )
   ManageTagScreen(
     state = state.value,
@@ -88,7 +89,10 @@ internal fun ManageTagScreen(
   val errorText = state.errorMessage?.let { stringResource(it) }
 
   LaunchedEffect(errorText) {
-    errorText?.let { snackbarHostState.showSnackbar(it) }
+    errorText?.let {
+      snackbarHostState.showSnackbar(it)
+      action.onConsumeError()
+    }
   }
 
   if (state.editingTag != null) {

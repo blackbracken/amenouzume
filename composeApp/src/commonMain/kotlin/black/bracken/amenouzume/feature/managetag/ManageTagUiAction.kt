@@ -13,6 +13,7 @@ data class ManageTagUiAction(
   val onUpdateEditingNewAliasInput: (String) -> Unit,
   val onAddAlias: () -> Unit,
   val onRemoveAlias: (String) -> Unit,
+  val onConsumeError: () -> Unit,
 ) {
   companion object {
     val Noop = ManageTagUiAction(
@@ -26,6 +27,7 @@ data class ManageTagUiAction(
       onUpdateEditingNewAliasInput = {},
       onAddAlias = {},
       onRemoveAlias = {},
+      onConsumeError = {},
     )
   }
 }
