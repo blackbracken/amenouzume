@@ -262,6 +262,17 @@ class TagRepositoryTest {
   }
 
   @Test
+  fun `updatePrimaryName should 既存エイリアスと同名には更新できない`() = runTest {
+    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val tag1 = repository.createTag("tag-1").getOrThrow()
+    val tag2 = repository.createTag("tag-2").getOrThrow()
+    repository.addAliases(tag1.id, setOf("tag-1-alias"))
+
+    val result = repository.updatePrimaryName(tag2.id, "tag-1-alias")
+    assertTrue(result.isFailure)
+  }
+
+  @Test
   fun `addAliases should 他のタグのエイリアスと同名では追加できない`() = runTest {
     val repository = TagRepository(createTestDatabase(), backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()

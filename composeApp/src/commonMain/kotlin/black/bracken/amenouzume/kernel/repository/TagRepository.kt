@@ -93,6 +93,9 @@ class TagRepository(
     val now = TimeProvider.now().toString()
 
     withContext(Dispatchers.IO) {
+      val existingAlias = tagAliasQueries.selectByName(name).executeAsOneOrNull()
+      if (existingAlias != null) throw CommonFailure(Res.string.error_tag_already_exists)
+
       tagQueries.updatePrimaryName(primary_name = name, updated_at = now, tag_id = tagId.value)
     }
   }
