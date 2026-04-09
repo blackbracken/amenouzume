@@ -20,6 +20,12 @@ class CollectionRepository(
   private val queries = database.collectionQueries
   private val fileQueries = database.collectionFileQueries
 
+  private data class FileEntry(
+    val relativePath: String,
+    val fileType: CollectionFileType,
+    val displayOrder: Int,
+  )
+
   suspend fun createCollection(
     title: String,
     category: String,
@@ -83,9 +89,3 @@ class CollectionRepository(
     }
   }
 }
-
-private data class FileEntry(
-  val relativePath: String,
-  val fileType: CollectionFileType,
-  val displayOrder: Int,
-)
