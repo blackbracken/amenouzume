@@ -1,4 +1,4 @@
-CREATE TABLE File (
+CREATE TABLE CollectionFile (
     file_id INTEGER NOT NULL PRIMARY KEY,
     collection_id INTEGER NOT NULL REFERENCES Collection(collection_id) ON DELETE CASCADE,
     file_path TEXT NOT NULL,
@@ -9,14 +9,14 @@ CREATE TABLE File (
 );
 
 selectByCollectionId:
-SELECT * FROM File WHERE collection_id = :collection_id ORDER BY display_order;
+SELECT * FROM CollectionFile WHERE collection_id = :collection_id ORDER BY display_order;
 
 selectById:
-SELECT * FROM File WHERE file_id = :file_id;
+SELECT * FROM CollectionFile WHERE file_id = :file_id;
 
 insert:
-INSERT INTO File(collection_id, file_path, file_type, display_order, created_at, updated_at)
+INSERT INTO CollectionFile(collection_id, file_path, file_type, display_order, created_at, updated_at)
 VALUES (:collection_id, :file_path, :file_type, :display_order, :created_at, :updated_at);
 
 deleteById:
-DELETE FROM File WHERE file_id = :file_id;
+DELETE FROM CollectionFile WHERE file_id = :file_id;
