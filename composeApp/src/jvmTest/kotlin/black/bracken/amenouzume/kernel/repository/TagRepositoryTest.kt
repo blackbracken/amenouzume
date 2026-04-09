@@ -2,6 +2,7 @@ package black.bracken.amenouzume.kernel.repository
 
 import app.cash.turbine.test
 import black.bracken.amenouzume.kernel.error.CommonFailure
+import black.bracken.amenouzume.kernel.repository.rule.RepositoryTestRule
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
 import kotlin.time.Instant
