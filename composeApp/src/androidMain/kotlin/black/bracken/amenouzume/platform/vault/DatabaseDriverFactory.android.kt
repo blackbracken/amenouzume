@@ -8,10 +8,13 @@ import black.bracken.amenouzume.db.AppDatabase
 actual class DatabaseDriverFactory(
   private val context: Context,
 ) {
-  actual var selectedPath: String? = null
+  private var _selectedPath: String? = null
+  actual var selectedPath: String
+    get() = _selectedPath ?: throw IllegalStateException("Database path is not selected")
+    set(value) { _selectedPath = value }
 
   actual fun createDriver(): SqlDriver {
-    val path = selectedPath ?: throw IllegalStateException("Database path is not selected")
+    val path = selectedPath
     return AndroidSqliteDriver(
       schema = AppDatabase.Schema,
       context = context,
