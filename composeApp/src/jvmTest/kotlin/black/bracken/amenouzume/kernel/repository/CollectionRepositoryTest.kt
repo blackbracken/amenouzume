@@ -1,6 +1,6 @@
 package black.bracken.amenouzume.kernel.repository
 
-import black.bracken.amenouzume.kernel.repository.rule.RepositoryTestRule
+import black.bracken.amenouzume.rule.RepositoryTestRule
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals

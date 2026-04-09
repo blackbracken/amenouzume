@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.kernel.repository.rule
+package black.bracken.amenouzume.rule
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import black.bracken.amenouzume.db.AppDatabase

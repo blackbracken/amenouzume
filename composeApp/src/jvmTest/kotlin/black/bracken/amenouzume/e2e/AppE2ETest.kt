@@ -12,6 +12,7 @@ import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.App
 import black.bracken.amenouzume.platform.launcher.LocalMultipleFilePickerLauncher
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
+import black.bracken.amenouzume.rule.E2ERule
 import org.junit.Rule
 import kotlin.test.Test
 

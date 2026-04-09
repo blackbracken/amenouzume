@@ -1,4 +1,4 @@
-package black.bracken.amenouzume.e2e
+package black.bracken.amenouzume.rule
 
 import black.bracken.amenouzume.di.AppGraph
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
