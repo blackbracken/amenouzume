@@ -17,7 +17,6 @@ class CollectionRepository(
   suspend fun createCollection(
     title: String,
     category: String,
-    contentType: String,
   ): Result<CollectionId> = runCatchingSafely {
     withContext(Dispatchers.IO) {
       database.transactionWithResult {
@@ -28,7 +27,6 @@ class CollectionRepository(
           category = category,
           created_at = now,
           updated_at = now,
-          content_type = contentType,
         )
         CollectionId(queries.lastInsertRowId().executeAsOne())
       }

@@ -173,7 +173,6 @@ class AddCollectionViewModel(
       collectionRepository.createCollection(
         title = title,
         category = selectedCategory?.name.orEmpty(),
-        contentType = selectedCategory?.name.orEmpty(),
       ).getOrThrow()
     }
     navigator.back()

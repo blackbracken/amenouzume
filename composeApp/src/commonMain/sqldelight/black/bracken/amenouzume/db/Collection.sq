@@ -4,8 +4,7 @@ CREATE TABLE Collection (
     thumbnail_path TEXT,
     category TEXT NOT NULL,
     created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    content_type TEXT NOT NULL
+    updated_at TEXT NOT NULL
 );
 
 selectAll:
@@ -18,8 +17,8 @@ selectByCategory:
 SELECT * FROM Collection WHERE category = :category;
 
 insert:
-INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at, content_type)
-VALUES (:title, :thumbnail_path, :category, :created_at, :updated_at, :content_type);
+INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at)
+VALUES (:title, :thumbnail_path, :category, :created_at, :updated_at);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
