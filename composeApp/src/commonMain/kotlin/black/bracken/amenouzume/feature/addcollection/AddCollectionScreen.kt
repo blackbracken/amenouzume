@@ -73,8 +73,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import black.bracken.amenouzume.feature.addcollection.composable.SelectAuthorsBottomSheet
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.Author
+import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import kotlin.time.Instant
@@ -114,10 +117,17 @@ fun AddCollectionCoordinator(
     onCreateTag = viewModel::onCreateTag,
     onShowTagsSheet = viewModel::onShowTagsSheet,
     onDismissTagsSheet = viewModel::onDismissTagsSheet,
+    onUpdateAuthorSearchQuery = viewModel::onUpdateAuthorSearchQuery,
+    onToggleAuthor = viewModel::onToggleAuthor,
+    onAttachAuthor = viewModel::onAttachAuthor,
+    onCreateAuthor = viewModel::onCreateAuthor,
+    onShowAuthorsSheet = viewModel::onShowAuthorsSheet,
+    onDismissAuthorsSheet = viewModel::onDismissAuthorsSheet,
     onSubmit = viewModel::onCreateCollection,
     onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
     onNavigateToEditOrder = {},
     onNavigateToManageTags = viewModel::onNavigateToManageTags,
+    onNavigateToManageAuthors = viewModel::onNavigateToManageAuthors,
     onConsumeError = viewModel::onConsumeError,
   )
   AddCollectionScreen(
@@ -156,6 +166,25 @@ internal fun AddCollectionScreen(
         onCreateTag = action.onCreateTag,
         onNavigateToManageTags = action.onNavigateToManageTags,
         onDismiss = action.onDismissTagsSheet,
+        snackbarHostState = snackbarHostState,
+      )
+    }
+  }
+
+  if (state.showAuthorsSheet) {
+    val editing = state.editing
+    if (editing != null) {
+      SelectAuthorsBottomSheet(
+        selectedAuthors = editing.authors,
+        searchQuery = editing.authorSearchQuery,
+        onSearchQueryChange = action.onUpdateAuthorSearchQuery,
+        searchResultAuthors = editing.searchResultAuthors,
+        recentAuthors = editing.recentAuthors,
+        onToggleAuthor = action.onToggleAuthor,
+        onAttachAuthor = action.onAttachAuthor,
+        onCreateAuthor = action.onCreateAuthor,
+        onNavigateToManageAuthors = action.onNavigateToManageAuthors,
+        onDismiss = action.onDismissAuthorsSheet,
         snackbarHostState = snackbarHostState,
       )
     }
@@ -212,6 +241,7 @@ internal fun AddCollectionScreen(
                 title = editing.title,
                 onUpdateTitle = action.onUpdateTitle,
                 authors = editing.authors,
+                onAuthorsClick = action.onShowAuthorsSheet,
                 tags = editing.tags,
                 onTagsClick = action.onShowTagsSheet,
               )
@@ -403,7 +433,8 @@ private fun FileCarousel(
 private fun CollectionDetailsSection(
   title: String,
   onUpdateTitle: (String) -> Unit,
-  authors: List<String>,
+  authors: List<Author>,
+  onAuthorsClick: () -> Unit,
   tags: List<Tag>,
   onTagsClick: () -> Unit,
 ) {
@@ -435,12 +466,13 @@ private fun CollectionDetailsSection(
     DetailRow(
       icon = { Icon(imageVector = Icons.Default.People, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
       label = stringResource(Res.string.add_collection_authors),
+      onClick = onAuthorsClick,
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
           authors.forEach { author ->
             SuggestionChip(
               onClick = {},
-              label = { Text(author, style = MaterialTheme.typography.labelSmall) },
+              label = { Text(author.primaryName, style = MaterialTheme.typography.labelSmall) },
             )
             Spacer(modifier = Modifier.width(4.dp))
           }
@@ -533,7 +565,11 @@ private fun AddCollectionScreenPreview() {
         editing = AddCollectionUiState.Editing(
           title = "",
           filePaths = listOf("/path/to/image1.png", "/path/to/image2.png"),
-          authors = listOf("@jdoe_art"),
+          authors = listOf(Author(AuthorId(1), "@jdoe_art", Instant.DISTANT_PAST)),
+          authorSearchQuery = "",
+          availableAuthors = emptyList(),
+          searchResultAuthors = emptyList(),
+          recentAuthors = emptyList(),
           tags = listOf(Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST), Tag(TagId(2), "Noir", Instant.DISTANT_PAST)),
           tagSearchQuery = "",
           availableTags = listOf(
@@ -549,6 +585,7 @@ private fun AddCollectionScreenPreview() {
         ),
         errorMessage = null,
         showTagsSheet = false,
+        showAuthorsSheet = false,
       ),
       action = AddCollectionUiAction.Noop,
     )

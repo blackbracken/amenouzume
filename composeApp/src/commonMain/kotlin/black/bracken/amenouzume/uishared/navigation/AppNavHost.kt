@@ -21,12 +21,14 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import black.bracken.amenouzume.feature.addcollection.AddCollectionCoordinator
 import black.bracken.amenouzume.feature.collectionlist.CollectionListCoordinator
+import black.bracken.amenouzume.feature.manageauthor.ManageAuthorCoordinator
 import black.bracken.amenouzume.feature.managetag.ManageTagCoordinator
 import black.bracken.amenouzume.feature.opendatabase.OpenDatabaseCoordinator
 
 @Suppress("MoveLambdaOutsideParentheses")
 private val noTransitionAnimations: List<(AppRoute?, AppRoute?) -> Boolean> = listOf(
   { from, to -> from is AddCollectionRoute && to is ManageTagRoute },
+  { from, to -> from is AddCollectionRoute && to is ManageAuthorRoute },
 )
 
 @Composable
@@ -81,6 +83,7 @@ fun AppNavHost(backStack: List<AppRoute>) {
           is CollectionListRoute -> CollectionListCoordinator(vaultPath = route.vaultPath)
           is AddCollectionRoute -> AddCollectionCoordinator(vaultPath = route.vaultPath)
           is ManageTagRoute -> ManageTagCoordinator()
+          is ManageAuthorRoute -> ManageAuthorCoordinator()
         }
       }
     }

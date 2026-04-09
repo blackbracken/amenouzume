@@ -11,6 +11,7 @@
     <string name="error_vault_not_sqlite">Not a SQLite database file</string>
     <string name="error_unsupported_file_type">Some files were not added due to unsupported file type</string>
     <string name="error_tag_already_exists">Tag already exists</string>
+    <string name="error_author_already_exists">Author already exists</string>
     <string name="error_unexpected">An unexpected error occurred</string>
     <string name="collection_list_title" translatable="false">Collection View</string>
     <string name="collection_list_filter">Filter</string>
@@ -52,4 +53,21 @@
     <string name="edit_tag_new_alias_placeholder">New alias</string>
     <string name="edit_tag_add_alias">Add alias</string>
     <string name="edit_tag_done">DONE</string>
+    <string name="select_authors_title">Select Authors</string>
+    <string name="select_authors_search_placeholder">Author to add</string>
+    <string name="select_authors_recommended">RECENTLY ADDED</string>
+    <string name="select_authors_manage">Manage Authors</string>
+    <string name="select_authors_create">Create author %1$s</string>
+    <string name="select_authors_update">UPDATE SELECTION</string>
+    <string name="manage_authors_title">Manage Authors</string>
+    <string name="manage_authors_search_placeholder">Search authors</string>
+    <string name="manage_authors_section_all">ALL AUTHORS</string>
+    <string name="manage_authors_total">%1$d TOTAL</string>
+    <string name="manage_authors_create">Create author %1$s</string>
+    <string name="edit_author_title">Edit Author</string>
+    <string name="edit_author_primary_name">PRIMARY NAME</string>
+    <string name="edit_author_aliases">ALIASES</string>
+    <string name="edit_author_new_alias_placeholder">New alias</string>
+    <string name="edit_author_add_alias">Add alias</string>
+    <string name="edit_author_done">DONE</string>
 </resources>

@@ -11,11 +11,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
 import black.bracken.amenouzume.kernel.error.CommonFailure
+import black.bracken.amenouzume.kernel.model.Author
+import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
+import black.bracken.amenouzume.kernel.repository.AuthorRepository
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
 import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
+import black.bracken.amenouzume.uishared.navigation.ManageAuthorRoute
 import black.bracken.amenouzume.uishared.navigation.ManageTagRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.TrackedScope
@@ -42,6 +46,7 @@ import org.jetbrains.compose.resources.StringResource
 class AddCollectionViewModel(
   private val collectionRepository: CollectionRepository,
   private val tagRepository: TagRepository,
+  private val authorRepository: AuthorRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
   private val busyScope = TrackedScope()
@@ -53,6 +58,10 @@ class AddCollectionViewModel(
   private var tagSearchQuery by mutableStateOf("")
   private var searchResultTagIds by mutableStateOf<List<TagId>>(emptyList())
   private var showTagsSheet by mutableStateOf(false)
+  private var selectedAuthorIds by mutableStateOf<Set<AuthorId>>(emptySet())
+  private var authorSearchQuery by mutableStateOf("")
+  private var searchResultAuthorIds by mutableStateOf<List<AuthorId>>(emptyList())
+  private var showAuthorsSheet by mutableStateOf(false)
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
@@ -69,12 +78,31 @@ class AddCollectionViewModel(
       selectedTagIds.mapNotNull { tagById[it] }.sorted()
     }
 
-    val resolvedSearchResults = remember(searchResultTagIds, tagById) {
+    val resolvedTagSearchResults = remember(searchResultTagIds, tagById) {
       searchResultTagIds.mapNotNull { tagById[it] }
     }
 
-    val searchResultTags = remember(resolvedSearchResults, selectedTagIds) {
-      resolvedSearchResults.filter { it.id !in selectedTagIds }
+    val searchResultTags = remember(resolvedTagSearchResults, selectedTagIds) {
+      resolvedTagSearchResults.filter { it.id !in selectedTagIds }
+    }
+
+    val authorsFlow = remember { authorRepository.getAllAuthors() }
+    val availableAuthorsLoadable by authorsFlow.collectAsState(Loadable.Loading)
+    val availableAuthors = availableAuthorsLoadable.getOrNull().orEmpty()
+
+    val recentAuthors = remember(availableAuthors) { availableAuthors.take(3) }
+
+    val authorById = remember(availableAuthors) { availableAuthors.associateBy { it.id } }
+    val resolvedAuthors = remember(selectedAuthorIds, authorById) {
+      selectedAuthorIds.mapNotNull { authorById[it] }.sorted()
+    }
+
+    val resolvedAuthorSearchResults = remember(searchResultAuthorIds, authorById) {
+      searchResultAuthorIds.mapNotNull { authorById[it] }
+    }
+
+    val searchResultAuthors = remember(resolvedAuthorSearchResults, selectedAuthorIds) {
+      resolvedAuthorSearchResults.filter { it.id !in selectedAuthorIds }
     }
 
     return AddCollectionUiState(
@@ -84,7 +112,11 @@ class AddCollectionViewModel(
         AddCollectionUiState.Editing(
           title = title,
           filePaths = filePaths,
-          authors = emptyList(),
+          authors = resolvedAuthors,
+          authorSearchQuery = authorSearchQuery,
+          availableAuthors = availableAuthors,
+          searchResultAuthors = searchResultAuthors,
+          recentAuthors = recentAuthors,
           tags = resolvedTags,
           tagSearchQuery = tagSearchQuery,
           availableTags = availableTags,
@@ -96,6 +128,7 @@ class AddCollectionViewModel(
       },
       errorMessage = errorMessage,
       showTagsSheet = showTagsSheet,
+      showAuthorsSheet = showAuthorsSheet,
     )
   }
 
@@ -152,6 +185,40 @@ class AddCollectionViewModel(
     showTagsSheet = false
   }
 
+  fun onUpdateAuthorSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+    authorSearchQuery = value
+    searchResultAuthorIds = authorRepository.searchAuthors(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
+  }
+
+  fun onToggleAuthor(author: Author) {
+    selectedAuthorIds = if (author.id in selectedAuthorIds) {
+      selectedAuthorIds - author.id
+    } else {
+      selectedAuthorIds + author.id
+    }
+  }
+
+  fun onAttachAuthor(author: Author) {
+    selectedAuthorIds = selectedAuthorIds + author.id
+  }
+
+  fun onCreateAuthor(name: String) = launchWithCatching({ errorMessage = it.messageRes }) {
+    val trimmedName = name.trim()
+    if (trimmedName.isEmpty()) return@launchWithCatching
+
+    val author = authorRepository.createAuthor(trimmedName).getOrThrow()
+    selectedAuthorIds = selectedAuthorIds + author.id
+    authorSearchQuery = ""
+  }
+
+  fun onShowAuthorsSheet() {
+    showAuthorsSheet = true
+  }
+
+  fun onDismissAuthorsSheet() {
+    showAuthorsSheet = false
+  }
+
   fun onConsumeError() {
     errorMessage = null
   }
@@ -162,6 +229,10 @@ class AddCollectionViewModel(
 
   fun onNavigateToManageTags() = runWithCatching({ errorMessage = it.messageRes }) {
     navigator.navigate(ManageTagRoute)
+  }
+
+  fun onNavigateToManageAuthors() = runWithCatching({ errorMessage = it.messageRes }) {
+    navigator.navigate(ManageAuthorRoute)
   }
 
   fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {

@@ -1,7 +1,12 @@
 CREATE TABLE Author (
     author_id INTEGER NOT NULL PRIMARY KEY,
-    primary_name TEXT NOT NULL UNIQUE
+    primary_name TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
 );
+
+selectAll:
+SELECT * FROM Author ORDER BY updated_at DESC, author_id ASC;
 
 selectById:
 SELECT * FROM Author WHERE author_id = :author_id;
@@ -9,14 +14,35 @@ SELECT * FROM Author WHERE author_id = :author_id;
 selectByName:
 SELECT * FROM Author WHERE primary_name = :primary_name;
 
+searchByName:
+SELECT Author.* FROM Author
+LEFT JOIN AuthorAlias ON Author.author_id = AuthorAlias.author_id
+WHERE Author.primary_name LIKE ('%' || :query || '%')
+   OR AuthorAlias.name LIKE ('%' || :query || '%')
+GROUP BY Author.author_id
+ORDER BY
+  MIN(CASE
+    WHEN Author.primary_name = :query                    THEN 0
+    WHEN AuthorAlias.name = :query                       THEN 1
+    WHEN Author.primary_name LIKE (:query || '%')        THEN 2
+    WHEN AuthorAlias.name LIKE (:query || '%')           THEN 3
+    WHEN Author.primary_name LIKE ('%' || :query || '%') THEN 4
+    WHEN AuthorAlias.name LIKE ('%' || :query || '%')    THEN 5
+    ELSE 6
+  END)
+LIMIT :limit;
+
 insert:
-INSERT INTO Author(author_id, primary_name) VALUES (NULL, :primary_name);
+INSERT INTO Author(author_id, primary_name, created_at, updated_at) VALUES (NULL, :primary_name, :created_at, :updated_at);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
 
 updatePrimaryName:
-UPDATE Author SET primary_name = :primary_name WHERE author_id = :author_id;
+UPDATE Author SET primary_name = :primary_name, updated_at = :updated_at WHERE author_id = :author_id;
+
+touchUpdatedAt:
+UPDATE Author SET updated_at = :updated_at WHERE author_id = :author_id;
 
 deleteById:
 DELETE FROM Author WHERE author_id = :author_id;

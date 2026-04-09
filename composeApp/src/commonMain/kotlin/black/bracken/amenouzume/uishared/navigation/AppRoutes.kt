@@ -20,3 +20,6 @@ data class AddCollectionRoute(
 
 @Serializable
 data object ManageTagRoute : AppRoute
+
+@Serializable
+data object ManageAuthorRoute : AppRoute

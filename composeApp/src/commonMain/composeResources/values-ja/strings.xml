@@ -11,6 +11,7 @@
     <string name="error_vault_not_sqlite">SQLiteデータベースファイルではありません</string>
     <string name="error_unsupported_file_type">サポートされていないファイル形式のため、一部のファイルは追加されませんでした</string>
     <string name="error_tag_already_exists">タグは既に存在します</string>
+    <string name="error_author_already_exists">作者は既に存在します</string>
     <string name="error_unexpected">予期しないエラーが発生しました</string>
     <string name="collection_list_filter">フィルター</string>
     <string name="collection_list_tab_add">Add</string>
@@ -46,4 +47,21 @@
     <string name="edit_tag_new_alias_placeholder">新しいエイリアス</string>
     <string name="edit_tag_add_alias">エイリアスを追加</string>
     <string name="edit_tag_done">完了</string>
+    <string name="select_authors_title">作者を選択</string>
+    <string name="select_authors_search_placeholder">付与したい作者</string>
+    <string name="select_authors_recommended">最近追加された作者</string>
+    <string name="select_authors_manage">作者を管理</string>
+    <string name="select_authors_create">%1$s の作者を作成する</string>
+    <string name="select_authors_update">選択を更新</string>
+    <string name="manage_authors_title">作者を管理</string>
+    <string name="manage_authors_search_placeholder">作者を検索</string>
+    <string name="manage_authors_section_all">すべての作者</string>
+    <string name="manage_authors_total">%1$d 件</string>
+    <string name="manage_authors_create">%1$s の作者を作成する</string>
+    <string name="edit_author_title">作者を編集</string>
+    <string name="edit_author_primary_name">プライマリ名</string>
+    <string name="edit_author_aliases">エイリアス</string>
+    <string name="edit_author_new_alias_placeholder">新しいエイリアス</string>
+    <string name="edit_author_add_alias">エイリアスを追加</string>
+    <string name="edit_author_done">完了</string>
 </resources>

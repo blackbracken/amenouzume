@@ -4,6 +4,8 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.Author
+import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import kotlin.time.Instant
@@ -27,7 +29,11 @@ class AddCollectionScreenScreenshotTest {
             editing = AddCollectionUiState.Editing(
               title = "",
               filePaths = listOf("/path/to/image1.png", "/path/to/image2.png", "/path/to/image3.png"),
-              authors = listOf("@jdoe_art"),
+              authors = listOf(Author(AuthorId(1), "@jdoe_art", Instant.DISTANT_PAST)),
+              authorSearchQuery = "",
+              availableAuthors = emptyList(),
+              searchResultAuthors = emptyList(),
+              recentAuthors = emptyList(),
               tags = listOf(Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST), Tag(TagId(2), "Noir", Instant.DISTANT_PAST)),
               tagSearchQuery = "",
               availableTags = listOf(Tag(TagId(3), "Architecture", Instant.DISTANT_PAST), Tag(TagId(4), "Design", Instant.DISTANT_PAST), Tag(TagId(5), "Engineering", Instant.DISTANT_PAST)),
@@ -36,6 +42,7 @@ class AddCollectionScreenScreenshotTest {
             ),
             errorMessage = null,
             showTagsSheet = false,
+            showAuthorsSheet = false,
           ),
           action = AddCollectionUiAction.Noop,
         )
