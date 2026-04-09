@@ -1,29 +1,21 @@
 package black.bracken.amenouzume.kernel.repository
 
-import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import black.bracken.amenouzume.db.AppDatabase
-import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import java.io.File
-import kotlin.io.path.createTempDirectory
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 
 class CollectionRepositoryTest {
 
-  private val tempDir = createTempDirectory("amenouzume-test").toFile()
-
-  @AfterTest
-  fun tearDown() {
-    tempDir.deleteRecursively()
-  }
+  @get:Rule
+  val rule = RepositoryTestRule()
 
   @Test
   fun `createCollection should コレクションIDが返される`() = runTest {
-    val repository = createRepository()
+    val repository = CollectionRepository(rule.database, rule.driverFactory)
 
     val result = repository.createCollection(
       title = "test-collection",
@@ -36,7 +28,7 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should 複数作成で異なるIDが返される`() = runTest {
-    val repository = createRepository()
+    val repository = CollectionRepository(rule.database, rule.driverFactory)
 
     val id1 = repository.createCollection(
       title = "collection-1",
@@ -54,8 +46,8 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should ファイルがコピーされCollectionFileに保存される`() = runTest {
-    val sourceFile = File(tempDir, "source.jpg").apply { writeText("image-data") }
-    val repository = createRepository()
+    val sourceFile = File(rule.tempDir, "source.jpg").apply { writeText("image-data") }
+    val repository = CollectionRepository(rule.database, rule.driverFactory)
 
     val id = repository.createCollection(
       title = "with-files",
@@ -63,7 +55,7 @@ class CollectionRepositoryTest {
       filePaths = listOf(sourceFile.absolutePath),
     ).getOrThrow()
 
-    val collectionDir = File(tempDir, "collection/${id.value}")
+    val collectionDir = File(rule.tempDir, "collection/${id.value}")
     assertTrue(collectionDir.exists())
 
     val copiedFiles = collectionDir.listFiles()!!
@@ -74,9 +66,9 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should 複数ファイルがdisplay_order順に保存される`() = runTest {
-    val file1 = File(tempDir, "a.png").apply { writeText("png-data") }
-    val file2 = File(tempDir, "b.mp4").apply { writeText("mp4-data") }
-    val repository = createRepository()
+    val file1 = File(rule.tempDir, "a.png").apply { writeText("png-data") }
+    val file2 = File(rule.tempDir, "b.mp4").apply { writeText("mp4-data") }
+    val repository = CollectionRepository(rule.database, rule.driverFactory)
 
     val id = repository.createCollection(
       title = "multi-files",
@@ -84,8 +76,7 @@ class CollectionRepositoryTest {
       filePaths = listOf(file1.absolutePath, file2.absolutePath),
     ).getOrThrow()
 
-    val db = createTestDatabase()
-    val files = db.collectionFileQueries.selectByCollectionId(id.value).executeAsList()
+    val files = rule.database.collectionFileQueries.selectByCollectionId(id.value).executeAsList()
     assertEquals(2, files.size)
     assertEquals(0, files[0].display_order)
     assertEquals(1, files[1].display_order)
@@ -95,8 +86,8 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should 相対パスがスラッシュ区切りで保存される`() = runTest {
-    val sourceFile = File(tempDir, "test.pdf").apply { writeText("pdf-data") }
-    val repository = createRepository()
+    val sourceFile = File(rule.tempDir, "test.pdf").apply { writeText("pdf-data") }
+    val repository = CollectionRepository(rule.database, rule.driverFactory)
 
     val id = repository.createCollection(
       title = "pdf-collection",
@@ -104,33 +95,10 @@ class CollectionRepositoryTest {
       filePaths = listOf(sourceFile.absolutePath),
     ).getOrThrow()
 
-    val db = createTestDatabase()
-    val files = db.collectionFileQueries.selectByCollectionId(id.value).executeAsList()
+    val files = rule.database.collectionFileQueries.selectByCollectionId(id.value).executeAsList()
     assertEquals(1, files.size)
     assertTrue(files[0].file_path.startsWith("collection/${id.value}/"))
     assertTrue(files[0].file_path.endsWith(".pdf"))
     assertTrue('\\' !in files[0].file_path)
-  }
-
-  private lateinit var _database: AppDatabase
-  private lateinit var _driverFactory: DatabaseDriverFactory
-
-  private fun createRepository(): CollectionRepository {
-    _driverFactory = DatabaseDriverFactory().apply {
-      selectedPath = File(tempDir, "amenouzume.db").absolutePath
-    }
-    _database = createTestDatabase()
-    return CollectionRepository(_database, _driverFactory)
-  }
-
-  private fun createTestDatabase(): AppDatabase {
-    if (::_database.isInitialized) return _database
-
-    val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY).also {
-      AppDatabase.Schema.create(it)
-      it.execute(null, "PRAGMA foreign_keys = ON;", 0)
-    }
-    _database = AppDatabase(driver)
-    return _database
   }
 }

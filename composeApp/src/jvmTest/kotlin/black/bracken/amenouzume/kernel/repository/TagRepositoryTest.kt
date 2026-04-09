@@ -1,29 +1,25 @@
 package black.bracken.amenouzume.kernel.repository
 
-import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import app.cash.turbine.test
-import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
 import kotlin.time.Instant
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 
 class TagRepositoryTest {
 
-  @AfterTest
-  fun tearDown() {
-    TimeProvider.reset()
-  }
+  @get:Rule
+  val rule = RepositoryTestRule()
 
   @Test
   fun `allTags should タグを返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     repository.createTag("tag-1")
     repository.createTag("tag-2")
 
@@ -41,7 +37,7 @@ class TagRepositoryTest {
     val t2 = Instant.parse("2025-01-02T00:00:00Z")
 
     TimeProvider.override { t1 }
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()
     val tag2 = repository.createTag("tag-2").getOrThrow()
     repository.createTag("tag-3")
@@ -60,7 +56,7 @@ class TagRepositoryTest {
 
   @Test
   fun `createTag should 作成したタグが返される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
 
     val tag = repository.createTag("tag-1").getOrThrow()
 
@@ -69,7 +65,7 @@ class TagRepositoryTest {
 
   @Test
   fun `createTag should 重複名でCommonFailureが投げられる`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     repository.createTag("tag-1")
 
     assertFailsWith<CommonFailure> {
@@ -79,7 +75,7 @@ class TagRepositoryTest {
 
   @Test
   fun `deleteTag should allTagsから除去される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAllTags().test {
@@ -98,7 +94,7 @@ class TagRepositoryTest {
 
   @Test
   fun `searchTags should クエリに一致するタグを返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     repository.createTag("tag-1")
     repository.createTag("tag-2")
     repository.createTag("tag-1-sub")
@@ -113,7 +109,7 @@ class TagRepositoryTest {
 
   @Test
   fun `searchTags should 空白クエリで空リストを返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     repository.createTag("tag-1")
 
     val results = repository.searchTags("  ", limit = 10).getOrThrow()
@@ -123,7 +119,7 @@ class TagRepositoryTest {
 
   @Test
   fun `searchTags should primary nameとエイリアスの完全一致、前方一致、部分一致の優先順で返される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     repository.createTag("pre-xyz")                                     // primary部分一致 (rank 4)
     repository.createTag("xyz")                                         // primary完全一致 (rank 0)
     repository.createTag("xyz-ext")                                     // primary前方一致 (rank 2)
@@ -147,7 +143,7 @@ class TagRepositoryTest {
 
   @Test
   fun `getAliases should エイリアスをFlowで返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias-1", "tag-1-alias-2"))
 
@@ -161,7 +157,7 @@ class TagRepositoryTest {
 
   @Test
   fun `getAliases should addAliasesの後にFlowが更新される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAliases(tag.id).test {
@@ -181,7 +177,7 @@ class TagRepositoryTest {
 
   @Test
   fun `getAliases should removeAliasesの後にFlowが更新される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias"))
 
@@ -202,7 +198,7 @@ class TagRepositoryTest {
 
   @Test
   fun `getAliasesOnce should エイリアスを返す`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias-1", "tag-1-alias-2"))
 
@@ -214,7 +210,7 @@ class TagRepositoryTest {
 
   @Test
   fun `getAliasesOnce should 結果がgetAliasesのFlowにも反映される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag.id, setOf("tag-1-alias"))
 
@@ -232,7 +228,7 @@ class TagRepositoryTest {
 
   @Test
   fun `updatePrimaryName should primary nameが更新される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.updatePrimaryName(tag.id, "tag-1-renamed")
@@ -244,7 +240,7 @@ class TagRepositoryTest {
 
   @Test
   fun `updatePrimaryName should allTagsが更新される`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag = repository.createTag("tag-1").getOrThrow()
 
     repository.getAllTags().test {
@@ -263,7 +259,7 @@ class TagRepositoryTest {
 
   @Test
   fun `updatePrimaryName should 既存エイリアスと同名には更新できない`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()
     val tag2 = repository.createTag("tag-2").getOrThrow()
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
@@ -274,7 +270,7 @@ class TagRepositoryTest {
 
   @Test
   fun `addAliases should 他のタグのエイリアスと同名では追加できない`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()
     val tag2 = repository.createTag("tag-2").getOrThrow()
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
@@ -285,7 +281,7 @@ class TagRepositoryTest {
 
   @Test
   fun `addAliases should 既存タグのprimary nameと同名のエイリアスは追加できない`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()
     val tag2 = repository.createTag("tag-2").getOrThrow()
 
@@ -295,20 +291,12 @@ class TagRepositoryTest {
 
   @Test
   fun `createTag should 既存エイリアスと同名のprimary nameでは作成できない`() = runTest {
-    val repository = TagRepository(createTestDatabase(), backgroundScope)
+    val repository = TagRepository(rule.database, backgroundScope)
     val tag1 = repository.createTag("tag-1").getOrThrow()
     repository.addAliases(tag1.id, setOf("tag-1-alias"))
 
     assertFailsWith<CommonFailure> {
       repository.createTag("tag-1-alias").getOrThrow()
     }
-  }
-
-  private fun createTestDatabase(): AppDatabase {
-    val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY).also {
-      AppDatabase.Schema.create(it)
-      it.execute(null, "PRAGMA foreign_keys = ON;", 0)
-    }
-    return AppDatabase(driver)
   }
 }
