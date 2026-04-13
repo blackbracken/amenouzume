@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
@@ -258,6 +258,8 @@ class AddCollectionViewModel(
         title = title,
         category = selectedCategory?.name.orEmpty(),
         filePaths = filePaths,
+        tagIds = selectedTagIds.map { it.value }.toSet(),
+        authorIds = selectedAuthorIds.map { it.value }.toSet(),
       ).getOrThrow()
     }
     navigator.back()

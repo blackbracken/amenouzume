@@ -35,6 +35,8 @@ class CollectionRepository(
 ) {
   private val queries = database.collectionQueries
   private val fileQueries = database.collectionFileQueries
+  private val collectionTagQueries = database.collectionTagQueries
+  private val collectionAuthorQueries = database.collectionAuthorQueries
 
   private val allCollectionsStore = StoreBuilder.fromSingleton(
     fetcher = {
@@ -63,6 +65,8 @@ class CollectionRepository(
     title: String,
     category: String,
     filePaths: List<String>,
+    tagIds: Set<Long> = emptySet(),
+    authorIds: Set<Long> = emptySet(),
   ): Result<CollectionId> = runCatchingSafely {
     withContext(Dispatchers.IO) {
       val vaultRoot = File(driverFactory.selectedPath).parentFile
@@ -118,6 +122,18 @@ class CollectionRepository(
               display_order = entry.displayOrder.toLong(),
               created_at = now,
               updated_at = now,
+            )
+          }
+          tagIds.forEach { tagId ->
+            collectionTagQueries.insert(
+              collection_id = collectionId.value,
+              tag_id = tagId,
+            )
+          }
+          authorIds.forEach { authorId ->
+            collectionAuthorQueries.insert(
+              collection_id = collectionId.value,
+              author_id = authorId,
             )
           }
         }

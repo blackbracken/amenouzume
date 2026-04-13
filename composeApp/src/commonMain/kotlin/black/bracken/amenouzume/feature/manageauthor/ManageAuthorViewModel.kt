@@ -105,10 +105,10 @@ class ManageAuthorViewModel(
 
   fun onDismissEditAuthorSheet() = launchWithCatching({ errorMessage = it.messageRes }) {
     val current = editingAuthor ?: return@launchWithCatching
-    editingAuthor = null
 
-    if (current.pendingPrimaryName.trim() != current.initialPrimaryName) {
-      authorRepository.updatePrimaryName(current.authorId, current.pendingPrimaryName.trim()).getOrThrow()
+    val trimmedName = current.pendingPrimaryName.trim()
+    if (trimmedName.isNotEmpty() && trimmedName != current.initialPrimaryName) {
+      authorRepository.updatePrimaryName(current.authorId, trimmedName).getOrThrow()
     }
 
     val initialNames = current.initialAliases.map { it.name }.toSet()
@@ -126,6 +126,8 @@ class ManageAuthorViewModel(
     if (removedAliasIds.isNotEmpty()) {
       authorRepository.removeAliases(current.authorId, removedAliasIds).getOrThrow()
     }
+
+    editingAuthor = null
   }
 
   fun onUpdateEditingPrimaryName(value: String) {

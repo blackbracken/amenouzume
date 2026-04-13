@@ -75,7 +75,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.addcollection.composable.SelectAuthorsBottomSheet
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
-import black.bracken.amenouzume.feature.collectionlist.CollectionCategory
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
@@ -225,30 +225,30 @@ internal fun AddCollectionScreen(
           visible = editing != null,
           enter = fadeIn(),
         ) {
-          requireNotNull(editing)
+          val currentEditing = editing ?: return@AnimatedVisibility
 
           Column {
             Spacer(modifier = Modifier.height(16.dp))
 
             AddFilesSection(
-              filePaths = editing.filePaths,
+              filePaths = currentEditing.filePaths,
               onAddFiles = action.onAddFiles,
               onNavigateToEditOrder = action.onNavigateToEditOrder,
             )
 
             AnimatedVisibility(
-              visible = editing.filePaths.isNotEmpty(),
+              visible = currentEditing.filePaths.isNotEmpty(),
               enter = fadeIn(),
             ) {
               Column {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 CollectionDetailsSection(
-                  title = editing.title,
+                  title = currentEditing.title,
                   onUpdateTitle = action.onUpdateTitle,
-                  authors = editing.authors,
+                  authors = currentEditing.authors,
                   onAuthorsClick = action.onShowAuthorsSheet,
-                  tags = editing.tags,
+                  tags = currentEditing.tags,
                   onTagsClick = action.onShowTagsSheet,
                 )
               }
@@ -261,11 +261,11 @@ internal fun AddCollectionScreen(
         visible = editing != null && editing.filePaths.isNotEmpty(),
         enter = fadeIn(),
       ) {
-        requireNotNull(editing)
+        val currentEditing = editing ?: return@AnimatedVisibility
 
         Button(
           onClick = action.onSubmit,
-          enabled = !state.isBusy && editing.title.isNotBlank(),
+          enabled = !state.isBusy && currentEditing.title.isNotBlank(),
           modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 16.dp),
@@ -403,7 +403,7 @@ private fun FileCarousel(
     contentPadding = PaddingValues(horizontal = 16.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    items(filePaths) { path ->
+    items(filePaths, key = { it }) { path ->
       Box(
         modifier = Modifier
           .size(thumbnailSize)
@@ -553,16 +553,6 @@ private fun DetailRow(
     )
     trailing()
   }
-}
-
-@Composable
-private fun SectionHeader(text: String) {
-  Text(
-    text = text,
-    style = MaterialTheme.typography.titleSmall,
-    color = MaterialTheme.colorScheme.primary,
-    fontWeight = FontWeight.Bold,
-  )
 }
 
 @Preview

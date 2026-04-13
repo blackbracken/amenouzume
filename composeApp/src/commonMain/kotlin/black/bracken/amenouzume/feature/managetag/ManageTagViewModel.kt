@@ -106,10 +106,10 @@ class ManageTagViewModel(
 
   fun onDismissEditTagSheet() = launchWithCatching({ errorMessage = it.messageRes }) {
     val current = editingTag ?: return@launchWithCatching
-    editingTag = null
 
-    if (current.pendingPrimaryName.trim() != current.initialPrimaryName) {
-      tagRepository.updatePrimaryName(current.tagId, current.pendingPrimaryName.trim()).getOrThrow()
+    val trimmedName = current.pendingPrimaryName.trim()
+    if (trimmedName.isNotEmpty() && trimmedName != current.initialPrimaryName) {
+      tagRepository.updatePrimaryName(current.tagId, trimmedName).getOrThrow()
     }
 
     val initialNames = current.initialAliases.map { it.name }.toSet()
@@ -127,6 +127,8 @@ class ManageTagViewModel(
     if (removedAliasIds.isNotEmpty()) {
       tagRepository.removeAliases(current.tagId, removedAliasIds).getOrThrow()
     }
+
+    editingTag = null
   }
 
   fun onUpdateEditingPrimaryName(value: String) {

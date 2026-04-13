@@ -112,16 +112,16 @@ internal fun OpenDatabaseScreen(
       )
     },
     floatingActionButton = {
-      val haptic = LocalHapticFeedback.current()
-      FloatingActionButton(
-        onClick = {
-          if (!state.isBusy) {
+      if (!state.isBusy) {
+        val haptic = LocalHapticFeedback.current()
+        FloatingActionButton(
+          onClick = {
             haptic(AppHapticFeedbackType.LightTap)
             action.onCreateDatabase()
-          }
-        },
-      ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+          },
+        ) {
+          Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        }
       }
     },
   ) { innerPadding ->
@@ -178,7 +178,7 @@ private fun DatabaseListContent(
       }
 
       is Loadable.Loaded -> {
-        items(databases.value.take(5)) { entry ->
+        items(databases.value, key = { it.path }) { entry ->
           HorizontalDivider()
           DatabaseEntryRow(
             entry = entry,
