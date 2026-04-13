@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import black.bracken.amenouzume.kernel.error.AppFailure
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Suppress("unused")
@@ -27,11 +29,11 @@ fun runWithCatching(
 context(viewModel: ViewModel)
 fun launchWithCatching(
   onFailure: (AppFailure) -> Unit,
-  block: suspend () -> Unit,
+  block: suspend CoroutineScope.() -> Unit,
 ) {
   viewModel.viewModelScope.launch {
     try {
-      block()
+      coroutineScope { block() }
     } catch (e: CancellationException) {
       throw e
     } catch (e: AppFailure) {

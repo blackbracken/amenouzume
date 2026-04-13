@@ -29,11 +29,13 @@ import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
+import kotlinx.coroutines.Job
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -62,6 +64,9 @@ class AddCollectionViewModel(
   private var authorSearchQuery by mutableStateOf("")
   private var searchResultAuthorIds by mutableStateOf<List<AuthorId>>(emptyList())
   private var showAuthorsSheet by mutableStateOf(false)
+
+  private var tagSearchJob: Job? = null
+  private var authorSearchJob: Job? = null
 
   val uiState: StateFlow<AddCollectionUiState> = moleculeState { presenter() }
 
@@ -153,7 +158,11 @@ class AddCollectionViewModel(
 
   fun onUpdateTagSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     tagSearchQuery = value
-    searchResultTagIds = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
+
+    tagSearchJob?.cancel()
+    tagSearchJob = launch {
+      searchResultTagIds = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
+    }
   }
 
   fun onToggleTag(tag: Tag) {
@@ -187,7 +196,11 @@ class AddCollectionViewModel(
 
   fun onUpdateAuthorSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     authorSearchQuery = value
-    searchResultAuthorIds = authorRepository.searchAuthors(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
+
+    authorSearchJob?.cancel()
+    authorSearchJob = launch {
+      searchResultAuthorIds = authorRepository.searchAuthors(value, limit = SEARCH_LIMIT).getOrThrow().map { it.id }
+    }
   }
 
   fun onToggleAuthor(author: Author) {

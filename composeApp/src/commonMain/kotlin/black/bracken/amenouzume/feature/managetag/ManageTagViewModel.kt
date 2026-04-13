@@ -16,6 +16,8 @@ import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -35,6 +37,8 @@ class ManageTagViewModel(
   private var searchQuery by mutableStateOf("")
   private var searchResults by mutableStateOf<List<Tag>>(emptyList())
   private var editingTag by mutableStateOf<ManageTagUiState.EditingTag?>(null)
+
+  private var searchJob: Job? = null
 
   val uiState: StateFlow<ManageTagUiState> = moleculeState { presenter() }
 
@@ -67,7 +71,11 @@ class ManageTagViewModel(
 
   fun onUpdateSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     searchQuery = value
-    searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow()
+
+    searchJob?.cancel()
+    searchJob = launch {
+      searchResults = tagRepository.searchTags(value, limit = SEARCH_LIMIT).getOrThrow()
+    }
   }
 
   fun onDeleteTag(tag: Tag) = launchWithCatching({ errorMessage = it.messageRes }) {

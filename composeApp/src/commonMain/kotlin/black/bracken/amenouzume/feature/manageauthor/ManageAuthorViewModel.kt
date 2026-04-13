@@ -16,6 +16,8 @@ import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -35,6 +37,7 @@ class ManageAuthorViewModel(
   private var searchQuery by mutableStateOf("")
   private var searchResults by mutableStateOf<List<Author>>(emptyList())
   private var editingAuthor by mutableStateOf<ManageAuthorUiState.EditingAuthor?>(null)
+  private var searchJob: Job? = null
 
   val uiState: StateFlow<ManageAuthorUiState> = moleculeState { presenter() }
 
@@ -67,7 +70,11 @@ class ManageAuthorViewModel(
 
   fun onUpdateSearchQuery(value: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     searchQuery = value
-    searchResults = authorRepository.searchAuthors(value, limit = SEARCH_LIMIT).getOrThrow()
+
+    searchJob?.cancel()
+    searchJob = launch {
+      searchResults = authorRepository.searchAuthors(value, limit = SEARCH_LIMIT).getOrThrow()
+    }
   }
 
   fun onDeleteAuthor(author: Author) = launchWithCatching({ errorMessage = it.messageRes }) {
