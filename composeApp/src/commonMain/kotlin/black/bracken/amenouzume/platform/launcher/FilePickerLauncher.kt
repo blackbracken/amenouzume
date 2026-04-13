@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 
 @Composable
-expect fun rememberFilePickerLauncher(onResult: (String?) -> Unit): () -> Unit
+expect fun rememberFilePickerLauncher(
+  mimeTypes: List<String>,
+  onResult: (String?) -> Unit,
+): () -> Unit
 
 @Suppress("SuspiciousCallableReferenceInLambda")
 val LocalFilePickerLauncher =
-  staticCompositionLocalOf<@Composable ((String?) -> Unit) -> () -> Unit> {
+  staticCompositionLocalOf<@Composable (List<String>, (String?) -> Unit) -> () -> Unit> {
     ::rememberFilePickerLauncher
   }

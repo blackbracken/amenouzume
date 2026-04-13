@@ -71,7 +71,7 @@ fun OpenDatabaseCoordinator(viewModel: OpenDatabaseViewModel = metroViewModel())
   val directoryLauncher = LocalDirectoryPickerLauncher.current { path ->
     path?.let { viewModel.onCreateVault(it) }
   }
-  val fileLauncher = LocalFilePickerLauncher.current { path ->
+  val fileLauncher = LocalFilePickerLauncher.current(listOf("application/x-sqlite3")) { path ->
     path?.let { viewModel.onOpenVault(it) }
   }
   val action = OpenDatabaseUiAction(
