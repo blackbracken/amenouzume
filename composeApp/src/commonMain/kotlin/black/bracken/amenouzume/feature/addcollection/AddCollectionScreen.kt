@@ -9,12 +9,10 @@ import amenouzume.composeapp.generated.resources.add_collection_submit
 import amenouzume.composeapp.generated.resources.add_collection_tags
 import amenouzume.composeapp.generated.resources.add_collection_title
 import amenouzume.composeapp.generated.resources.add_collection_upload_title
-import amenouzume.composeapp.generated.resources.category_fanzine
-import amenouzume.composeapp.generated.resources.category_illustration
-import amenouzume.composeapp.generated.resources.category_movie
-import amenouzume.composeapp.generated.resources.category_photo
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -292,7 +290,7 @@ private fun CategorySection(
   selectedCategory: CollectionCategory?,
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
-  Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+  Column(modifier = Modifier.padding(horizontal = 16.dp).animateContentSize()) {
     Text(
       text = stringResource(Res.string.add_collection_section_category),
       style = MaterialTheme.typography.labelSmall,
@@ -303,10 +301,14 @@ private fun CategorySection(
     FlowRow(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-      CategoryChip(CollectionCategory.ILLUSTRATION, Res.string.category_illustration, selectedCategory, onSelectCategory)
-      CategoryChip(CollectionCategory.PHOTO, Res.string.category_photo, selectedCategory, onSelectCategory)
-      CategoryChip(CollectionCategory.FANZINE, Res.string.category_fanzine, selectedCategory, onSelectCategory)
-      CategoryChip(CollectionCategory.MOVIE, Res.string.category_movie, selectedCategory, onSelectCategory)
+      CollectionCategory.entries.forEach { category ->
+        AnimatedVisibility(
+          visible = selectedCategory == null || selectedCategory == category,
+          exit = fadeOut(),
+        ) {
+          CategoryChip(category, category.labelRes, selectedCategory, onSelectCategory)
+        }
+      }
     }
   }
 }
