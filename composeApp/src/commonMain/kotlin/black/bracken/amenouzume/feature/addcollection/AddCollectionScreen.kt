@@ -90,6 +90,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.size.Size
+import black.bracken.amenouzume.util.resolvePixelSize
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlin.time.Instant
 import org.jetbrains.compose.resources.StringResource
@@ -395,8 +396,7 @@ private fun FileCarousel(
   filePaths: List<String>,
   onAddFiles: () -> Unit,
 ) {
-  val thumbnailSizePx = 72
-  val thumbnailSizeDp = thumbnailSizePx.dp
+  val thumbnailSize = 72.dp
   val thumbnailShape = RoundedCornerShape(12.dp)
 
   LazyRow(
@@ -406,14 +406,14 @@ private fun FileCarousel(
     items(filePaths) { path ->
       Box(
         modifier = Modifier
-          .size(thumbnailSizeDp)
+          .size(thumbnailSize)
           .clip(thumbnailShape)
           .background(MaterialTheme.colorScheme.surfaceVariant),
       ) {
         AsyncImage(
           model = ImageRequest.Builder(LocalPlatformContext.current)
             .data(pathToCoilModel(path))
-            .size(Size(3 * thumbnailSizePx, 3 * thumbnailSizePx))
+            .size(Size(resolvePixelSize(thumbnailSize), resolvePixelSize(thumbnailSize)))
             .build(),
           contentDescription = null,
           modifier = Modifier.fillMaxSize(),
@@ -424,7 +424,7 @@ private fun FileCarousel(
     item {
       Box(
         modifier = Modifier
-          .size(thumbnailSizeDp)
+          .size(thumbnailSize)
           .clip(thumbnailShape)
           .background(MaterialTheme.colorScheme.surfaceVariant)
           .clickable(onClick = onAddFiles),

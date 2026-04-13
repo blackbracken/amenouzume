@@ -28,7 +28,8 @@ private val IMAGE_EXTENSIONS = setOf("jpg", "jpeg", "png", "gif", "webp", "bmp",
 private val MOVIE_EXTENSIONS = setOf("mp4", "mkv", "avi", "mov", "webm")
 
 data class CollectionListEntry(
-  val id: String,
-  val category: CollectionCategory,
-  val color: Long,
+  val id: Long,
+  val title: String,
+  val category: CollectionCategory?,
+  val thumbnailPath: String?,
 )

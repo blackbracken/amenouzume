@@ -10,6 +10,9 @@ CREATE TABLE Collection (
 selectAll:
 SELECT * FROM Collection;
 
+selectAllOrderByUpdated:
+SELECT * FROM Collection ORDER BY updated_at DESC;
+
 selectById:
 SELECT * FROM Collection WHERE collection_id = :collection_id;
 
@@ -22,6 +25,9 @@ VALUES (:title, :thumbnail_path, :category, :created_at, :updated_at);
 
 lastInsertRowId:
 SELECT last_insert_rowid();
+
+updateThumbnailPath:
+UPDATE Collection SET thumbnail_path = :thumbnail_path WHERE collection_id = :collection_id;
 
 deleteById:
 DELETE FROM Collection WHERE collection_id = :collection_id;

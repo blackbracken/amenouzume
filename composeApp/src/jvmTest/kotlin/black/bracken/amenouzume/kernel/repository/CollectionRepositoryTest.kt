@@ -6,7 +6,9 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
@@ -17,7 +19,7 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should コレクションIDが返される`() = runTest {
-    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
 
     val result = repository.createCollection(
       title = "test-collection",
@@ -30,7 +32,7 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should 複数作成で異なるIDが返される`() = runTest {
-    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
 
     val id1 = repository.createCollection(
       title = "collection-1",
@@ -49,7 +51,7 @@ class CollectionRepositoryTest {
   @Test
   fun `createCollection should ファイルがコピーされCollectionFileに保存される`() = runTest {
     val sourceFile = File(rule.tempDir, "source.jpg").apply { writeText("image-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
 
     val id = repository.createCollection(
       title = "with-files",
@@ -60,17 +62,22 @@ class CollectionRepositoryTest {
     val collectionDir = File(rule.tempDir, "collection/${id.value}")
     assertTrue(collectionDir.exists())
 
-    val copiedFiles = collectionDir.listFiles()!!
-    assertEquals(1, copiedFiles.size)
-    assertTrue(copiedFiles[0].name.endsWith(".jpg"))
-    assertEquals("image-data", copiedFiles[0].readText())
+    val allFiles = collectionDir.listFiles()!!
+    val contentFiles = allFiles.filter { it.name != "thumbnail.jpg" }
+    assertEquals(1, contentFiles.size)
+    assertTrue(contentFiles[0].name.endsWith(".jpg"))
+    assertEquals("image-data", contentFiles[0].readText())
+
+    val thumbnail = File(collectionDir, "thumbnail.jpg")
+    assertTrue(thumbnail.exists())
+    assertEquals("image-data", thumbnail.readText())
   }
 
   @Test
   fun `createCollection should 複数ファイルがdisplay_order順に保存される`() = runTest {
     val file1 = File(rule.tempDir, "a.png").apply { writeText("png-data") }
     val file2 = File(rule.tempDir, "b.mp4").apply { writeText("mp4-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
 
     val id = repository.createCollection(
       title = "multi-files",
@@ -89,7 +96,7 @@ class CollectionRepositoryTest {
   @Test
   fun `createCollection should 相対パスがスラッシュ区切りで保存される`() = runTest {
     val sourceFile = File(rule.tempDir, "test.pdf").apply { writeText("pdf-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
 
     val id = repository.createCollection(
       title = "pdf-collection",
@@ -102,5 +109,35 @@ class CollectionRepositoryTest {
     assertTrue(files[0].file_path.startsWith("collection/${id.value}/"))
     assertTrue(files[0].file_path.endsWith(".pdf"))
     assertTrue('\\' !in files[0].file_path)
+  }
+
+  @Test
+  fun `createCollection should 画像ファイルがあればthumbnail_pathが保存される`() = runTest {
+    val sourceFile = File(rule.tempDir, "photo.png").apply { writeText("png-data") }
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
+
+    val id = repository.createCollection(
+      title = "with-thumbnail",
+      category = "ILLUSTRATION",
+      filePaths = listOf(sourceFile.absolutePath),
+    ).getOrThrow()
+
+    val collection = rule.database.collectionQueries.selectById(id.value).executeAsOne()
+    assertEquals("collection/${id.value}/thumbnail.jpg", collection.thumbnail_path)
+  }
+
+  @Test
+  fun `createCollection should 画像ファイルがなければthumbnail_pathはnull`() = runTest {
+    val sourceFile = File(rule.tempDir, "video.mp4").apply { writeText("video-data") }
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver(), TestScope())
+
+    val id = repository.createCollection(
+      title = "video-only",
+      category = "MOVIE",
+      filePaths = listOf(sourceFile.absolutePath),
+    ).getOrThrow()
+
+    val collection = rule.database.collectionQueries.selectById(id.value).executeAsOne()
+    assertNull(collection.thumbnail_path)
   }
 }

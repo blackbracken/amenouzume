@@ -23,8 +23,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,6 +33,11 @@ import androidx.window.core.layout.WindowSizeClass
 import black.bracken.amenouzume.uishared.component.VaultBottomBar
 import black.bracken.amenouzume.uishared.component.VaultTab
 import black.bracken.amenouzume.util.Loadable
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.size.Size
+import black.bracken.amenouzume.util.resolvePixelSize
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -116,15 +122,41 @@ private fun CollectionGridContent(
         }
       }
       is Loadable.Loaded -> {
-        items(collections.value) { entry ->
-          Box(
-            modifier = Modifier
-              .aspectRatio(1f)
-              .background(Color(entry.color.toInt())),
-          )
+        items(collections.value, key = { it.id }) { entry ->
+          CollectionItem(entry = entry)
         }
       }
       is Loadable.Failed -> {}
+    }
+  }
+}
+
+private val THUMBNAIL_SIZE = 96.dp
+
+@Composable
+private fun CollectionItem(entry: CollectionListEntry) {
+  Box(
+    modifier = Modifier
+      .aspectRatio(1f)
+      .background(MaterialTheme.colorScheme.surfaceVariant),
+    contentAlignment = Alignment.Center,
+  ) {
+    if (entry.thumbnailPath != null) {
+      AsyncImage(
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+          .data(entry.thumbnailPath)
+          .size(Size(resolvePixelSize(THUMBNAIL_SIZE), resolvePixelSize(THUMBNAIL_SIZE)))
+          .build(),
+        contentDescription = entry.title,
+        modifier = Modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop,
+      )
+    } else {
+      Text(
+        text = entry.title,
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
     }
   }
 }
