@@ -1,7 +1,7 @@
 package black.bracken.amenouzume.kernel.model
 
-import kotlin.time.Instant
 import black.bracken.amenouzume.db.Author as DbAuthor
+import kotlin.time.Instant
 
 /**
  * Natural ordering is by [id] descending.

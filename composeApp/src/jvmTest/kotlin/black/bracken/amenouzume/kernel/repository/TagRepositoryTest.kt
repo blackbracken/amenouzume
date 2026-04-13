@@ -5,11 +5,11 @@ import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.rule.RepositoryTestRule
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
-import kotlin.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
@@ -121,25 +121,25 @@ class TagRepositoryTest {
   @Test
   fun `searchTags should primary nameとエイリアスの完全一致、前方一致、部分一致の優先順で返される`() = runTest {
     val repository = TagRepository(rule.database, backgroundScope)
-    repository.createTag("pre-xyz")                                     // primary部分一致 (rank 4)
-    repository.createTag("xyz")                                         // primary完全一致 (rank 0)
-    repository.createTag("xyz-ext")                                     // primary前方一致 (rank 2)
+    repository.createTag("pre-xyz") // primary部分一致 (rank 4)
+    repository.createTag("xyz") // primary完全一致 (rank 0)
+    repository.createTag("xyz-ext") // primary前方一致 (rank 2)
     val tag2 = repository.createTag("tag-2").getOrThrow()
-    repository.addAliases(tag2.id, setOf("xyz-alias"))                  // alias前方一致 (rank 3)
+    repository.addAliases(tag2.id, setOf("xyz-alias")) // alias前方一致 (rank 3)
     val tag3 = repository.createTag("tag-3").getOrThrow()
-    repository.addAliases(tag3.id, setOf("pre-xyz-alias"))              // alias部分一致 (rank 5)
+    repository.addAliases(tag3.id, setOf("pre-xyz-alias")) // alias部分一致 (rank 5)
     val tag4 = repository.createTag("tag-4").getOrThrow()
-    repository.addAliases(tag4.id, setOf("has-xyz-inside"))             // alias部分一致 (rank 5)
+    repository.addAliases(tag4.id, setOf("has-xyz-inside")) // alias部分一致 (rank 5)
 
     val results = repository.searchTags("xyz", limit = 10).getOrThrow()
 
     assertEquals(6, results.size)
-    assertEquals("xyz", results[0].primaryName)         // primary完全一致
-    assertEquals("xyz-ext", results[1].primaryName)     // primary前方一致
-    assertEquals("tag-2", results[2].primaryName)       // alias前方一致
-    assertEquals("pre-xyz", results[3].primaryName)     // primary部分一致
-    assertEquals("tag-3", results[4].primaryName)       // alias部分一致
-    assertEquals("tag-4", results[5].primaryName)       // alias部分一致
+    assertEquals("xyz", results[0].primaryName) // primary完全一致
+    assertEquals("xyz-ext", results[1].primaryName) // primary前方一致
+    assertEquals("tag-2", results[2].primaryName) // alias前方一致
+    assertEquals("pre-xyz", results[3].primaryName) // primary部分一致
+    assertEquals("tag-3", results[4].primaryName) // alias部分一致
+    assertEquals("tag-4", results[5].primaryName) // alias部分一致
   }
 
   @Test

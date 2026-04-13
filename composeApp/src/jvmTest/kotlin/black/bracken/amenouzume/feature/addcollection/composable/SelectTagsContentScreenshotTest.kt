@@ -15,11 +15,11 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
-import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.component.SelectItemsContent
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlin.test.Test
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTestApi::class)
 class SelectTagsContentScreenshotTest {
@@ -36,7 +36,11 @@ class SelectTagsContentScreenshotTest {
             searchQuery = "",
             onSearchQueryChange = {},
             searchResultItems = emptyList(),
-            recentItems = listOf(Tag(TagId(4), "Photography", Instant.DISTANT_PAST), Tag(TagId(2), "UI/UX", Instant.DISTANT_PAST), Tag(TagId(5), "Marketing", Instant.DISTANT_PAST)),
+            recentItems = listOf(
+              Tag(TagId(4), "Photography", Instant.DISTANT_PAST),
+              Tag(TagId(2), "UI/UX", Instant.DISTANT_PAST),
+              Tag(TagId(5), "Marketing", Instant.DISTANT_PAST),
+            ),
             onRemoveItem = {},
             onCreateItem = {},
             onAttachItem = {},

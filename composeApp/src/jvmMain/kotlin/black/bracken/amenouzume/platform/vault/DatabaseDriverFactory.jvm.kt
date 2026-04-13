@@ -9,7 +9,9 @@ actual class DatabaseDriverFactory {
   private var _selectedPath: String? = null
   actual var selectedPath: String
     get() = _selectedPath ?: throw IllegalStateException("Database path is not selected")
-    set(value) { _selectedPath = value }
+    set(value) {
+      _selectedPath = value
+    }
 
   actual fun createDriver(): SqlDriver {
     val path = selectedPath

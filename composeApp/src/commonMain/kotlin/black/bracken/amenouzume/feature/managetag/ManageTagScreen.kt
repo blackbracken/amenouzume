@@ -51,8 +51,8 @@ import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
-import kotlin.time.Instant
 import dev.zacsweers.metrox.viewmodel.metroViewModel
+import kotlin.time.Instant
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

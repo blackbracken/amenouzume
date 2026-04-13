@@ -11,10 +11,10 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.App
 import black.bracken.amenouzume.platform.launcher.LocalMultipleFilePickerLauncher
-import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.rule.E2ERule
-import org.junit.Rule
+import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import kotlin.test.Test
+import org.junit.Rule
 
 @OptIn(ExperimentalTestApi::class)
 class AppE2ETest {

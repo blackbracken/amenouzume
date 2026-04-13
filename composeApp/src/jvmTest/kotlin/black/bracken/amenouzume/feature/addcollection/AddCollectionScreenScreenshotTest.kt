@@ -8,10 +8,10 @@ import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
-import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlin.test.Test
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTestApi::class)
 class AddCollectionScreenScreenshotTest {
@@ -36,7 +36,11 @@ class AddCollectionScreenScreenshotTest {
               recentAuthors = emptyList(),
               tags = listOf(Tag(TagId(1), "Cyberpunk", Instant.DISTANT_PAST), Tag(TagId(2), "Noir", Instant.DISTANT_PAST)),
               tagSearchQuery = "",
-              availableTags = listOf(Tag(TagId(3), "Architecture", Instant.DISTANT_PAST), Tag(TagId(4), "Design", Instant.DISTANT_PAST), Tag(TagId(5), "Engineering", Instant.DISTANT_PAST)),
+              availableTags = listOf(
+                Tag(TagId(3), "Architecture", Instant.DISTANT_PAST),
+                Tag(TagId(4), "Design", Instant.DISTANT_PAST),
+                Tag(TagId(5), "Engineering", Instant.DISTANT_PAST),
+              ),
               searchResultTags = emptyList(),
               recentTags = listOf(Tag(TagId(5), "Engineering", Instant.DISTANT_PAST), Tag(TagId(4), "Design", Instant.DISTANT_PAST)),
             ),

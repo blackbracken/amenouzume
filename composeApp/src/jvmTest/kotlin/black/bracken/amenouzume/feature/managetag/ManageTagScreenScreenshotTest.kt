@@ -5,11 +5,11 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
-import kotlin.time.Instant
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
 import black.bracken.amenouzume.util.Loadable
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlin.test.Test
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTestApi::class)
 class ManageTagScreenScreenshotTest {

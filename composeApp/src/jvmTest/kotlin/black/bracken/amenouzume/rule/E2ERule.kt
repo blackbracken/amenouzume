@@ -6,10 +6,10 @@ import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import dev.zacsweers.metro.createGraphFactory
-import org.junit.rules.ExternalResource
 import java.io.File
 import java.util.Locale
 import kotlin.io.path.createTempDirectory
+import org.junit.rules.ExternalResource
 
 class E2ERule : ExternalResource() {
   lateinit var appGraph: AppGraph
@@ -37,5 +37,4 @@ class E2ERule : ExternalResource() {
     Locale.setDefault(savedLocale)
     tempDir.deleteRecursively()
   }
-
 }

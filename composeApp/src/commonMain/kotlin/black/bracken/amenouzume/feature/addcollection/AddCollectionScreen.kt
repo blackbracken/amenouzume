@@ -80,7 +80,6 @@ import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
-import kotlin.time.Instant
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.platform.image.pathToCoilModel
@@ -92,6 +91,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.size.Size
 import dev.zacsweers.metrox.viewmodel.metroViewModel
+import kotlin.time.Instant
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
