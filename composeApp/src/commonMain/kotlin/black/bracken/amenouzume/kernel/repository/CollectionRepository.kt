@@ -83,12 +83,12 @@ class CollectionRepository(
       collectionDir.mkdirs()
 
       try {
-        val fileEntries = filePaths.mapIndexed { index, sourcePath ->
-          val ext = fileResolver.getExtension(sourcePath)
+        val fileEntries = filePaths.mapIndexed { index, sourceLocation ->
+          val ext = fileResolver.getExtension(sourceLocation)
           val uuid = UUID.randomUUID().toString()
           val destFile = File(collectionDir, "$uuid.$ext")
 
-          fileResolver.copyPickedFile(sourcePath, destFile)
+          fileResolver.copyPickedFile(sourceLocation, destFile)
 
           FileEntry(
             relativePath = "collection/${collectionId.value}/$uuid.$ext"

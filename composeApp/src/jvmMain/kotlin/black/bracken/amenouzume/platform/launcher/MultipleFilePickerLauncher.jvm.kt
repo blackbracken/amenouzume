@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 @Composable
 actual fun rememberMultipleFilePickerLauncher(
   mimeTypes: List<String>,
-  onResult: (List<String>) -> Unit,
+  onResult: (sourceLocations: List<String>) -> Unit,
 ): () -> Unit {
   val scope = rememberCoroutineScope()
   return {

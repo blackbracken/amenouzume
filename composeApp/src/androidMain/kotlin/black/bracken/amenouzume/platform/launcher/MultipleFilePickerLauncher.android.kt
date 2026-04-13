@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 @Composable
 actual fun rememberMultipleFilePickerLauncher(
   mimeTypes: List<String>,
-  onResult: (List<String>) -> Unit,
+  onResult: (sourceLocations: List<String>) -> Unit,
 ): () -> Unit {
   val launcher =
     rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->

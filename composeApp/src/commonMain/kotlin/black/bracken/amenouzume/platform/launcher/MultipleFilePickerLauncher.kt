@@ -6,7 +6,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 @Composable
 expect fun rememberMultipleFilePickerLauncher(
   mimeTypes: List<String>,
-  onResult: (List<String>) -> Unit,
+  onResult: (sourceLocations: List<String>) -> Unit,
 ): () -> Unit
 
 @Suppress("SuspiciousCallableReferenceInLambda")
