@@ -2,6 +2,7 @@ package black.bracken.amenouzume.di
 
 import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
+import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import black.bracken.amenouzume.uishared.navigation.Navigator
@@ -30,6 +31,7 @@ interface AppGraph : ViewModelGraph {
   fun interface Factory {
     fun create(
       @Provides driverFactory: DatabaseDriverFactory,
+      @Provides fileResolver: FileResolver,
       @Provides vaultStorage: VaultStorage,
       @Provides vaultHistoryStorage: VaultHistoryStorage,
     ): AppGraph

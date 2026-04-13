@@ -1,5 +1,6 @@
 package black.bracken.amenouzume.kernel.repository
 
+import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.rule.RepositoryTestRule
 import java.io.File
 import kotlin.test.Test
@@ -16,7 +17,7 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should コレクションIDが返される`() = runTest {
-    val repository = CollectionRepository(rule.database, rule.driverFactory)
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
 
     val result = repository.createCollection(
       title = "test-collection",
@@ -29,7 +30,7 @@ class CollectionRepositoryTest {
 
   @Test
   fun `createCollection should 複数作成で異なるIDが返される`() = runTest {
-    val repository = CollectionRepository(rule.database, rule.driverFactory)
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
 
     val id1 = repository.createCollection(
       title = "collection-1",
@@ -48,7 +49,7 @@ class CollectionRepositoryTest {
   @Test
   fun `createCollection should ファイルがコピーされCollectionFileに保存される`() = runTest {
     val sourceFile = File(rule.tempDir, "source.jpg").apply { writeText("image-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory)
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
 
     val id = repository.createCollection(
       title = "with-files",
@@ -69,7 +70,7 @@ class CollectionRepositoryTest {
   fun `createCollection should 複数ファイルがdisplay_order順に保存される`() = runTest {
     val file1 = File(rule.tempDir, "a.png").apply { writeText("png-data") }
     val file2 = File(rule.tempDir, "b.mp4").apply { writeText("mp4-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory)
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
 
     val id = repository.createCollection(
       title = "multi-files",
@@ -88,7 +89,7 @@ class CollectionRepositoryTest {
   @Test
   fun `createCollection should 相対パスがスラッシュ区切りで保存される`() = runTest {
     val sourceFile = File(rule.tempDir, "test.pdf").apply { writeText("pdf-data") }
-    val repository = CollectionRepository(rule.database, rule.driverFactory)
+    val repository = CollectionRepository(rule.database, rule.driverFactory, FileResolver())
 
     val id = repository.createCollection(
       title = "pdf-collection",

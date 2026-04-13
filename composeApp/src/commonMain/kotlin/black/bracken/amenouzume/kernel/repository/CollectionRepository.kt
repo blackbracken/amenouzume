@@ -4,6 +4,7 @@ import black.bracken.amenouzume.db.AppDatabase
 import black.bracken.amenouzume.kernel.model.CollectionFileType
 import black.bracken.amenouzume.kernel.model.CollectionId
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
+import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.util.TimeProvider
 import black.bracken.amenouzume.util.runCatchingSafely
 import dev.zacsweers.metro.Inject
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 class CollectionRepository(
   private val database: AppDatabase,
   private val driverFactory: DatabaseDriverFactory,
+  private val fileResolver: FileResolver,
 ) {
   private val queries = database.collectionQueries
   private val fileQueries = database.collectionFileQueries
@@ -51,12 +53,11 @@ class CollectionRepository(
 
       try {
         val fileEntries = filePaths.mapIndexed { index, sourcePath ->
-          val sourceFile = File(sourcePath)
-          val ext = sourceFile.extension
+          val ext = fileResolver.getExtension(sourcePath)
           val uuid = UUID.randomUUID().toString()
           val destFile = File(collectionDir, "$uuid.$ext")
 
-          sourceFile.copyTo(destFile)
+          fileResolver.copyPickedFile(sourcePath, destFile)
 
           FileEntry(
             relativePath = "collection/${collectionId.value}/$uuid.$ext"

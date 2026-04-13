@@ -2,6 +2,7 @@ package black.bracken.amenouzume.rule
 
 import black.bracken.amenouzume.di.AppGraph
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
+import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.platform.vault.VaultStorage
 import black.bracken.amenouzume.platform.vaulthistory.VaultHistoryStorage
 import dev.zacsweers.metro.createGraphFactory
@@ -26,6 +27,7 @@ class E2ERule : ExternalResource() {
 
     appGraph = createGraphFactory<AppGraph.Factory>().create(
       driverFactory = DatabaseDriverFactory().apply { selectedPath = dbPath },
+      fileResolver = FileResolver(),
       vaultStorage = VaultStorage(),
       vaultHistoryStorage = VaultHistoryStorage(),
     )
