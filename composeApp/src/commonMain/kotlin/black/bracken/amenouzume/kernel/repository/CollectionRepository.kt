@@ -11,6 +11,7 @@ import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
 import black.bracken.amenouzume.util.from
+import black.bracken.amenouzume.util.fromSingleton
 import black.bracken.amenouzume.util.runCatchingSafely
 import black.bracken.amenouzume.util.toLoadable
 import dev.zacsweers.metro.Inject
@@ -35,12 +36,12 @@ class CollectionRepository(
   private val queries = database.collectionQueries
   private val fileQueries = database.collectionFileQueries
 
-  private val allCollectionsStore = StoreBuilder.from(
-    fetcher = { _: Unit ->
+  private val allCollectionsStore = StoreBuilder.fromSingleton(
+    fetcher = {
       queries.selectAllOrderByUpdated().executeAsList()
         .map { Collection.from(it) }
     },
-    reader = { _: Unit ->
+    reader = {
       queries.selectAllOrderByUpdated().asFlow()
         .mapToList(Dispatchers.IO)
         .map { rows -> rows.map { Collection.from(it) } }

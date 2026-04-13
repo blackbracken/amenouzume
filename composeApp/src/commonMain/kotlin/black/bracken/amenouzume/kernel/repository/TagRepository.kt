@@ -13,6 +13,7 @@ import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
 import black.bracken.amenouzume.util.from
+import black.bracken.amenouzume.util.fromSingleton
 import black.bracken.amenouzume.util.runCatchingSafely
 import black.bracken.amenouzume.util.toLoadable
 import dev.zacsweers.metro.Inject
@@ -34,12 +35,12 @@ class TagRepository(
   private val tagQueries = database.tagQueries
   private val tagAliasQueries = database.tagAliasQueries
 
-  private val allTagsStore = StoreBuilder.from(
-    fetcher = { _: Unit ->
+  private val allTagsStore = StoreBuilder.fromSingleton(
+    fetcher = {
       tagQueries.selectAll().executeAsList()
         .map { Tag.from(it) }
     },
-    reader = { _: Unit ->
+    reader = {
       tagQueries.selectAll().asFlow()
         .mapToList(Dispatchers.IO)
         .map { rows -> rows.map { Tag.from(it) } }

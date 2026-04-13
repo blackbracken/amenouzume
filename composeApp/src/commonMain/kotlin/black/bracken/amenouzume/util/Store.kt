@@ -31,3 +31,11 @@ fun <Key : Any, Input : Any, Output : Any> StoreBuilder.Companion.from(
     writer = { _: Key, _: Input -> },
   ),
 )
+
+fun <Input : Any, Output : Any> StoreBuilder.Companion.fromSingleton(
+  fetcher: () -> Input,
+  reader: () -> Flow<Output>,
+) = StoreBuilder.from<Unit, Input, Output>(
+  fetcher = { fetcher() },
+  reader = { reader() },
+)

@@ -13,6 +13,7 @@ import black.bracken.amenouzume.kernel.model.AuthorId
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.TimeProvider
 import black.bracken.amenouzume.util.from
+import black.bracken.amenouzume.util.fromSingleton
 import black.bracken.amenouzume.util.runCatchingSafely
 import black.bracken.amenouzume.util.toLoadable
 import dev.zacsweers.metro.Inject
@@ -34,12 +35,12 @@ class AuthorRepository(
   private val authorQueries = database.authorQueries
   private val authorAliasQueries = database.authorAliasQueries
 
-  private val allAuthorsStore = StoreBuilder.from(
-    fetcher = { _: Unit ->
+  private val allAuthorsStore = StoreBuilder.fromSingleton(
+    fetcher = {
       authorQueries.selectAll().executeAsList()
         .map { Author.from(it) }
     },
-    reader = { _: Unit ->
+    reader = {
       authorQueries.selectAll().asFlow()
         .mapToList(Dispatchers.IO)
         .map { rows -> rows.map { Author.from(it) } }
