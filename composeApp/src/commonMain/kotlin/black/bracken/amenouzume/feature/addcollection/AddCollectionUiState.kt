@@ -1,7 +1,7 @@
 package black.bracken.amenouzume.feature.addcollection
 
-import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Author
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.uishared.ScreenUiState
 import org.jetbrains.compose.resources.StringResource

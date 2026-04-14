@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.model.CollectionCategory
+import black.bracken.amenouzume.kernel.model.CollectionId
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.uishared.navigation.AddCollectionRoute
+import black.bracken.amenouzume.uishared.navigation.CollectionViewerRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.map
@@ -42,7 +44,7 @@ class CollectionListViewModel(
     val entries = collectionsLoadable.map { collections ->
       collections.map { collection ->
         CollectionListEntry(
-          id = collection.id.value,
+          id = collection.id,
           title = collection.title,
           category = CollectionCategory.entries.find { cat -> cat.name == collection.category },
           thumbnailPath = collection.thumbnailPath?.let { path -> File(vaultRoot, path).absolutePath },
@@ -57,4 +59,6 @@ class CollectionListViewModel(
   }
 
   fun onNavigateToAdd(vaultPath: String) = navigator.navigateSingleTop(AddCollectionRoute(vaultPath))
+
+  fun onOpenCollection(collectionId: CollectionId) = navigator.navigate(CollectionViewerRoute(collectionId))
 }

@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import black.bracken.amenouzume.feature.addcollection.AddCollectionCoordinator
 import black.bracken.amenouzume.feature.collectionlist.CollectionListCoordinator
+import black.bracken.amenouzume.feature.collectionviewer.CollectionViewerCoordinator
 import black.bracken.amenouzume.feature.manageauthor.ManageAuthorCoordinator
 import black.bracken.amenouzume.feature.managetag.ManageTagCoordinator
 import black.bracken.amenouzume.feature.opendatabase.OpenDatabaseCoordinator
@@ -84,6 +85,7 @@ fun AppNavHost(backStack: List<AppRoute>) {
           is AddCollectionRoute -> AddCollectionCoordinator(vaultPath = route.vaultPath)
           is ManageTagRoute -> ManageTagCoordinator()
           is ManageAuthorRoute -> ManageAuthorCoordinator()
+          is CollectionViewerRoute -> CollectionViewerCoordinator(collectionId = route.collectionId)
         }
       }
     }

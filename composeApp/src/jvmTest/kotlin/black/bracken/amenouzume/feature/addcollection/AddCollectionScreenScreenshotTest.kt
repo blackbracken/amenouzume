@@ -3,9 +3,9 @@ package black.bracken.amenouzume.feature.addcollection
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runDesktopComposeUiTest
-import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme

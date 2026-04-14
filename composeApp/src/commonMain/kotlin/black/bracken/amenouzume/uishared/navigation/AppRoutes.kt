@@ -1,5 +1,6 @@
 package black.bracken.amenouzume.uishared.navigation
 
+import black.bracken.amenouzume.kernel.model.CollectionId
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,3 +24,8 @@ data object ManageTagRoute : AppRoute
 
 @Serializable
 data object ManageAuthorRoute : AppRoute
+
+@Serializable
+data class CollectionViewerRoute(
+  val collectionId: CollectionId,
+) : AppRoute

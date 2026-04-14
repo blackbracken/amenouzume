@@ -9,10 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.error.CommonFailure
 import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.kernel.repository.AuthorRepository
@@ -29,11 +29,11 @@ import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
-import kotlinx.coroutines.Job
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime

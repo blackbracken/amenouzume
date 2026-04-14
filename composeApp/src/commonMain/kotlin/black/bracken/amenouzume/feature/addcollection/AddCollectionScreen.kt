@@ -73,9 +73,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import black.bracken.amenouzume.feature.addcollection.composable.SelectAuthorsBottomSheet
 import black.bracken.amenouzume.feature.addcollection.composable.SelectTagsBottomSheet
-import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.AuthorId
+import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
@@ -84,11 +84,11 @@ import black.bracken.amenouzume.platform.image.pathToCoilModel
 import black.bracken.amenouzume.platform.launcher.LocalMultipleFilePickerLauncher
 import black.bracken.amenouzume.uishared.component.DashedBorderArea
 import black.bracken.amenouzume.uishared.theme.AmenouzumeTheme
+import black.bracken.amenouzume.util.resolvePixelSize
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.size.Size
-import black.bracken.amenouzume.util.resolvePixelSize
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlin.time.Instant
 import org.jetbrains.compose.resources.StringResource

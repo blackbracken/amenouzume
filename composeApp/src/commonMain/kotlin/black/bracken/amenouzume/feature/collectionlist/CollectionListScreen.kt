@@ -4,6 +4,7 @@ import amenouzume.composeapp.generated.resources.Res
 import amenouzume.composeapp.generated.resources.collection_list_filter
 import amenouzume.composeapp.generated.resources.collection_list_title
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -30,14 +31,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
+import black.bracken.amenouzume.kernel.model.CollectionId
 import black.bracken.amenouzume.uishared.component.VaultBottomBar
 import black.bracken.amenouzume.uishared.component.VaultTab
 import black.bracken.amenouzume.util.Loadable
+import black.bracken.amenouzume.util.resolvePixelSize
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.size.Size
-import black.bracken.amenouzume.util.resolvePixelSize
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import org.jetbrains.compose.resources.stringResource
 
@@ -49,6 +51,7 @@ fun CollectionListCoordinator(
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val action = CollectionListUiAction(
     onNavigateToAdd = { viewModel.onNavigateToAdd(vaultPath) },
+    onOpenCollection = viewModel::onOpenCollection,
   )
   CollectionListScreen(
     state = state.value,
@@ -93,6 +96,7 @@ internal fun CollectionListScreen(
   ) { innerPadding ->
     CollectionGridContent(
       collections = state.collections,
+      onOpenCollection = action.onOpenCollection,
       modifier = Modifier.padding(innerPadding),
     )
   }
@@ -101,6 +105,7 @@ internal fun CollectionListScreen(
 @Composable
 private fun CollectionGridContent(
   collections: Loadable<List<CollectionListEntry>>,
+  onOpenCollection: (CollectionId) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val minWidthDp = currentWindowAdaptiveInfo().windowSizeClass.minWidthDp
@@ -122,8 +127,8 @@ private fun CollectionGridContent(
         }
       }
       is Loadable.Loaded -> {
-        items(collections.value, key = { it.id }) { entry ->
-          CollectionItem(entry = entry)
+        items(collections.value, key = { it.id.value }) { entry ->
+          CollectionItem(entry = entry, onClick = { onOpenCollection(entry.id) })
         }
       }
       is Loadable.Failed -> {}
@@ -134,11 +139,15 @@ private fun CollectionGridContent(
 private val THUMBNAIL_SIZE = 96.dp
 
 @Composable
-private fun CollectionItem(entry: CollectionListEntry) {
+private fun CollectionItem(
+  entry: CollectionListEntry,
+  onClick: () -> Unit,
+) {
   Box(
     modifier = Modifier
       .aspectRatio(1f)
-      .background(MaterialTheme.colorScheme.surfaceVariant),
+      .background(MaterialTheme.colorScheme.surfaceVariant)
+      .clickable(onClick = onClick),
     contentAlignment = Alignment.Center,
   ) {
     if (entry.thumbnailPath != null) {

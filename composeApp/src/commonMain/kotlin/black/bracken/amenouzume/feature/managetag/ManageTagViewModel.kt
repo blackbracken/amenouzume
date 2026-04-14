@@ -16,13 +16,13 @@ import black.bracken.amenouzume.util.getOrNull
 import black.bracken.amenouzume.util.launchWithCatching
 import black.bracken.amenouzume.util.moleculeState
 import black.bracken.amenouzume.util.runWithCatching
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 
 @Inject
