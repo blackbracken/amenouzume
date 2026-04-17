@@ -146,3 +146,34 @@ ktlint {
     exclude("**/util/Catching.kt") // for Context Parameter
   }
 }
+
+tasks.register<Test>("jvmUnitTest") {
+  group = "verification"
+  description = "Runs JVM unit tests (excludes E2E and screenshot tests)."
+
+  val jvmTestTask = tasks.named<Test>("jvmTest").get()
+  testClassesDirs = jvmTestTask.testClassesDirs
+  classpath = jvmTestTask.classpath
+  useJUnit()
+  dependsOn("jvmTestClasses")
+
+  filter {
+    excludeTestsMatching("black.bracken.amenouzume.e2e.*")
+    excludeTestsMatching("*ScreenshotTest")
+  }
+}
+
+tasks.register<Test>("jvmE2ETest") {
+  group = "verification"
+  description = "Runs JVM E2E tests."
+
+  val jvmTestTask = tasks.named<Test>("jvmTest").get()
+  testClassesDirs = jvmTestTask.testClassesDirs
+  classpath = jvmTestTask.classpath
+  useJUnit()
+  dependsOn("jvmTestClasses")
+
+  filter {
+    includeTestsMatching("black.bracken.amenouzume.e2e.*")
+  }
+}
