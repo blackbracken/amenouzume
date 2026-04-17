@@ -5,7 +5,9 @@ CREATE TABLE CollectionTag (
 );
 
 selectTagsByCollectionId:
-SELECT * FROM CollectionTag WHERE collection_id = :collection_id;
+SELECT Tag.* FROM Tag
+INNER JOIN CollectionTag ON Tag.tag_id = CollectionTag.tag_id
+WHERE CollectionTag.collection_id = :collection_id;
 
 insert:
 INSERT INTO CollectionTag(collection_id, tag_id) VALUES (:collection_id, :tag_id);

@@ -64,4 +64,6 @@
     <string name="edit_author_new_alias_placeholder">新しいエイリアス</string>
     <string name="edit_author_add_alias">エイリアスを追加</string>
     <string name="edit_author_done">完了</string>
+    <string name="collection_viewer_file_count">%1$d ファイル</string>
+    <string name="collection_viewer_tags">タグ</string>
 </resources>

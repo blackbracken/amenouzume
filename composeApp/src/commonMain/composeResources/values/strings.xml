@@ -70,4 +70,6 @@
     <string name="edit_author_new_alias_placeholder">New alias</string>
     <string name="edit_author_add_alias">Add alias</string>
     <string name="edit_author_done">DONE</string>
+    <string name="collection_viewer_file_count">%1$d files</string>
+    <string name="collection_viewer_tags">Tags</string>
 </resources>

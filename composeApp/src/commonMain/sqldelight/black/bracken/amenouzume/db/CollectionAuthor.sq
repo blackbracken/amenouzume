@@ -5,7 +5,9 @@ CREATE TABLE CollectionAuthor (
 );
 
 selectAuthorsByCollectionId:
-SELECT * FROM CollectionAuthor WHERE collection_id = :collection_id;
+SELECT Author.* FROM Author
+INNER JOIN CollectionAuthor ON Author.author_id = CollectionAuthor.author_id
+WHERE CollectionAuthor.collection_id = :collection_id;
 
 insert:
 INSERT INTO CollectionAuthor(collection_id, author_id) VALUES (:collection_id, :author_id);

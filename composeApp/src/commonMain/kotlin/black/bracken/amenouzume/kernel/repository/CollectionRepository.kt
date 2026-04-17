@@ -3,9 +3,12 @@ package black.bracken.amenouzume.kernel.repository
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import black.bracken.amenouzume.db.AppDatabase
+import black.bracken.amenouzume.kernel.model.Author
 import black.bracken.amenouzume.kernel.model.Collection
+import black.bracken.amenouzume.kernel.model.CollectionFile
 import black.bracken.amenouzume.kernel.model.CollectionFileType
 import black.bracken.amenouzume.kernel.model.CollectionId
+import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.util.Loadable
@@ -49,6 +52,37 @@ class CollectionRepository(
         .map { rows -> rows.map { Collection.from(it) } }
     },
   ).scope(scope).build()
+
+  suspend fun getCollectionById(id: CollectionId): Result<Collection> = runCatchingSafely {
+    withContext(Dispatchers.IO) {
+      val entity = queries.selectById(id.value).executeAsOne()
+      Collection.from(entity)
+    }
+  }
+
+  suspend fun getFilesByCollectionId(id: CollectionId): Result<List<CollectionFile>> = runCatchingSafely {
+    withContext(Dispatchers.IO) {
+      fileQueries.selectByCollectionId(id.value).executeAsList().map { entity ->
+        CollectionFile(
+          filePath = entity.file_path,
+          fileType = CollectionFileType.valueOf(entity.file_type),
+          displayOrder = entity.display_order.toInt(),
+        )
+      }
+    }
+  }
+
+  suspend fun getTagsByCollectionId(id: CollectionId): Result<List<Tag>> = runCatchingSafely {
+    withContext(Dispatchers.IO) {
+      collectionTagQueries.selectTagsByCollectionId(id.value).executeAsList().map { Tag.from(it) }
+    }
+  }
+
+  suspend fun getAuthorsByCollectionId(id: CollectionId): Result<List<Author>> = runCatchingSafely {
+    withContext(Dispatchers.IO) {
+      collectionAuthorQueries.selectAuthorsByCollectionId(id.value).executeAsList().map { Author.from(it) }
+    }
+  }
 
   fun getAllCollections(): Flow<Loadable<List<Collection>>> =
     allCollectionsStore.stream(StoreReadRequest.cached(Unit, refresh = false))
