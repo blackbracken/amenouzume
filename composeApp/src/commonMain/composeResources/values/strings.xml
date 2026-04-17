@@ -15,8 +15,6 @@
     <string name="error_unexpected">An unexpected error occurred</string>
     <string name="collection_list_title" translatable="false">Collection View</string>
     <string name="collection_list_filter">Filter</string>
-    <string name="collection_list_tab_add" translatable="false">Add</string>
-    <string name="collection_list_tab_collections" translatable="false">Collection</string>
     <string name="category_illustration" translatable="false">ILLUSTRATION</string>
     <string name="category_photo" translatable="false">PHOTO</string>
     <string name="category_fanzine" translatable="false">FANZINE</string>

@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import black.bracken.amenouzume.kernel.model.CollectionId
-import black.bracken.amenouzume.uishared.component.VaultBottomBar
-import black.bracken.amenouzume.uishared.component.VaultTab
+import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
+import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.resolvePixelSize
 import coil3.compose.AsyncImage
@@ -85,13 +87,16 @@ internal fun CollectionListScreen(
         },
       )
     },
-    bottomBar = {
-      VaultBottomBar(
-        selectedTab = VaultTab.COLLECTIONS,
-        onSelectTab = { tab ->
-          if (tab == VaultTab.ADD) action.onNavigateToAdd()
+    floatingActionButton = {
+      val haptic = LocalHapticFeedback.current()
+      FloatingActionButton(
+        onClick = {
+          haptic(AppHapticFeedbackType.LightTap)
+          action.onNavigateToAdd()
         },
-      )
+      ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+      }
     },
   ) { innerPadding ->
     CollectionGridContent(
