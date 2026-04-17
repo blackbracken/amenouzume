@@ -60,15 +60,17 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CollectionViewerCoordinator(
   collectionId: CollectionId,
+  vaultPath: String,
   viewModel: CollectionViewerViewModel =
     assistedMetroViewModel<CollectionViewerViewModel, CollectionViewerViewModel.Factory> {
-      create(collectionId)
+      create(collectionId, vaultPath)
     },
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val action = CollectionViewerUiAction(
     onClose = viewModel::onClose,
     onConsumeError = viewModel::onConsumeError,
+    onTagClick = viewModel::onTagClick,
   )
   CollectionViewerScreen(
     state = state.value,
@@ -114,6 +116,7 @@ internal fun CollectionViewerScreen(
       is Loadable.Loaded -> {
         CollectionViewerContent(
           content = content.value,
+          onTagClick = action.onTagClick,
           modifier = Modifier.padding(innerPadding),
         )
       }
@@ -124,6 +127,7 @@ internal fun CollectionViewerScreen(
 @Composable
 private fun CollectionViewerContent(
   content: CollectionViewerUiState.Content,
+  onTagClick: (Tag) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier.fillMaxSize()) {
@@ -152,7 +156,7 @@ private fun CollectionViewerContent(
 
       if (content.tags.isNotEmpty()) {
         Spacer(modifier = Modifier.height(12.dp))
-        TagsSection(tags = content.tags)
+        TagsSection(tags = content.tags, onTagClick = onTagClick)
       }
     }
   }
@@ -256,7 +260,10 @@ private fun CollectionViewerSkeleton(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun TagsSection(tags: List<Tag>) {
+private fun TagsSection(
+  tags: List<Tag>,
+  onTagClick: (Tag) -> Unit,
+) {
   Column(modifier = Modifier.padding(horizontal = 16.dp)) {
     Row(verticalAlignment = Alignment.CenterVertically) {
       Icon(
@@ -276,7 +283,7 @@ private fun TagsSection(tags: List<Tag>) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       tags.forEach { tag ->
         SuggestionChip(
-          onClick = {},
+          onClick = { onTagClick(tag) },
           label = {
             Text(
               text = tag.primaryName,

@@ -9,6 +9,7 @@ import black.bracken.amenouzume.kernel.model.CollectionFile
 import black.bracken.amenouzume.kernel.model.CollectionFileType
 import black.bracken.amenouzume.kernel.model.CollectionId
 import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
 import black.bracken.amenouzume.platform.vault.FileResolver
 import black.bracken.amenouzume.util.Loadable
@@ -53,6 +54,18 @@ class CollectionRepository(
     },
   ).scope(scope).build()
 
+  private val collectionsByTagStore = StoreBuilder.from(
+    fetcher = { tagId: TagId ->
+      collectionTagQueries.selectCollectionsByTagId(tagId.value).executeAsList()
+        .map { Collection.from(it) }
+    },
+    reader = { tagId: TagId ->
+      collectionTagQueries.selectCollectionsByTagId(tagId.value).asFlow()
+        .mapToList(Dispatchers.IO)
+        .map { rows -> rows.map { Collection.from(it) } }
+    },
+  ).scope(scope).build()
+
   suspend fun getCollectionById(id: CollectionId): Result<Collection> = runCatchingSafely {
     withContext(Dispatchers.IO) {
       val entity = queries.selectById(id.value).executeAsOne()
@@ -86,6 +99,11 @@ class CollectionRepository(
 
   fun getAllCollections(): Flow<Loadable<List<Collection>>> =
     allCollectionsStore.stream(StoreReadRequest.cached(Unit, refresh = false))
+      .toLoadable()
+      .onStart { emit(Loadable.Loading) }
+
+  fun getCollectionsByTagId(tagId: TagId): Flow<Loadable<List<Collection>>> =
+    collectionsByTagStore.stream(StoreReadRequest.cached(tagId, refresh = false))
       .toLoadable()
       .onStart { emit(Loadable.Loading) }
 

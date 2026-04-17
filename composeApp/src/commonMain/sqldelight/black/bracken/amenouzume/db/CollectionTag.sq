@@ -9,6 +9,12 @@ SELECT Tag.* FROM Tag
 INNER JOIN CollectionTag ON Tag.tag_id = CollectionTag.tag_id
 WHERE CollectionTag.collection_id = :collection_id;
 
+selectCollectionsByTagId:
+SELECT Collection.* FROM Collection
+INNER JOIN CollectionTag ON Collection.collection_id = CollectionTag.collection_id
+WHERE CollectionTag.tag_id = :tag_id
+ORDER BY Collection.updated_at DESC, Collection.collection_id ASC;
+
 insert:
 INSERT INTO CollectionTag(collection_id, tag_id) VALUES (:collection_id, :tag_id);
 

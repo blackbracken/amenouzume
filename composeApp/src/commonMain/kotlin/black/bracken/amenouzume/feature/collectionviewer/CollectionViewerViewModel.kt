@@ -7,8 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import black.bracken.amenouzume.kernel.model.CollectionCategory
 import black.bracken.amenouzume.kernel.model.CollectionId
+import black.bracken.amenouzume.kernel.model.Tag
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
+import black.bracken.amenouzume.uishared.navigation.CollectionListRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
 import black.bracken.amenouzume.util.Loadable
 import black.bracken.amenouzume.util.launchWithCatching
@@ -29,6 +31,7 @@ import org.jetbrains.compose.resources.StringResource
 @AssistedInject
 class CollectionViewerViewModel(
   @Assisted val collectionId: CollectionId,
+  @Assisted private val vaultPath: String,
   private val collectionRepository: CollectionRepository,
   private val driverFactory: DatabaseDriverFactory,
   private val navigator: Navigator,
@@ -86,10 +89,17 @@ class CollectionViewerViewModel(
     navigator.back()
   }
 
+  fun onTagClick(tag: Tag) = runWithCatching({ errorMessage = it.messageRes }) {
+    navigator.navigate(CollectionListRoute(vaultPath = vaultPath, filterTagId = tag.id))
+  }
+
   @AssistedFactory
   @ManualViewModelAssistedFactoryKey(Factory::class)
   @ContributesIntoMap(AppScope::class)
   fun interface Factory : ManualViewModelAssistedFactory {
-    fun create(@Assisted collectionId: CollectionId): CollectionViewerViewModel
+    fun create(
+      @Assisted collectionId: CollectionId,
+      @Assisted vaultPath: String,
+    ): CollectionViewerViewModel
   }
 }

@@ -5,22 +5,29 @@ import amenouzume.composeapp.generated.resources.collection_list_filter
 import amenouzume.composeapp.generated.resources.collection_list_title
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -35,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.window.core.layout.WindowSizeClass
 import black.bracken.amenouzume.kernel.model.CollectionId
+import black.bracken.amenouzume.kernel.model.Tag
+import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.platform.haptic.AppHapticFeedbackType
 import black.bracken.amenouzume.platform.haptic.LocalHapticFeedback
 import black.bracken.amenouzume.util.Loadable
@@ -43,18 +52,23 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.size.Size
-import dev.zacsweers.metrox.viewmodel.metroViewModel
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CollectionListCoordinator(
   vaultPath: String,
-  viewModel: CollectionListViewModel = metroViewModel(),
+  filterTagId: TagId?,
+  showAddFab: Boolean,
+  viewModel: CollectionListViewModel =
+    assistedMetroViewModel<CollectionListViewModel, CollectionListViewModel.Factory> {
+      create(filterTagId, showAddFab)
+    },
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val action = CollectionListUiAction(
     onNavigateToAdd = { viewModel.onNavigateToAdd(vaultPath) },
-    onOpenCollection = viewModel::onOpenCollection,
+    onOpenCollection = { id -> viewModel.onOpenCollection(vaultPath, id) },
   )
   CollectionListScreen(
     state = state.value,
@@ -89,22 +103,57 @@ internal fun CollectionListScreen(
       )
     },
     floatingActionButton = {
-      val haptic = LocalHapticFeedback.current()
-      FloatingActionButton(
-        onClick = {
-          haptic(AppHapticFeedbackType.LightTap)
-          action.onNavigateToAdd()
-        },
-        modifier = Modifier.testTag(CollectionListTestTags.AddFab),
-      ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+      if (state.showAddFab) {
+        val haptic = LocalHapticFeedback.current()
+        FloatingActionButton(
+          onClick = {
+            haptic(AppHapticFeedbackType.LightTap)
+            action.onNavigateToAdd()
+          },
+          modifier = Modifier.testTag(CollectionListTestTags.AddFab),
+        ) {
+          Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        }
       }
     },
   ) { innerPadding ->
-    CollectionGridContent(
-      collections = state.collections,
-      onOpenCollection = action.onOpenCollection,
-      modifier = Modifier.padding(innerPadding),
+    Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+      if (state.filterTag != null) {
+        ActiveFiltersSection(filterTag = state.filterTag)
+      }
+
+      CollectionGridContent(
+        collections = state.collections,
+        onOpenCollection = action.onOpenCollection,
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ActiveFiltersSection(filterTag: Tag) {
+  FlowRow(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    SuggestionChip(
+      onClick = {},
+      icon = {
+        Icon(
+          imageVector = Icons.Default.Numbers,
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      },
+      label = {
+        Text(
+          text = filterTag.primaryName,
+          style = MaterialTheme.typography.labelSmall,
+        )
+      },
     )
   }
 }
@@ -194,7 +243,12 @@ object CollectionListTestTags {
 @Composable
 private fun CollectionListScreenPreview() {
   CollectionListScreen(
-    state = CollectionListUiState(isBusy = false, collections = Loadable.Loaded(emptyList())),
+    state = CollectionListUiState(
+      isBusy = false,
+      collections = Loadable.Loaded(emptyList()),
+      filterTag = null,
+      showAddFab = true,
+    ),
     action = CollectionListUiAction.Noop,
   )
 }

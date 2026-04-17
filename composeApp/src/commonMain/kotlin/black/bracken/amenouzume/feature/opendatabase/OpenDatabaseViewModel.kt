@@ -51,7 +51,7 @@ class OpenDatabaseViewModel(
     busyScope.track {
       vaultRepository.openVault(entry.path).getOrThrow()
     }
-    navigator.navigateReplace(CollectionListRoute(vaultPath = entry.path))
+    navigator.navigateReplace(CollectionListRoute(vaultPath = entry.path, showAddFab = true))
   }
 
   fun onDeleteEntry(entry: OpenDatabaseEntry) = launchWithCatching({ errorMessage = it.messageRes }) {
@@ -66,13 +66,13 @@ class OpenDatabaseViewModel(
     val vaultPath = busyScope.track {
       vaultRepository.createVault(path).getOrThrow().also { vaultRepository.openVault(it).getOrThrow() }
     }
-    navigator.navigateReplace(CollectionListRoute(vaultPath = vaultPath))
+    navigator.navigateReplace(CollectionListRoute(vaultPath = vaultPath, showAddFab = true))
   }
 
   fun onOpenVault(filePath: String) = launchWithCatching({ errorMessage = it.messageRes }) {
     busyScope.track {
       vaultRepository.openVault(filePath).getOrThrow()
     }
-    navigator.navigateReplace(CollectionListRoute(vaultPath = filePath))
+    navigator.navigateReplace(CollectionListRoute(vaultPath = filePath, showAddFab = true))
   }
 }

@@ -81,11 +81,18 @@ fun AppNavHost(backStack: List<AppRoute>) {
         }
         when (route) {
           is OpenDatabaseRoute -> OpenDatabaseCoordinator()
-          is CollectionListRoute -> CollectionListCoordinator(vaultPath = route.vaultPath)
+          is CollectionListRoute -> CollectionListCoordinator(
+            vaultPath = route.vaultPath,
+            filterTagId = route.filterTagId,
+            showAddFab = route.showAddFab,
+          )
           is AddCollectionRoute -> AddCollectionCoordinator(vaultPath = route.vaultPath)
           is ManageTagRoute -> ManageTagCoordinator()
           is ManageAuthorRoute -> ManageAuthorCoordinator()
-          is CollectionViewerRoute -> CollectionViewerCoordinator(collectionId = route.collectionId)
+          is CollectionViewerRoute -> CollectionViewerCoordinator(
+            collectionId = route.collectionId,
+            vaultPath = route.vaultPath,
+          )
         }
       }
     }
