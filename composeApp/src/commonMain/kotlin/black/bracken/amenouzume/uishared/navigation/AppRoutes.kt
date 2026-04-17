@@ -12,15 +12,12 @@ data object OpenDatabaseRoute : AppRoute
 
 @Serializable
 data class CollectionListRoute(
-  val vaultPath: String,
   val filterTagId: TagId? = null,
   val showAddFab: Boolean = false,
 ) : AppRoute
 
 @Serializable
-data class AddCollectionRoute(
-  val vaultPath: String,
-) : AppRoute
+data object AddCollectionRoute : AppRoute
 
 @Serializable
 data object ManageTagRoute : AppRoute
@@ -31,5 +28,4 @@ data object ManageAuthorRoute : AppRoute
 @Serializable
 data class CollectionViewerRoute(
   val collectionId: CollectionId,
-  val vaultPath: String,
 ) : AppRoute

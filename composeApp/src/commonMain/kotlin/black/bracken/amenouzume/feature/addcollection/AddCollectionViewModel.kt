@@ -248,8 +248,8 @@ class AddCollectionViewModel(
     navigator.navigate(ManageAuthorRoute)
   }
 
-  fun onNavigateToCollections(vaultPath: String) = runWithCatching({ errorMessage = it.messageRes }) {
-    navigator.navigateSingleTop(CollectionListRoute(vaultPath = vaultPath, showAddFab = true))
+  fun onNavigateToCollections() = runWithCatching({ errorMessage = it.messageRes }) {
+    navigator.navigateSingleTop(CollectionListRoute(showAddFab = true))
   }
 
   fun onCreateCollection() = launchWithCatching({ errorMessage = it.messageRes }) {

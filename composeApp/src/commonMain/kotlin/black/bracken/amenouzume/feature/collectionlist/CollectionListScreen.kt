@@ -57,7 +57,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CollectionListCoordinator(
-  vaultPath: String,
   filterTagId: TagId?,
   showAddFab: Boolean,
   viewModel: CollectionListViewModel =
@@ -67,8 +66,8 @@ fun CollectionListCoordinator(
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
   val action = CollectionListUiAction(
-    onNavigateToAdd = { viewModel.onNavigateToAdd(vaultPath) },
-    onOpenCollection = { id -> viewModel.onOpenCollection(vaultPath, id) },
+    onNavigateToAdd = viewModel::onNavigateToAdd,
+    onOpenCollection = viewModel::onOpenCollection,
   )
   CollectionListScreen(
     state = state.value,

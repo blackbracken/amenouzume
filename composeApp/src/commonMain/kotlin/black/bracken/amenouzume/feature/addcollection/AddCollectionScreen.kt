@@ -96,7 +96,6 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AddCollectionCoordinator(
-  vaultPath: String,
   viewModel: AddCollectionViewModel = metroViewModel(),
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,7 +122,7 @@ fun AddCollectionCoordinator(
     onShowAuthorsSheet = viewModel::onShowAuthorsSheet,
     onDismissAuthorsSheet = viewModel::onDismissAuthorsSheet,
     onSubmit = viewModel::onCreateCollection,
-    onNavigateToCollections = { viewModel.onNavigateToCollections(vaultPath) },
+    onNavigateToCollections = viewModel::onNavigateToCollections,
     onNavigateToEditOrder = {},
     onNavigateToManageTags = viewModel::onNavigateToManageTags,
     onNavigateToManageAuthors = viewModel::onNavigateToManageAuthors,

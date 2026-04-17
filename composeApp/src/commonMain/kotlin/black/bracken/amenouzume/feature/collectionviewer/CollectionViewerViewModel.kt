@@ -31,7 +31,6 @@ import org.jetbrains.compose.resources.StringResource
 @AssistedInject
 class CollectionViewerViewModel(
   @Assisted val collectionId: CollectionId,
-  @Assisted private val vaultPath: String,
   private val collectionRepository: CollectionRepository,
   private val driverFactory: DatabaseDriverFactory,
   private val navigator: Navigator,
@@ -90,16 +89,13 @@ class CollectionViewerViewModel(
   }
 
   fun onTagClick(tag: Tag) = runWithCatching({ errorMessage = it.messageRes }) {
-    navigator.navigate(CollectionListRoute(vaultPath = vaultPath, filterTagId = tag.id))
+    navigator.navigate(CollectionListRoute(filterTagId = tag.id))
   }
 
   @AssistedFactory
   @ManualViewModelAssistedFactoryKey(Factory::class)
   @ContributesIntoMap(AppScope::class)
   fun interface Factory : ManualViewModelAssistedFactory {
-    fun create(
-      @Assisted collectionId: CollectionId,
-      @Assisted vaultPath: String,
-    ): CollectionViewerViewModel
+    fun create(@Assisted collectionId: CollectionId): CollectionViewerViewModel
   }
 }

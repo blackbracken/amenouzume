@@ -60,10 +60,9 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CollectionViewerCoordinator(
   collectionId: CollectionId,
-  vaultPath: String,
   viewModel: CollectionViewerViewModel =
     assistedMetroViewModel<CollectionViewerViewModel, CollectionViewerViewModel.Factory> {
-      create(collectionId, vaultPath)
+      create(collectionId)
     },
 ) {
   val state = viewModel.uiState.collectAsStateWithLifecycle()

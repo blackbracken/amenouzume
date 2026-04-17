@@ -26,7 +26,7 @@ class AppE2ETest {
 
   @Test
   fun `ManageTag should 作成したタグが一覧に表示される`() = runDesktopComposeUiTest(width = 400, height = 800) {
-    rule.appGraph.navigator.navigateReplace(CollectionListRoute(vaultPath = rule.dbPath, showAddFab = true))
+    rule.appGraph.navigator.navigateReplace(CollectionListRoute(showAddFab = true))
 
     setContent {
       CompositionLocalProvider(
@@ -81,7 +81,7 @@ class AppE2ETest {
 
   @Test
   fun `CollectionList should AddCollection画面が表示される`() = runDesktopComposeUiTest(width = 400, height = 800) {
-    rule.appGraph.navigator.navigateReplace(CollectionListRoute(vaultPath = rule.dbPath, showAddFab = true))
+    rule.appGraph.navigator.navigateReplace(CollectionListRoute(showAddFab = true))
 
     setContent {
       App(rule.appGraph)

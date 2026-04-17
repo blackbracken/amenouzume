@@ -10,7 +10,7 @@ import black.bracken.amenouzume.kernel.model.CollectionId
 import black.bracken.amenouzume.kernel.model.TagId
 import black.bracken.amenouzume.kernel.repository.CollectionRepository
 import black.bracken.amenouzume.kernel.repository.TagRepository
-import black.bracken.amenouzume.platform.vault.DatabaseDriverFactory
+import black.bracken.amenouzume.kernel.repository.VaultRepository
 import black.bracken.amenouzume.uishared.navigation.AddCollectionRoute
 import black.bracken.amenouzume.uishared.navigation.CollectionViewerRoute
 import black.bracken.amenouzume.uishared.navigation.Navigator
@@ -34,7 +34,7 @@ class CollectionListViewModel(
   @Assisted private val showAddFab: Boolean,
   private val collectionRepository: CollectionRepository,
   private val tagRepository: TagRepository,
-  private val driverFactory: DatabaseDriverFactory,
+  private val vaultRepository: VaultRepository,
   private val navigator: Navigator,
 ) : ViewModel() {
   val uiState: StateFlow<CollectionListUiState> = moleculeState { presenter() }
@@ -57,7 +57,7 @@ class CollectionListViewModel(
     }
 
     val vaultRoot = remember {
-      File(driverFactory.selectedPath).parentFile
+      vaultRepository.currentVaultPath.value?.let { File(it).parentFile }
     }
 
     val entries = collectionsLoadable.map { collections ->
@@ -66,7 +66,9 @@ class CollectionListViewModel(
           id = collection.id,
           title = collection.title,
           category = CollectionCategory.entries.find { cat -> cat.name == collection.category },
-          thumbnailPath = collection.thumbnailPath?.let { path -> File(vaultRoot, path).absolutePath },
+          thumbnailPath = collection.thumbnailPath?.let { path ->
+            vaultRoot?.let { File(it, path).absolutePath }
+          },
         )
       }
     }
@@ -79,10 +81,10 @@ class CollectionListViewModel(
     )
   }
 
-  fun onNavigateToAdd(vaultPath: String) = navigator.navigateSingleTop(AddCollectionRoute(vaultPath))
+  fun onNavigateToAdd() = navigator.navigateSingleTop(AddCollectionRoute)
 
-  fun onOpenCollection(vaultPath: String, collectionId: CollectionId) =
-    navigator.navigate(CollectionViewerRoute(collectionId = collectionId, vaultPath = vaultPath))
+  fun onOpenCollection(collectionId: CollectionId) =
+    navigator.navigate(CollectionViewerRoute(collectionId = collectionId))
 
   @AssistedFactory
   @ManualViewModelAssistedFactoryKey(Factory::class)

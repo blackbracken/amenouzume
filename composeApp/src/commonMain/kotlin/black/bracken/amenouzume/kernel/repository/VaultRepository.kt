@@ -41,6 +41,11 @@ class VaultRepository(
     .onStart { refreshVaultHistories() }
     .stateIn(scope, SharingStarted.Lazily, Loadable.Loading)
 
+  private val _currentVaultPath = MutableStateFlow<String?>(
+    runCatching { driverFactory.selectedPath }.getOrNull(),
+  )
+  val currentVaultPath: StateFlow<String?> = _currentVaultPath
+
   suspend fun refreshVaultHistories() {
     _vaultHistories.value = runCatchingSafely {
       withContext(Dispatchers.IO) {
@@ -83,6 +88,7 @@ class VaultRepository(
 
       vaultHistoryStorage.addPath(filePath)
       driverFactory.selectedPath = filePath
+      _currentVaultPath.value = filePath
     }
     refreshVaultHistories()
   }
