@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -94,6 +95,7 @@ internal fun CollectionListScreen(
           haptic(AppHapticFeedbackType.LightTap)
           action.onNavigateToAdd()
         },
+        modifier = Modifier.testTag(CollectionListTestTags.AddFab),
       ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = null)
       }
@@ -182,6 +184,10 @@ private fun CollectionItemSkeleton() {
       .aspectRatio(1f)
       .background(MaterialTheme.colorScheme.surfaceVariant),
   )
+}
+
+object CollectionListTestTags {
+  const val AddFab = "collection_list_add_fab"
 }
 
 @Preview
