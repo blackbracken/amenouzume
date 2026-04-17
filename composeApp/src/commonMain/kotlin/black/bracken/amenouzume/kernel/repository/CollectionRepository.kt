@@ -43,11 +43,11 @@ class CollectionRepository(
 
   private val allCollectionsStore = StoreBuilder.fromSingleton(
     fetcher = {
-      queries.selectAllOrderByUpdated().executeAsList()
+      queries.selectAll().executeAsList()
         .map { Collection.from(it) }
     },
     reader = {
-      queries.selectAllOrderByUpdated().asFlow()
+      queries.selectAll().asFlow()
         .mapToList(Dispatchers.IO)
         .map { rows -> rows.map { Collection.from(it) } }
     },

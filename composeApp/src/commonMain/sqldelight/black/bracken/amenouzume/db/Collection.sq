@@ -8,10 +8,7 @@ CREATE TABLE Collection (
 );
 
 selectAll:
-SELECT * FROM Collection;
-
-selectAllOrderByUpdated:
-SELECT * FROM Collection ORDER BY updated_at DESC;
+SELECT * FROM Collection ORDER BY updated_at DESC, collection_id ASC;
 
 selectById:
 SELECT * FROM Collection WHERE collection_id = :collection_id;
