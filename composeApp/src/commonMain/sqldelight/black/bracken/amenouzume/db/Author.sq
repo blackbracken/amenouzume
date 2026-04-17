@@ -8,9 +8,6 @@ CREATE TABLE Author (
 selectAll:
 SELECT * FROM Author ORDER BY updated_at DESC, author_id ASC;
 
-selectById:
-SELECT * FROM Author WHERE author_id = :author_id;
-
 selectByName:
 SELECT * FROM Author WHERE primary_name = :primary_name;
 

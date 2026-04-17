@@ -13,12 +13,6 @@ SELECT * FROM TagAlias WHERE name = :name;
 insert:
 INSERT INTO TagAlias(tag_id, name) VALUES (:tag_id, :name);
 
-lastInsertRowId:
-SELECT last_insert_rowid();
-
-deleteById:
-DELETE FROM TagAlias WHERE tag_alias_id = :tag_alias_id;
-
 deleteByIds:
 DELETE FROM TagAlias WHERE tag_alias_id IN :tag_alias_ids;
 

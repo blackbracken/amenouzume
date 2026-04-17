@@ -12,6 +12,3 @@ WHERE CollectionTag.collection_id = :collection_id;
 insert:
 INSERT INTO CollectionTag(collection_id, tag_id) VALUES (:collection_id, :tag_id);
 
-deleteByCollectionIdAndTagId:
-DELETE FROM CollectionTag WHERE collection_id = :collection_id AND tag_id = :tag_id;
-

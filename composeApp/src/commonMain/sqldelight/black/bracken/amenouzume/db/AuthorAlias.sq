@@ -13,8 +13,5 @@ SELECT * FROM AuthorAlias WHERE name = :name;
 insert:
 INSERT INTO AuthorAlias(author_id, name) VALUES (:author_id, :name);
 
-deleteById:
-DELETE FROM AuthorAlias WHERE author_alias_id = :author_alias_id;
-
 deleteByIds:
 DELETE FROM AuthorAlias WHERE author_alias_id IN :author_alias_ids;

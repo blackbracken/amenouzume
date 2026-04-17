@@ -16,9 +16,6 @@ SELECT * FROM Collection ORDER BY updated_at DESC;
 selectById:
 SELECT * FROM Collection WHERE collection_id = :collection_id;
 
-selectByCategory:
-SELECT * FROM Collection WHERE category = :category;
-
 insert:
 INSERT INTO Collection(title, thumbnail_path, category, created_at, updated_at)
 VALUES (:title, :thumbnail_path, :category, :created_at, :updated_at);

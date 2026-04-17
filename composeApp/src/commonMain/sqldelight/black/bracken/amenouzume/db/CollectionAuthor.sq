@@ -11,6 +11,3 @@ WHERE CollectionAuthor.collection_id = :collection_id;
 
 insert:
 INSERT INTO CollectionAuthor(collection_id, author_id) VALUES (:collection_id, :author_id);
-
-deleteByCollectionIdAndAuthorId:
-DELETE FROM CollectionAuthor WHERE collection_id = :collection_id AND author_id = :author_id;

@@ -11,12 +11,6 @@ CREATE TABLE CollectionFile (
 selectByCollectionId:
 SELECT * FROM CollectionFile WHERE collection_id = :collection_id ORDER BY display_order;
 
-selectById:
-SELECT * FROM CollectionFile WHERE file_id = :file_id;
-
 insert:
 INSERT INTO CollectionFile(collection_id, file_path, file_type, display_order, created_at, updated_at)
 VALUES (:collection_id, :file_path, :file_type, :display_order, :created_at, :updated_at);
-
-deleteById:
-DELETE FROM CollectionFile WHERE file_id = :file_id;
