@@ -4,6 +4,8 @@ CREATE TABLE AuthorAlias (
     name TEXT NOT NULL UNIQUE
 );
 
+CREATE INDEX author_alias_author_id_idx ON AuthorAlias(author_id);
+
 selectByAuthorId:
 SELECT * FROM AuthorAlias WHERE author_id = :author_id;
 

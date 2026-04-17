@@ -4,6 +4,8 @@ CREATE TABLE TagAlias (
     name TEXT NOT NULL UNIQUE
 );
 
+CREATE INDEX tag_alias_tag_id_idx ON TagAlias(tag_id);
+
 selectByTagId:
 SELECT * FROM TagAlias WHERE tag_id = :tag_id;
 

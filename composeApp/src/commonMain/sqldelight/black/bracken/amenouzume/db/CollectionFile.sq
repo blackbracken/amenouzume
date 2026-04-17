@@ -8,6 +8,8 @@ CREATE TABLE CollectionFile (
     updated_at TEXT NOT NULL
 );
 
+CREATE INDEX collection_file_collection_id_idx ON CollectionFile(collection_id);
+
 selectByCollectionId:
 SELECT * FROM CollectionFile WHERE collection_id = :collection_id ORDER BY display_order;
 
