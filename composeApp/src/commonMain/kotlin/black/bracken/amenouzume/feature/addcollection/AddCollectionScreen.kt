@@ -321,8 +321,10 @@ private fun CategoryChip(
   onSelectCategory: (CollectionCategory) -> Unit,
 ) {
   val haptic = LocalHapticFeedback.current()
+  val isSelectable = selectedCategory == null || selectedCategory == category
   FilterChip(
     selected = selectedCategory == category,
+    enabled = isSelectable,
     onClick = {
       haptic(AppHapticFeedbackType.LightTap)
       onSelectCategory(category)
