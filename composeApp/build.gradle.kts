@@ -10,7 +10,6 @@ plugins {
   alias(libs.plugins.kotlinSerialization)
   alias(libs.plugins.ktlint)
   alias(libs.plugins.metro)
-  alias(libs.plugins.roborazzi)
   alias(libs.plugins.sqldelight)
 }
 
@@ -71,7 +70,6 @@ kotlin {
     jvmTest.dependencies {
       implementation(libs.kotlinx.coroutines.test)
       implementation(libs.sqldelight.driver.jvm)
-      implementation(libs.roborazzi.compose.desktop)
       @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
       implementation(compose.uiTest)
     }
@@ -149,7 +147,7 @@ ktlint {
 
 tasks.register<Test>("jvmUnitTest") {
   group = "verification"
-  description = "Runs JVM unit tests (excludes E2E and screenshot tests)."
+  description = "Runs JVM unit tests (excludes E2E tests)."
 
   val jvmTestTask = tasks.named<Test>("jvmTest").get()
   testClassesDirs = jvmTestTask.testClassesDirs
@@ -159,7 +157,6 @@ tasks.register<Test>("jvmUnitTest") {
 
   filter {
     excludeTestsMatching("black.bracken.amenouzume.e2e.*")
-    excludeTestsMatching("*ScreenshotTest")
   }
 }
 
