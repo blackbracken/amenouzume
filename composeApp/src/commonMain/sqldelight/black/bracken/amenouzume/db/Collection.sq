@@ -24,7 +24,7 @@ lastInsertRowId:
 SELECT last_insert_rowid();
 
 updateThumbnailPath:
-UPDATE Collection SET thumbnail_path = :thumbnail_path WHERE collection_id = :collection_id;
+UPDATE Collection SET thumbnail_path = :thumbnail_path, updated_at = :updated_at WHERE collection_id = :collection_id;
 
 deleteById:
 DELETE FROM Collection WHERE collection_id = :collection_id;

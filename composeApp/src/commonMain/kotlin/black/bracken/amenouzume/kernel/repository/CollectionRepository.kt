@@ -143,7 +143,11 @@ class CollectionRepository(
           thumbnailSrc.copyTo(thumbnailDest)
 
           val thumbnailRelativePath = "collection/${collectionId.value}/thumbnail.jpg"
-          queries.updateThumbnailPath(thumbnailRelativePath, collectionId.value)
+          queries.updateThumbnailPath(
+            thumbnail_path = thumbnailRelativePath,
+            updated_at = TimeProvider.now().toString(),
+            collection_id = collectionId.value,
+          )
         }
 
         database.transaction {
